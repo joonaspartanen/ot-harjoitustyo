@@ -1,4 +1,3 @@
-partajoo@melkki:~$ tree kurssit/
 kurssit/
 └── ot2020
     └── viikko1
