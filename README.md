@@ -1,13 +1,17 @@
 # Ohjelmistotekniikka 2020, harjoitustyö
 
-## About
+## Tietoja
 
-This is a repository for the **Helsinki University** course [*Ohjelmistotekniikka 2020*](https://github.com/mluukkai/ohjelmistotekniikka-kevat-2020/).
+Tämä repositorio sisältää tehtäväpalautukset **Helsingin yliopiston** kurssille [*Ohjelmistotekniikka 2020*](https://github.com/mluukkai/ohjelmistotekniikka-kevat-2020/).
 
-## Exercises
+## Palautukset
 
-### Week 1
+### Viikko 1
 
 * [gitlog.txt](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
 
 * [komentorivi.txt](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
+
+### Viikko 2
+
+* [viikon 2 tehtävät](https://github.com/joonaspartanen/ot-harjoitustyo/tree/master/laskarit/viikko2)
