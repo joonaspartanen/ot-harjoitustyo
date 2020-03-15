@@ -43,4 +43,4 @@ Sovelluksen kehittäminen aloitetaan yllä kuvaillusta, toiminnoiltaan suppeamma
 
 ## Toimintaympäristön rajoitteet
 
-Ohjelmiston tulee toimia ainakin Helsingin yliopiston tietojenkäsittelytieteen osaston Linux-koneilla, joissa on Java asennettuna.
+Sovelluksen tulee toimia ainakin Helsingin yliopiston tietojenkäsittelytieteen osaston Linux-koneilla, joissa on Java asennettuna.
