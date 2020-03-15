@@ -1,4 +1,3 @@
-(base) partajoo@lx9-fuxi211:~/tkt/ot2020/viikko1/tiedostoja$ git log --stat | cat
 commit 80c751e6a68cee880e6d787ad45c289c13deee42
 Author: Joonas Partanen <partanen.joonas@gmail.com>
 Date:   Sun Mar 15 11:05:49 2020 +0200
