@@ -1,0 +1,138 @@
+(base) partajoo@lx9-fuxi211:~/tkt/ot2020/viikko1/tiedostoja$ git log --stat | cat
+commit 80c751e6a68cee880e6d787ad45c289c13deee42
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 11:05:49 2020 +0200
+
+    Rename file2 as file22
+
+ tiedostoja/{file2 => file22} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit e6f1cad4eb3202630ed3b145cc143e1c9e5b1baa
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 11:05:22 2020 +0200
+
+    Remove file1
+
+ tiedostoja/file1 | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 64ebddfaec797300d7c83dbd735b9b402449d438
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 11:03:38 2020 +0200
+
+    Create tiedostoja folder and 3 new files
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit c2d239a5869e0c1b611a8a20fdda6ad705eb8727
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 11:00:56 2020 +0200
+
+    Add content to kolmas.txt
+
+ kolmas.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 0799f1a16a814adca0e854c1bca1ac35b7e70260
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 11:00:40 2020 +0200
+
+    Remove paragraph
+
+ eka.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b7808fbe8f2cde7a0ed61c21bfab0de38e8a4999
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 11:00:24 2020 +0200
+
+    Modify title
+
+ eka.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit cc7656ec6abdb540055f5c3e6a8078e7ac95fd16
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:58:23 2020 +0200
+
+    Rename tiedosto.txt as eka.txt
+
+ tiedosto.txt => eka.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 6b1df0e03112fd4305b7645b861f021f7925a778
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:57:04 2020 +0200
+
+    Remove toinen.txt
+
+ toinen.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit ad2d1bfcdf9e1e1c4b3e0ae541c1b9fa894c7d26
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:53:57 2020 +0200
+
+    Modify tiedosto.txt
+
+ tiedosto.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit 7c40148030e7736d15a98175ddd41beeba478529
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:52:48 2020 +0200
+
+    Add text to tiedosto.txt
+
+ tiedosto.txt | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+commit 1eb1bb888035bda2713c839ec365643b9c9a7de4
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:50:26 2020 +0200
+
+    Create stuff folder
+
+ stuff/neljas.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 7271232387e79858da9d6062a5a37cd1c88b7996
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:49:34 2020 +0200
+
+    Create kolmas.txt
+
+ kolmas.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 65d47690ebd9df6429b07bfacd70a78fab413e56
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:48:40 2020 +0200
+
+    Create toinen.txt
+
+ toinen.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 45448ff48457f024486e3e23ecc53b596fcfd079
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:48:31 2020 +0200
+
+    Add first line
+
+ tiedosto.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 44a5d9c516953bb41d7a2a90444482601136648f
+Author: Joonas Partanen <partanen.joonas@gmail.com>
+Date:   Sun Mar 15 10:47:31 2020 +0200
+
+    Create tiedosto.txt
+
+ tiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
