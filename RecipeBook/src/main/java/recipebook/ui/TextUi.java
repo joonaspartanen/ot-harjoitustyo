@@ -86,12 +86,23 @@ public class TextUi {
             }
 
             System.out.println("Amount (" + ingredient.getUnit() + "): ");
-            int amount = Integer.parseInt(scanner.nextLine());
-            ingredients.put(ingredient, amount);
+            try {
+                int amount = Integer.parseInt(scanner.nextLine());
+                ingredients.put(ingredient, amount);
+            } catch (NumberFormatException e) {
+                System.out.println("The amount must be numeric.");
+            }
         }
-        
+
         System.out.println("Cooking time: ");
-        int time = Integer.parseInt(scanner.nextLine());
+        int time;
+        try {
+            time = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("The time must be numeric.");
+            time = 0;
+        }
+
         System.out.println("Instructions: ");
         String instructions = scanner.nextLine();
 

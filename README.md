@@ -14,7 +14,7 @@ Kyseessä on harjoitustyö Helsingin yliopiston kurssille [Ohjelmistotekniikka, 
 
 ## Vaatimukset
 
-Javan tulee olla asennettuna.
+Java ja Maven.
 
 ## Komentorivitoiminnot
 
@@ -23,6 +23,12 @@ Javan tulee olla asennettuna.
 Voit suorittaa ohjelman komentoriviltä komennolla:
 
 `mvn compile exec:java -Dexec.mainClass=recipebook.Main`
+
+### Testien suorittaminen
+
+Voit suorittaa testit komennolla:
+
+`mvn test`
 
 ## Palautukset
 
