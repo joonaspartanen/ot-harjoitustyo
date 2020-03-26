@@ -26,6 +26,10 @@ Voit suorittaa ohjelman komentoriviltä komennolla:
 
 ### Testien suorittaminen
 
-Voit suorittaa testit komennolla:
+Voit suorittaa testit komennolla
 
 `mvn test`
+
+ja generoida testikattavuusraportin komennolla
+
+`mvn jacoco:report`
