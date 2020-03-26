@@ -1,17 +1,37 @@
-# Ohjelmistotekniikka 2020, harjoitustyö
+# Recipe Book (Ohjelmistotekniikka kevät 2020, harjoitustyö)
 
 ## Tietoja
 
-Tämä repositorio sisältää tehtäväpalautukset **Helsingin yliopiston** kurssille [*Ohjelmistotekniikka 2020*](https://github.com/mluukkai/ohjelmistotekniikka-kevat-2020/).
+Recipe Book on Java-työpöytäsovellus, johon käyttäjä voi tallentaa ruokareseptejä. Sovelluksella voi olla useampi rekisteröitynyt käyttäjä. Käyttäjät voivat tarkastella myös muiden käyttäjien sovellukseen lisäämiä reseptejä.
+
+Kyseessä on harjoitustyö Helsingin yliopiston kurssille [Ohjelmistotekniikka, kevät 2020](https://github.com/mluukkai/ohjelmistotekniikka-kevat-2020/).
+
+## Dokumentaatio
+
+- [Vaatimusmäärittely](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/vaatimusmaarittely.md)
+
+- [Tuntikirjanpito](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/tuntikirjanpito.md)
+
+## Vaatimukset
+
+_Tulossa pian..._
+
+## Komentorivitoiminnot
+
+_Tulossa pian..._
 
 ## Palautukset
 
 ### Viikko 1
 
-* [gitlog.txt](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
+- [gitlog.txt](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
 
-* [komentorivi.txt](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
+- [komentorivi.txt](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
 
 ### Viikko 2
 
-* [viikon 2 tehtävät](https://github.com/joonaspartanen/ot-harjoitustyo/tree/master/laskarit/viikko2)
+- [viikon 2 tehtävät](https://github.com/joonaspartanen/ot-harjoitustyo/tree/master/laskarit/viikko2)
+
+### Viikko 3
+
+- [viikon 3 tehtävät](https://github.com/joonaspartanen/ot-harjoitustyo/tree/master/laskarit/viikko3)
