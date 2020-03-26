@@ -14,11 +14,15 @@ Kyseessä on harjoitustyö Helsingin yliopiston kurssille [Ohjelmistotekniikka, 
 
 ## Vaatimukset
 
-_Tulossa pian..._
+Javan tulee olla asennettuna.
 
 ## Komentorivitoiminnot
 
-_Tulossa pian..._
+### Ohjelman suorittaminen
+
+Voit suorittaa ohjelman komentoriviltä komennolla:
+
+`mvn compile exec:java -Dexec.mainClass=recipebook.Main`
 
 ## Palautukset
 
