@@ -1,6 +1,5 @@
 package recipebook.domain;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -26,7 +25,7 @@ public class RecipeTest {
     @Test
     public void toStringFormatsRecipeProperly() {
         String result = butterChicken.toString();
-        assertEquals("Butter Chicken\n\nIngredients:\nButter: 50 g\nOnion: 50 g\nChicken: 400 g\n\nCooking time: 40 min\n\nInstructions:\nCook until ready", result);
+        assertEquals("Butter Chicken\n\nIngredients:\nButter: 50 g\nChicken: 400 g\nOnion: 50 g\n\nCooking time: 40 min\n\nInstructions:\nCook until ready\n", result);
     }
 
 }

@@ -19,15 +19,34 @@ public class Recipe {
         this.instructions = instructions;
     }
 
+    public Recipe(String name, Map<Ingredient, Integer> ingredients, int time, String instructions) {
+        this.name = name;
+        this.ingredients = ingredients;
+        this.time = time;
+        this.instructions = instructions;
+    }
+
     public String stringifyIngredients() {
-        
-        String result = ingredients.entrySet().stream().map(i -> i.getKey() + ": " + i.getValue() + " " + i.getKey().getUnit() + "\n").collect(Collectors.joining());
+        String result = ingredients.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(i -> i.getKey() + ": " + i.getValue() + " " + i.getKey().getUnit() + "\n").collect(Collectors.joining());
         return result;
     }
 
     @Override
     public String toString() {
-        return name + "\n\n" + "Ingredients:" + "\n" + stringifyIngredients() + "\n" + "Cooking time: " + time + " min" + "\n\n" + "Instructions:" + "\n" + instructions;
+        return name + "\n\n" + "Ingredients:" + "\n" + stringifyIngredients() + "\n" + "Cooking time: " + time + " min" + "\n\n" + "Instructions:" + "\n" + instructions + "\n";
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

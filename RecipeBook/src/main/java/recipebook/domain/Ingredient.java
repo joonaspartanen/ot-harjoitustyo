@@ -1,6 +1,6 @@
 package recipebook.domain;
 
-public class Ingredient {
+public class Ingredient implements Comparable<Ingredient> {
 
     private String name;
     private String unit;
@@ -23,13 +23,22 @@ public class Ingredient {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
     public String getUnit() {
         return unit;
     }
 
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     @Override
-    public String toString() {
-        return this.name;
+    public int compareTo(Ingredient other) {
+        return this.name.compareToIgnoreCase(other.getName());
     }
 
 }
