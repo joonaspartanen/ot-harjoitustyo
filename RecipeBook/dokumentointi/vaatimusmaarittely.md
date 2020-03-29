@@ -22,10 +22,10 @@ Aluksi sovelluksen ainoa käyttäjärooli on _peruskäyttäjä_. Myöhemmin on m
 
 ### Kirjautumisen jälkeen
 
-- käyttäjä voi tarkastella sovellukseen tallentamiaan reseptejä
+- käyttäjä voi tarkastella sovellukseen tallentamiaan reseptejä (tehty alustava toteutus; reseptejä ei vielä tallenneta tietokantaan eikä tiedostoon)
 - käyttäjä voi tarkastella muiden käyttäjien sovellukseen tallentamia reseptejä
 - käyttäjä voi hakea reseptejä ainakin raaka-aineiden perusteella
-- käyttäjä voi luoda uuden reseptin
+- käyttäjä voi luoda uuden reseptin (tehty)
   - reseptillä on oltava nimi, raaka-aineet, valmistusaika ja valmistusohjeet
 - käyttäjä voi kirjautua ulos järjestelmästä
 
