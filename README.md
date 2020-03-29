@@ -14,9 +14,11 @@ Kyseessä on harjoitustyö Helsingin yliopiston kurssille [Ohjelmistotekniikka, 
 
 ## Vaatimukset
 
-Java ja Maven.
+Java 11 ja Maven tulee olla asennettuna.
 
 ## Komentorivitoiminnot
+
+Muista ensin siirtyä reposition juuresta sovelluksen kansioon komennolla ```cd RecipeBook```.
 
 ### Ohjelman suorittaminen
 
