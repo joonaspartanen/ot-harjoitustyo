@@ -3,15 +3,19 @@ package recipebook.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import recipebook.domain.Ingredient;
 import recipebook.domain.Recipe;
 
 // Preliminary implementation that stores recipes in ArrayList
 public class ArrayListRecipeDao implements RecipeDao {
 
     List<Recipe> recipes;
+    IngredientDao ingDao;
 
-    public ArrayListRecipeDao() {
+    public ArrayListRecipeDao(IngredientDao ingDao) {
         recipes = new ArrayList<>();
+        this.ingDao = ingDao;
     }
 
     @Override
