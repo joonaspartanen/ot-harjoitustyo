@@ -1,6 +1,7 @@
 package recipebook.domain;
 
 import java.util.List;
+
 import recipebook.dao.IngredientDao;
 
 public class IngredientService {
@@ -16,15 +17,19 @@ public class IngredientService {
     }
 
     public Ingredient addIngredient(String name) {
-        return ingDao.create(new Ingredient(name));
+        return ingDao.create(new Ingredient(formatName(name)));
     }
     
     public Ingredient addIngredient(String name, String unit) {
-        return ingDao.create(new Ingredient(name, unit));
+        return ingDao.create(new Ingredient(formatName(name), unit));
     }
     
     public Ingredient findByName(String name) {
-        return ingDao.getByName(name);
+        return ingDao.getByName(formatName(name));
+    }
+
+    public String formatName(String name) {
+        return name.toLowerCase().trim();
     }
 
 }
