@@ -3,6 +3,7 @@ package recipebook.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import recipebook.domain.Ingredient;
 
 // Preliminary implementation that stores ingredients in ArrayList
