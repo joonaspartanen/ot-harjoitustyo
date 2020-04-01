@@ -1,6 +1,7 @@
 package recipebook.dao;
 
 import java.util.List;
+
 import recipebook.domain.Recipe;
 
 public interface RecipeDao {
@@ -10,6 +11,10 @@ public interface RecipeDao {
     List<Recipe> getAll();
 
     List<Recipe> getByName(String name);
+
+    Recipe getById(int id);
+
+    List<Recipe> getByIngredient(String name);
 
     boolean delete(Recipe recipe);
 
