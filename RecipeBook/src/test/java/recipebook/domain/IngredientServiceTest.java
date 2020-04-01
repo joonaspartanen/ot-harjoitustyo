@@ -3,9 +3,11 @@ package recipebook.domain;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import recipebook.dao.ArrayListIngredientDao;
 
 public class IngredientServiceTest {
@@ -19,37 +21,37 @@ public class IngredientServiceTest {
 
     @Test
     public void addsIngredientProperly() {
-        Ingredient ingredient = ingService.addIngredient("Chicken", "g");
-        assertThat(ingredient.getName(), is(equalTo("Chicken")));
+        Ingredient ingredient = ingService.addIngredient("chicken", "g");
+        assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
     }
 
     @Test
     public void unitDefaultsToGramsIfNotSpecified() {
-        Ingredient ingredient = ingService.addIngredient("Chicken");
-        assertThat(ingredient.getName(), is(equalTo("Chicken")));
+        Ingredient ingredient = ingService.addIngredient("chicken");
+        assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
     }
 
     @Test
     public void listAllReturnsRightNumberOfIngredients() {
-        ingService.addIngredient("Chicken");
-        ingService.addIngredient("Garlic");
-        ingService.addIngredient("Milk");
+        ingService.addIngredient("chicken");
+        ingService.addIngredient("garlic");
+        ingService.addIngredient("milk");
         assertThat(ingService.listAll().size(), is(equalTo(3)));
     }
 
     @Test
     public void findByNameReturnsRightIngredientIfFound() {
-        ingService.addIngredient("Chicken");
-        Ingredient ingredient = ingService.findByName("Chicken");
-        assertThat(ingredient.getName(), is(equalTo("Chicken")));
+        ingService.addIngredient("chicken");
+        Ingredient ingredient = ingService.findByName("chicken");
+        assertThat(ingredient.getName(), is(equalTo("chicken")));
     }
 
     @Test
     public void findByNameReturnsNullIfIngredientNotFound() {
-        ingService.addIngredient("Chicken");
-        Ingredient ingredient = ingService.findByName("Salmon");
+        ingService.addIngredient("chicken");
+        Ingredient ingredient = ingService.findByName("salmon");
         assertThat(ingredient, is(nullValue()));
     }
 }
