@@ -49,4 +49,8 @@ public class Recipe {
     public void setId(int id) {
         this.id = id;
     }
+
+    public Map<Ingredient, Integer> getIngredients() {
+        return ingredients;
+    }
 }
