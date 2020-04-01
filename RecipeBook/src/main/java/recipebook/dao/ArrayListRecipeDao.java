@@ -34,7 +34,24 @@ public class ArrayListRecipeDao implements RecipeDao {
 
     @Override
     public List<Recipe> getByName(String name) {
-        List<Recipe> foundRecipes = recipes.stream().filter(r -> r.getName().equals(name)).collect(Collectors.toList());
+        List<Recipe> foundRecipes = recipes.stream().filter(r -> r.getName().contains(name)).collect(Collectors.toList());
+        return foundRecipes;
+    }
+
+    public Recipe getById(int id) {
+        List<Recipe> foundRecipes = recipes.stream().filter(r -> r.getId() == id).collect(Collectors.toList());
+        return foundRecipes.get(0);        
+    }
+
+    @Override
+    public List<Recipe> getByIngredient(String name) {
+        List<Recipe> foundRecipes = new ArrayList<>();
+        Ingredient ingredient = ingDao.getByName(name.toLowerCase());
+        for (Recipe recipe : recipes) {
+            if (recipe.getIngredients().containsKey(ingredient)) {
+                foundRecipes.add(recipe);
+            }
+        }
         return foundRecipes;
     }
 
