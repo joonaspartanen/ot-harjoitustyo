@@ -1,6 +1,7 @@
 package recipebook.dao;
 
 import java.util.List;
+
 import recipebook.domain.Ingredient;
 
 public interface IngredientDao {
