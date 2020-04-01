@@ -12,9 +12,9 @@ public class RecipeTest {
 
     @Before
     public void setUp() {
-        Ingredient chicken = new Ingredient("Chicken");
-        Ingredient butter = new Ingredient("Butter");
-        Ingredient onion = new Ingredient("Onion");
+        Ingredient chicken = new Ingredient("chicken");
+        Ingredient butter = new Ingredient("butter");
+        Ingredient onion = new Ingredient("onion");
         HashMap<Ingredient, Integer> ingredients = new HashMap<>();
         ingredients.put(chicken, 400);
         ingredients.put(butter, 50);
@@ -25,7 +25,7 @@ public class RecipeTest {
     @Test
     public void toStringFormatsRecipeProperly() {
         String result = butterChicken.toString();
-        assertEquals("Butter Chicken\n\nIngredients:\nButter: 50 g\nChicken: 400 g\nOnion: 50 g\n\nCooking time: 40 min\n\nInstructions:\nCook until ready\n", result);
+        assertEquals("Butter Chicken\n\nIngredients:\n50 g butter\n400 g chicken\n50 g onion\n\nCooking time: 40 min\n\nInstructions:\nCook until ready\n", result);
     }
 
 }
