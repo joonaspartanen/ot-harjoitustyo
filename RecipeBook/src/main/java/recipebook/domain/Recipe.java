@@ -27,15 +27,15 @@ public class Recipe {
     }
 
     public String stringifyIngredients() {
-        String result = ingredients.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(i -> i.getKey() + ": " + i.getValue() + " " + i.getKey().getUnit() + "\n").collect(Collectors.joining());
+        String result = ingredients.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .map(i -> i.getValue() + " " + i.getKey().getUnit() + " " + i.getKey() + "\n").collect(Collectors.joining());
         return result;
     }
 
     @Override
     public String toString() {
-        return name + "\n\n" + "Ingredients:" + "\n" + stringifyIngredients() + "\n" + "Cooking time: " + time + " min" + "\n\n" + "Instructions:" + "\n" + instructions + "\n";
+        return name + "\n\n" + "Ingredients:" + "\n" + stringifyIngredients() + "\n" + "Cooking time: " + time + " min"
+                + "\n\n" + "Instructions:" + "\n" + instructions + "\n";
     }
 
     public String getName() {
