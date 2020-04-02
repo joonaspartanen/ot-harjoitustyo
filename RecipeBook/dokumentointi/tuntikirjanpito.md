@@ -7,4 +7,5 @@
 | 26.3.  | 2    | Alustavat RecipeDao- ja IngredientDao-implementaatiot. Tekstikäyttöliittymän ja ensimmäisten komentojen luominen. |
 | 26.3. | 1  | Uusia testejä lisätty.
 | 1.4.   | 1  | Tekstikäyttöliittymään lisätty virheidenkäsittelyä ja mahdollisuus hakea resepti raaka-aineen perusteella. Tarvittavat muutokset muihin luokkiin.
-| yht   | 7 | |
+| 2.4. | 3  | 1. versio graafisesta käyttöliittymästä (mahdollisuus reseptien lisäämiseen ja tarkasteluun).
+| yht   | 10 | |
