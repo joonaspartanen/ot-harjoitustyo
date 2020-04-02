@@ -1,11 +1,14 @@
 package recipebook.ui;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+
 import recipebook.dao.ArrayListIngredientDao;
 import recipebook.dao.ArrayListRecipeDao;
+import recipebook.dao.IngredientDao;
 import recipebook.domain.Ingredient;
 import recipebook.domain.IngredientService;
 import recipebook.domain.Recipe;
@@ -20,8 +23,9 @@ public class TextUi {
 
     public TextUi(Scanner scanner) {
         this.scanner = scanner;
-        this.ingService = new IngredientService(new ArrayListIngredientDao());
-        this.recipeService = new RecipeService(new ArrayListRecipeDao());
+        IngredientDao ingDao = new ArrayListIngredientDao();
+        this.ingService = new IngredientService(ingDao);
+        this.recipeService = new RecipeService(new ArrayListRecipeDao(ingDao));
 
         commands = new TreeMap<>();
 
@@ -30,6 +34,7 @@ public class TextUi {
         commands.put("2", "2 list ingredients");
         commands.put("3", "3 add recipe");
         commands.put("4", "4 list recipes");
+        commands.put("5", "5 search recipes");
     }
 
     public void start() {
@@ -50,7 +55,10 @@ public class TextUi {
                 addRecipe();
             } else if (command.equals("4")) {
                 printRecipes();
+            } else if (command.equals("5")) {
+                searchRecipes();
             }
+
         }
     }
 
@@ -119,6 +127,15 @@ public class TextUi {
     public void printCommands() {
         for (String command : commands.keySet()) {
             System.out.println(commands.get(command));
+        }
+    }
+
+    public void searchRecipes() {
+        System.out.println("Ingredient?");
+        String name = scanner.nextLine();
+        List<Recipe> foundRecipes = recipeService.findByIngredient(name);
+        for (Recipe recipe : foundRecipes) {
+            System.out.println(recipe);
         }
     }
 
