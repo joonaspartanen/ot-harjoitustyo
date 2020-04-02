@@ -1,14 +1,16 @@
 package recipebook;
 
-import java.util.Scanner;
-import recipebook.ui.TextUi;
+import recipebook.ui.GraphicUi;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Scanner reader = new Scanner(System.in);
-        TextUi tui = new TextUi(reader);
-        tui.start();
+        GraphicUi.main(args);
+
+        /*
+         * Scanner reader = new Scanner(System.in); TextUi tui = new TextUi(reader);
+         * tui.start();
+         */
     }
 }
