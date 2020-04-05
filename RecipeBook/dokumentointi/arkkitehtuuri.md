@@ -1,6 +1,6 @@
 # Arkkitehtuurikuvaus
 
-__Huom. Sovelluksen rakenne ei vielä tässä vaiheessa (vk4) kaikilta osin noudata tämän kuvauksen mukaista tavoitearkkitehtuuria.__
+_Huom. Sovelluksen rakenne ei vielä tässä vaiheessa (vk4) kaikilta osin noudata tämän kuvauksen mukaista tavoitearkkitehtuuria._
 
 ## Rakenne
 
@@ -12,7 +12,7 @@ Sovellus muodostuu kolmesta kerroksesta, joita myös sen pakkausrakenne noudatta
 
 ### Käyttöliittymä
 
-Aluksi sovellus sisältää tekstikäyttöliittymän (luokka TextUi), joka on kuitenkin tarkoitus korvata graafisella JavaFX-käyttöliittymällä (luokka GraphicUi). Sovelluksen jatkokehityksessä keskityttäneen graafiseen käyttöliittymään eli uusia ominaisuuksia ei välttämättä tuoda tekstikäyttöliittymään.
+Aluksi sovellus sisältää tekstikäyttöliittymän (luokka TextUi), joka korvataan kuitenkin kehityksen edetessä graafisella JavaFX-käyttöliittymällä (luokka GraphicUi). Sovelluksen jatkokehityksessä keskityttäneen graafiseen käyttöliittymään eli uusia ominaisuuksia ei välttämättä tuoda tekstikäyttöliittymään.
 
 ### Sovelluslogiikka
 
@@ -20,13 +20,15 @@ Sovelluksen käsittelemää dataa mallintavat kolme luokkaa: Recipe, Ingredient 
 
 ![Luokkakaavio](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/luokkakaavio.png)
 
+_User-luokkaa ei ole vielä toteutettu (vk4)._
+
 Varsinaisesta sovelluslogiikasta vastaavat kolme service-luokkaa, joiden suhteita seuraava kaavio kuvaa:
 
 ![Sovelluslogiikka](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/sovelluslogiikka.png)
 
-RecipeService vastaa reseptien käsittelystä, IngredientService ainesosien käsittelystä ja UserService käyttäjähallintaan liittyvästä logiikasta.
+RecipeService vastaa reseptien käsittelystä, IngredientService ainesosien käsittelystä ja UserService käyttäjähallintaan liittyvästä logiikasta (_UserServiceä ei vielä toteutettu viikolla 4_).
 
-Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täytyy RecipeServicen käyttää myös IngredientServicen ja UserServicen tarjoamia metodeja: esimerkiksi uutta reseptiä lisättäessä tulee tarkistaa UserServicen avulla, kuka käyttäjistä on kirjautuneena sisään. Tarvittavat IngredientServicen ja UserServicen toteutukset injektoidaan RecipeServicelle.
+Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täytyy RecipeServicen käyttää myös IngredientServicen ja UserServicen tarjoamia metodeja: esimerkiksi uutta reseptiä lisättäessä tulee tarkistaa UserServicen avulla, kuka käyttäjistä on kirjautuneena sisään. Tarvittavat IngredientServicen ja UserServicen toteutukset injektoidaan RecipeServicelle. (_Viikolla 4 nämä yhteydet toteutetaan vielä injektoimalla IngredientDao-olio RecipeDao-luokan toteutukselle._)
 
 ### Tietojen tallennus ja lukeminen
 
