@@ -37,3 +37,13 @@ Voit suorittaa testit komennolla
 ja generoida testikattavuusraportin komennolla
 
 `mvn jacoco:report`
+
+Raportti löytyy polusta `/target/site/jacoco/index.html`.
+
+### Checkstyle
+
+Voit luoda Checkstyle-raportin komennolla
+
+`mvn jxr:jxr checkstyle:checkstyle`
+
+Raportti löytyy polusta `/target/site/checkstyle.html`.
