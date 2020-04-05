@@ -36,7 +36,7 @@ Voit suorittaa testit komennolla
 
 ja generoida testikattavuusraportin komennolla
 
-`mvn jacoco:report`
+`mvn test jacoco:report`
 
 Raportti löytyy polusta `/target/site/jacoco/index.html`.
 
