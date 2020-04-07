@@ -8,4 +8,5 @@
 | 26.3. | 1  | Uusia testejä lisätty.
 | 1.4.   | 1  | Tekstikäyttöliittymään lisätty virheidenkäsittelyä ja mahdollisuus hakea resepti raaka-aineen perusteella. Tarvittavat muutokset muihin luokkiin.
 | 2.4. | 3  | 1. versio graafisesta käyttöliittymästä (mahdollisuus reseptien lisäämiseen ja tarkasteluun).
-| yht   | 10 | |
+| 3.4. | 1 | Arkkitehtuurikuvauksen luominen.
+| yht   | 11 | |
