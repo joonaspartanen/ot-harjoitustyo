@@ -40,235 +40,281 @@ import recipebook.domain.RecipeService;
 
 public class GraphicUi extends Application {
 
-  private RecipeService recipeService;
-  private IngredientService ingService;
+    private RecipeService recipeService;
+    private IngredientService ingService;
 
-  @Override
-  public void init() {
-    IngredientDao ingDao = new ArrayListIngredientDao();
-    RecipeDao recipeDao = new ArrayListRecipeDao(ingDao);
-    recipeService = new RecipeService(recipeDao);
-    ingService = new IngredientService(ingDao);
-  }
+    private ListView<Recipe> recipeList;
+    Insets bottomPadding10 = new Insets(0, 0, 10, 0);
+    Insets padding25 = new Insets(25, 25, 25, 25);
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {
-    primaryStage.setTitle("Java Recipe Book");
+    @Override
+    public void init() throws FileNotFoundException, IOException {
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("config.properties"));
 
-    TabPane tabPane = new TabPane();
-    tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        String ingredientsFile = properties.getProperty("ingredientsFile");
+        String recipesFile = properties.getProperty("recipesFile");
+        String recipesIngredientsFile = properties.getProperty("recipesIngredientsFile");
 
-    Tab allRecipesTab = new Tab("All Recipes");
-    Tab addRecipeTab = new Tab("Add Recipe");
-    Tab searchRecipeTab = new Tab("Search recipes");
-    Tab recipeBookTab = new Tab("My Recipebook");
+        IngredientDao ingDao = new FileIngredientDao(ingredientsFile);
+        RecipeDao recipeDao = new FileRecipeDao(ingDao, recipesFile, recipesIngredientsFile);
+        recipeService = new RecipeService(recipeDao);
+        ingService = new IngredientService(ingDao);
+    }
 
-    tabPane.getTabs().add(allRecipesTab);
-    tabPane.getTabs().add(addRecipeTab);
-    tabPane.getTabs().add(searchRecipeTab);
-    tabPane.getTabs().add(recipeBookTab);
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Java Recipe Book");
 
-    // Add recipe tab
+        TabPane tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
-    TextField nameField = new TextField();
-    TextField timeField = new TextField();
-    TextArea instructionsArea = new TextArea();
+        Tab allRecipesTab = initiateAllRecipesTab();
+        Tab addRecipeTab = initiateAddRecipeTab();
+        Tab searchRecipeTab = initiateSearchRecipeTab();
+        Tab recipeBookTab = new Tab("My Recipebook");
 
-    Insets defaultInsets = new Insets(0, 0, 10, 0);
+        tabPane.getTabs().add(allRecipesTab);
+        tabPane.getTabs().add(addRecipeTab);
+        tabPane.getTabs().add(searchRecipeTab);
+        tabPane.getTabs().add(recipeBookTab);
 
-    HBox nameFieldWrapper = new HBox(new Label("Recipe name:"), nameField);
-    nameFieldWrapper.setAlignment(Pos.CENTER_LEFT);
-    nameFieldWrapper.setSpacing(10);
-    nameFieldWrapper.setPadding(defaultInsets);
+        StackPane root = new StackPane();
+        root.getChildren().add(tabPane);
+        primaryStage.setScene(new Scene(root, 1280, 800));
+        primaryStage.show();
+    }
 
-    HBox timeFieldWrapper = new HBox(new Label("Cooking time:"), timeField);
-    timeFieldWrapper.setAlignment(Pos.CENTER_LEFT);
-    timeFieldWrapper.setSpacing(10);
-    timeFieldWrapper.setPadding(defaultInsets);
+    private Tab initiateAllRecipesTab() {
+        Tab allRecipesTab = new Tab("All Recipes");
 
-    VBox instructionsAreaWrapper = new VBox(new Label("Instructions:"), instructionsArea);
-    instructionsAreaWrapper.setPadding(defaultInsets);
+        recipeList = new ListView<>();
 
-    VBox addRecipeWrapper = new VBox();
+        VBox allRecipesWrapper = new VBox();
+        Label recipeLabel = new Label();
+        Button updateRecipeListButton = new Button("Update view");
+        Button showRecipeButton = generateShowRecipeButton(recipeList, recipeLabel);
+        Button deleteRecipeButton = new Button("Delete recipe");
 
-    VBox addIngredientWrapper = new VBox();
-    HBox ingredientWrapper = generateIngredientWrapper(addIngredientWrapper);
-    addIngredientWrapper.getChildren().add(ingredientWrapper);
+        refreshRecipes(recipeList);
 
-    Button saveRecipeButton = new Button("Save recipe");
+        updateRecipeListButton.setOnAction(e -> {
+            refreshRecipes(recipeList);
+        });
 
-    addRecipeWrapper.getChildren().add(nameFieldWrapper);
-    addRecipeWrapper.getChildren().add(timeFieldWrapper);
-    addRecipeWrapper.getChildren().add(addIngredientWrapper);
-    addRecipeWrapper.getChildren().add(instructionsAreaWrapper);
-    addRecipeWrapper.getChildren().add(saveRecipeButton);
+        deleteRecipeButton.setOnAction(e -> {
+            int recipeId = recipeList.getSelectionModel().getSelectedItem().getId();
+            recipeService.deleteRecipeById(recipeId);
+            refreshRecipes(recipeList);
+        });
 
-    addRecipeWrapper.setPadding(new Insets(25, 25, 25, 25));
+        HBox buttonsWrapper = new HBox();
+        buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
+        buttonsWrapper.setSpacing(10);
+        buttonsWrapper.getChildren().addAll(updateRecipeListButton, showRecipeButton, deleteRecipeButton);
 
-    addRecipeTab.setContent(addRecipeWrapper);
+        allRecipesWrapper.getChildren().add(recipeList);
+        allRecipesWrapper.getChildren().add(buttonsWrapper);
+        allRecipesWrapper.getChildren().add(recipeLabel);
+        allRecipesWrapper.setPadding(padding25);
+        allRecipesTab.setContent(allRecipesWrapper);
 
-    saveRecipeButton.setOnAction(e -> {
-      String name = nameField.getText();
-      int time = Integer.parseInt(timeField.getText());
-      String instructions = instructionsArea.getText();
+        return allRecipesTab;
+    }
 
-      Map<Ingredient, Integer> ingredients = new HashMap<>();
+    private Tab initiateAddRecipeTab() {
+        Tab addRecipeTab = new Tab("Add Recipe");
 
-      addIngredientWrapper.getChildren().forEach(node -> {
-        HBox singleIng = (HBox) node;
-        TextField singleIngNameField = (TextField) singleIng.getChildren().get(1);
-        String singleIngName = singleIngNameField.getText();
-        if (singleIngName.isEmpty()) {
-          return;
-        }
-        TextField singleIngAmountField = (TextField) singleIng.getChildren().get(3);
-        int singleIngAmount = Integer.parseInt(singleIngAmountField.getText());
-        ChoiceBox<String> singleIngUnitChoiceBox = (ChoiceBox) singleIng.getChildren().get(4);
-        String singleIngUnit = singleIngUnitChoiceBox.getValue();
-        Ingredient ingredient = ingService.addIngredient(singleIngName, singleIngUnit);
-        ingredients.put(ingredient, singleIngAmount);
-      });
+        TextField nameField = new TextField();
+        TextField timeField = new TextField();
+        TextArea instructionsArea = new TextArea();
 
-      recipeService.addRecipe(name, ingredients, time, instructions);
-      nameField.clear();
-      timeField.clear();
-      instructionsArea.clear();
-      ObservableList<Node> ingredientFields = addIngredientWrapper.getChildren();
-      while (ingredientFields.size() > 1) {
-        ingredientFields.remove(ingredientFields.size() - 1);
-      }
-      TextField singleIngNameField = (TextField) ingredientWrapper.getChildren().get(1);
-      singleIngNameField.clear();
-      TextField singleIngAmountField = (TextField) ingredientWrapper.getChildren().get(3);
-      singleIngAmountField.clear();
-      Button addIngredientButton = (Button) ingredientWrapper.getChildren().get(5);
-      addIngredientButton.setVisible(true);
-    });
+        HBox nameFieldWrapper = new HBox(new Label("Recipe name:"), nameField);
+        nameFieldWrapper.setAlignment(Pos.CENTER_LEFT);
+        nameFieldWrapper.setSpacing(10);
+        nameFieldWrapper.setPadding(bottomPadding10);
 
-    // All recipes tab
-    ListView<Recipe> recipeList = new ListView<>();
+        HBox timeFieldWrapper = new HBox(new Label("Cooking time:"), timeField);
+        timeFieldWrapper.setAlignment(Pos.CENTER_LEFT);
+        timeFieldWrapper.setSpacing(10);
+        timeFieldWrapper.setPadding(bottomPadding10);
 
-    VBox allRecipesWrapper = new VBox();
-    Button updateRecipeListButton = new Button("Update view");
-    Button showRecipeButton = new Button("Show recipe");
-    Label recipeLabel = new Label();
+        VBox instructionsAreaWrapper = new VBox(new Label("Instructions:"), instructionsArea);
+        instructionsAreaWrapper.setPadding(bottomPadding10);
 
-    updateRecipeListButton.setOnAction(e -> {
-      List<Recipe> recipes = recipeService.listAll();
+        VBox addRecipeWrapper = new VBox();
 
-      ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
-      recipeList.setItems(observableRecipeList);
+        VBox addIngredientWrapper = new VBox();
+        HBox ingredientWrapper = generateIngredientWrapper(addIngredientWrapper);
+        addIngredientWrapper.getChildren().add(ingredientWrapper);
 
-      recipeList.setCellFactory(param -> new ListCell<>() {
-        @Override
-        protected void updateItem(Recipe item, boolean empty) {
-          super.updateItem(item, empty);
+        Button saveRecipeButton = new Button("Save recipe");
 
-          if (empty || item == null || item.getName() == null) {
-            setText(null);
-          } else {
-            setText(item.getName());
-          }
-        }
-      });
+        addRecipeWrapper.getChildren().add(nameFieldWrapper);
+        addRecipeWrapper.getChildren().add(timeFieldWrapper);
+        addRecipeWrapper.getChildren().add(addIngredientWrapper);
+        addRecipeWrapper.getChildren().add(instructionsAreaWrapper);
+        addRecipeWrapper.getChildren().add(saveRecipeButton);
 
-    });
+        addRecipeWrapper.setPadding(padding25);
 
-    showRecipeButton.setOnAction(e -> {
-      recipeLabel.setText(recipeList.getSelectionModel().getSelectedItem().toString());
-    });
+        addRecipeTab.setContent(addRecipeWrapper);
 
-    HBox buttonsWrapper = new HBox();
-    buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
-    buttonsWrapper.setSpacing(10);
-    buttonsWrapper.getChildren().addAll(updateRecipeListButton, showRecipeButton);
+        saveRecipeButton.setOnAction(e -> {
+            String name = nameField.getText();
+            int time = Integer.parseInt(timeField.getText());
+            String instructions = instructionsArea.getText();
 
-    allRecipesWrapper.getChildren().add(recipeList);
-    allRecipesWrapper.getChildren().add(buttonsWrapper);
-    allRecipesWrapper.getChildren().add(recipeLabel);
-    allRecipesWrapper.setPadding(new Insets(25, 25, 25, 25));
-    allRecipesTab.setContent(allRecipesWrapper);
+            Map<Ingredient, Integer> ingredients = new HashMap<>();
 
-    // Search recipe tab
+            addIngredientWrapper.getChildren().forEach(node -> {
+                HBox singleIng = (HBox) node;
+                TextField singleIngNameField = (TextField) singleIng.getChildren().get(1);
+                String singleIngName = singleIngNameField.getText();
+                if (singleIngName.isEmpty()) {
+                    return;
+                }
+                TextField singleIngAmountField = (TextField) singleIng.getChildren().get(3);
+                int singleIngAmount = Integer.parseInt(singleIngAmountField.getText());
+                ChoiceBox<String> singleIngUnitChoiceBox = (ChoiceBox<String>) singleIng.getChildren().get(4);
+                String singleIngUnit = singleIngUnitChoiceBox.getValue();
+                Ingredient ingredient = ingService.addIngredient(singleIngName, singleIngUnit);
+                ingredients.put(ingredient, singleIngAmount);
+            });
 
-    TextField nameSearchField = new TextField();
-    Label nameSearchFieldLabel = new Label("Search by name:");
-    HBox nameSearchFieldWrapper = new HBox(nameSearchFieldLabel, nameSearchField);
-    nameSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
-    nameSearchFieldWrapper.setSpacing(10);
-    nameSearchFieldWrapper.setPadding(defaultInsets);
+            recipeService.addRecipe(name, ingredients, time, instructions);
+            nameField.clear();
+            timeField.clear();
+            instructionsArea.clear();
+            ObservableList<Node> ingredientFields = addIngredientWrapper.getChildren();
+            while (ingredientFields.size() > 1) {
+                ingredientFields.remove(ingredientFields.size() - 1);
+            }
+            TextField singleIngNameField = (TextField) ingredientWrapper.getChildren().get(1);
+            singleIngNameField.clear();
+            TextField singleIngAmountField = (TextField) ingredientWrapper.getChildren().get(3);
+            singleIngAmountField.clear();
+            Button addIngredientButton = (Button) ingredientWrapper.getChildren().get(5);
+            addIngredientButton.setVisible(true);
+            refreshRecipes(recipeList);
+        });
 
-    TextField ingredientSearchField = new TextField();
-    Label ingredientSearchFieldLabel = new Label("Search by ingredient:");
-    HBox ingredientSearchFieldWrapper = new HBox(ingredientSearchFieldLabel, ingredientSearchField);
-    ingredientSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
-    ingredientSearchFieldWrapper.setSpacing(10);
-    ingredientSearchFieldWrapper.setPadding(defaultInsets);
+        return addRecipeTab;
+    }
 
-    ListView<Recipe> foundRecipes = new ListView<>();
+    private Tab initiateSearchRecipeTab() {
+        Tab searchRecipeTab = new Tab("Search recipes");
 
-    Button searchButton = new Button("Search");
-    searchButton.setOnAction(e -> {
-      String name = ingredientSearchField.getText();
-      List<Recipe> recipes = recipeService.findByIngredient(name);
-      ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
-      foundRecipes.setItems(observableRecipeList);
+        TextField nameSearchField = new TextField();
+        Label nameSearchFieldLabel = new Label("Search by name:");
+        HBox nameSearchFieldWrapper = new HBox(nameSearchFieldLabel, nameSearchField);
+        nameSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
+        nameSearchFieldWrapper.setSpacing(10);
+        nameSearchFieldWrapper.setPadding(bottomPadding10);
 
-      foundRecipes.setCellFactory(param -> new ListCell<>() {
-        @Override
-        protected void updateItem(Recipe item, boolean empty) {
-          super.updateItem(item, empty);
+        TextField ingredientSearchField = new TextField();
+        Label ingredientSearchFieldLabel = new Label("Search by ingredient:");
+        HBox ingredientSearchFieldWrapper = new HBox(ingredientSearchFieldLabel, ingredientSearchField);
+        ingredientSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
+        ingredientSearchFieldWrapper.setSpacing(10);
+        ingredientSearchFieldWrapper.setPadding(bottomPadding10);
 
-          if (empty || item == null || item.getName() == null) {
-            setText(null);
-          } else {
-            setText(item.getName());
-          }
-        }
-      });
-    });
+        ListView<Recipe> foundRecipes = new ListView<>();
 
-    VBox searchRecipeWrapper = new VBox(ingredientSearchFieldWrapper, searchButton, foundRecipes);
-    searchRecipeWrapper.setPadding(new Insets(25, 25, 25, 25));
+        Button searchButton = new Button("Search");
+        searchButton.setOnAction(e -> {
+            String name = ingredientSearchField.getText();
+            List<Recipe> recipes = recipeService.findByIngredient(name);
+            ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
+            foundRecipes.setItems(observableRecipeList);
 
-    searchRecipeTab.setContent(searchRecipeWrapper);
+            foundRecipes.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(Recipe item, boolean empty) {
+                    super.updateItem(item, empty);
 
-    StackPane root = new StackPane();
-    root.getChildren().add(tabPane);
-    primaryStage.setScene(new Scene(root, 1280, 800));
-    primaryStage.show();
+                    if (empty || item == null || item.getName() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            });
+        });
 
-  }
+        Label recipeLabel = new Label();
+        Button showRecipeButton = generateShowRecipeButton(foundRecipes, recipeLabel);
 
-  private HBox generateIngredientWrapper(VBox addIngredientWrapper) {
-    TextField ingredientNameField = new TextField();
-    TextField ingredientAmountField = new TextField();
+        HBox buttonsWrapper = new HBox();
+        buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
+        buttonsWrapper.setSpacing(10);
+        buttonsWrapper.getChildren().addAll(showRecipeButton);
 
-    ChoiceBox<String> unitChoiceBox = new ChoiceBox<>();
-    unitChoiceBox.getItems().add("g");
-    unitChoiceBox.getItems().add("l");
-    unitChoiceBox.getItems().add("pcs");
-    unitChoiceBox.getItems().add("tbs");
-    unitChoiceBox.getSelectionModel().selectFirst();
+        VBox searchRecipeWrapper = new VBox(ingredientSearchFieldWrapper, searchButton, foundRecipes, buttonsWrapper, recipeLabel);
+        searchRecipeWrapper.setPadding(padding25);
 
-    Button addIngredientButton = new Button("+");
+        searchRecipeTab.setContent(searchRecipeWrapper);
 
-    HBox ingredientWrapper = new HBox(new Label("Ingredient:"), ingredientNameField, new Label("Amount:"),
-        ingredientAmountField, unitChoiceBox, addIngredientButton);
+        return searchRecipeTab;
+    }
 
-    ingredientWrapper.setAlignment(Pos.CENTER_LEFT);
-    ingredientWrapper.setSpacing(10);
-    ingredientWrapper.setPadding(new Insets(0, 0, 5, 0));
+    private void refreshRecipes(ListView<Recipe> recipeList) {
+        List<Recipe> recipes = recipeService.listAll();
 
-    addIngredientButton.setOnAction(e -> {
-      addIngredientWrapper.getChildren().add(generateIngredientWrapper(addIngredientWrapper));
-      addIngredientButton.setVisible(false);
-    });
+        ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
+        recipeList.setItems(observableRecipeList);
 
-    return ingredientWrapper;
-  }
+        recipeList.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Recipe item, boolean empty) {
+                super.updateItem(item, empty);
 
-  public static void main(String[] args) {
-    launch(args);
-  }
+                if (empty || item == null || item.getName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+    }
+
+    private HBox generateIngredientWrapper(VBox addIngredientWrapper) {
+        TextField ingredientNameField = new TextField();
+        TextField ingredientAmountField = new TextField();
+
+        ChoiceBox<String> unitChoiceBox = new ChoiceBox<>();
+        unitChoiceBox.getItems().add("g");
+        unitChoiceBox.getItems().add("l");
+        unitChoiceBox.getItems().add("pcs");
+        unitChoiceBox.getItems().add("tbs");
+        unitChoiceBox.getSelectionModel().selectFirst();
+
+        Button addIngredientButton = new Button("+");
+
+        HBox ingredientWrapper = new HBox(new Label("Ingredient:"), ingredientNameField, new Label("Amount:"),
+                ingredientAmountField, unitChoiceBox, addIngredientButton);
+
+        ingredientWrapper.setAlignment(Pos.CENTER_LEFT);
+        ingredientWrapper.setSpacing(10);
+        ingredientWrapper.setPadding(new Insets(0, 0, 5, 0));
+
+        addIngredientButton.setOnAction(e -> {
+            addIngredientWrapper.getChildren().add(generateIngredientWrapper(addIngredientWrapper));
+            addIngredientButton.setVisible(false);
+        });
+
+        return ingredientWrapper;
+    }
+
+    private Button generateShowRecipeButton(ListView<Recipe> recipeList, Label recipeLabel) {
+        Button showRecipeButton = new Button("Show recipe");
+        showRecipeButton.setOnAction(e -> {
+            recipeLabel.setText(recipeList.getSelectionModel().getSelectedItem().toString());
+        });
+        return showRecipeButton;
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
