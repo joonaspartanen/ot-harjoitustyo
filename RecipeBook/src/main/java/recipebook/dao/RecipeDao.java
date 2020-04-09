@@ -16,7 +16,7 @@ public interface RecipeDao {
 
     List<Recipe> getByIngredient(String name);
 
-    boolean delete(Recipe recipe);
+    void delete(Recipe recipe);
 
     void setRecipes(List<Recipe> recipes);
 }
