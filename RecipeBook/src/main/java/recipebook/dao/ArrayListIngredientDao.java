@@ -2,9 +2,9 @@ package recipebook.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import recipebook.domain.Ingredient;
+import recipebook.domain.Recipe;
 
 // Preliminary implementation that stores ingredients in ArrayList
 public class ArrayListIngredientDao implements IngredientDao {
@@ -17,9 +17,8 @@ public class ArrayListIngredientDao implements IngredientDao {
 
     @Override
     public Ingredient create(Ingredient ingredient) {
-        if (!ingredients.contains(ingredient)) {
-            ingredients.add(ingredient);
-        }
+        ingredient.setId(generateId());
+        ingredients.add(ingredient);
         return ingredient;
     }
 
