@@ -2,6 +2,7 @@ package recipebook.domain;
 
 public class Ingredient implements Comparable<Ingredient> {
 
+    private int id;
     private String name;
     private String unit;
 
