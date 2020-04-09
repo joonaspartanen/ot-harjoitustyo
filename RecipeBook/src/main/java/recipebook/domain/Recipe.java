@@ -54,4 +54,13 @@ public class Recipe {
     public Map<Ingredient, Integer> getIngredients() {
         return ingredients;
     }
+
+    public int getTime() {
+        return time;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
 }
