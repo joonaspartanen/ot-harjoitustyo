@@ -34,37 +34,39 @@ public class ArrayListRecipeDao implements RecipeDao {
 
     @Override
     public List<Recipe> getByName(String name) {
-        List<Recipe> foundRecipes = recipes.stream().filter(r -> r.getName().contains(name)).collect(Collectors.toList());
+        List<Recipe> foundRecipes = recipes.stream().filter(r -> r.getName().contains(name))
+                .collect(Collectors.toList());
         return foundRecipes;
     }
 
+    @Override
     public Recipe getById(int id) {
-        List<Recipe> foundRecipes = recipes.stream().filter(r -> r.getId() == id).collect(Collectors.toList());
-        return foundRecipes.get(0);        
+        return recipes.stream().filter(r -> r.getId() == id).findFirst().orElse(null);
     }
 
     @Override
-    public List<Recipe> getByIngredient(String name) {
+    public List<Recipe> getByIngredient(String ingredientName) {
         List<Recipe> foundRecipes = new ArrayList<>();
-        Ingredient ingredient = ingDao.getByName(name.toLowerCase());
         for (Recipe recipe : recipes) {
-            if (recipe.getIngredients().containsKey(ingredient)) {
+            if (recipeContainsIngredient(recipe, ingredientName)) {
                 foundRecipes.add(recipe);
             }
         }
         return foundRecipes;
     }
 
-    @Override
-    public boolean delete(Recipe recipe) {
-        if (recipes.contains(recipe)) {
-            recipes.remove(recipe);
-            return true;
-        }
-        return false;
+    private boolean recipeContainsIngredient(Recipe recipe, String ingredientName) {
+        List<String> ingredientNames = recipe.getIngredients().keySet().stream().map(i -> i.getName())
+                .collect(Collectors.toList());
+        return ingredientNames.contains(ingredientName.toLowerCase());
     }
 
-    public int generateId() {
+    @Override
+    public void delete(Recipe recipe) {
+        recipes.remove(recipe);
+    }
+
+    private int generateId() {
         return recipes.size() + 1;
     }
 
