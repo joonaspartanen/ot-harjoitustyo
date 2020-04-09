@@ -16,6 +16,12 @@ public class Ingredient implements Comparable<Ingredient> {
         this.unit = unit;
     }
 
+    public Ingredient(int id, String name, String unit) {
+        this.id = id;
+        this.name = name;
+        this.unit = unit;
+    }
+
     public String getName() {
         return name;
     }
