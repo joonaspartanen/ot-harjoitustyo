@@ -31,8 +31,24 @@ public class ArrayListIngredientDao implements IngredientDao {
     public Ingredient getByName(String name) {
         return ingredients.stream().filter(i -> i.getName().equals(name)).findFirst().orElse(null);
     }
+
+    @Override
+    public Ingredient getById(int id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void createNewIngredients(Recipe recipe) {
+        for (Ingredient ingredient : recipe.getIngredients().keySet()) {
+            if (getByName(ingredient.getName()) == null) {
+                create(ingredient);
+            }
         }
-        return foundIngredients.get(0);
+    }
+
+    private int generateId() {
+        return ingredients.size() + 1;
     }
 
 }
