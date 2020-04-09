@@ -23,7 +23,6 @@ public class ArrayListIngredientDaoTest {
     ingDao.create(new Ingredient("Salmon"));
     ingDao.create(new Ingredient("Milk"));
     Ingredient ingredient = ingDao.getByName("Salmon");
-    System.out.println(ingredient);
     assertThat(ingredient.getName(), is(equalTo("Salmon")));
   }
 
