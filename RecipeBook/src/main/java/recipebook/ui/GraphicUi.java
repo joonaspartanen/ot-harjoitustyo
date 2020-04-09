@@ -1,8 +1,12 @@
 package recipebook.ui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -25,8 +29,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import recipebook.dao.ArrayListIngredientDao;
-import recipebook.dao.ArrayListRecipeDao;
+import recipebook.dao.FileIngredientDao;
+import recipebook.dao.FileRecipeDao;
 import recipebook.dao.IngredientDao;
 import recipebook.dao.RecipeDao;
 import recipebook.domain.Ingredient;
