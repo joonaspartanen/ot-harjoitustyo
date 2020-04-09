@@ -29,9 +29,8 @@ public class ArrayListIngredientDao implements IngredientDao {
 
     @Override
     public Ingredient getByName(String name) {
-        List<Ingredient> foundIngredients = ingredients.stream().filter(i -> i.getName().equals(name)).collect(Collectors.toList());
-        if (foundIngredients.isEmpty()) {
-            return null;
+        return ingredients.stream().filter(i -> i.getName().equals(name)).findFirst().orElse(null);
+    }
         }
         return foundIngredients.get(0);
     }
