@@ -28,7 +28,8 @@ public class Recipe {
 
     public String stringifyIngredients() {
         String result = ingredients.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .map(i -> i.getValue() + " " + i.getKey().getUnit() + " " + i.getKey() + "\n").collect(Collectors.joining());
+                .map(i -> i.getValue() + " " + i.getKey().getUnit() + " " + i.getKey() + "\n")
+                .collect(Collectors.joining());
         return result;
     }
 
