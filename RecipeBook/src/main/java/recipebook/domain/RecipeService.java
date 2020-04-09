@@ -26,4 +26,13 @@ public class RecipeService {
     public List<Recipe> findByIngredient(String name) {
         return recipeDao.getByIngredient(name);
     }
+
+    public boolean deleteRecipeById(int recipeId) {
+        Recipe recipe = recipeDao.getById(recipeId);
+        if (recipe == null) {
+            return false;
+        }
+        recipeDao.delete(recipe);
+        return true;
+    }
 }
