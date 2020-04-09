@@ -22,14 +22,14 @@ Aluksi sovelluksen ainoa käyttäjärooli on _peruskäyttäjä_. Myöhemmin sove
 
 ### Kirjautumisen jälkeen
 
-- käyttäjä voi tarkastella sovellukseen tallentamiaan reseptejä (tehty alustava toteutus; reseptejä ei vielä tallenneta tietokantaan eikä tiedostoon)
+- käyttäjä voi tarkastella sovellukseen tallentamiaan reseptejä (tehty; vk5: toteutettu tiedostoon tallennus)
   - reseptejä voi tarkastella tekstikäyttöliittymällä (tehty)
   - reseptejä voi tarkastella graafisella käyttöliittymällä (tehty)
 - käyttäjä voi tarkastella muiden käyttäjien sovellukseen tallentamia reseptejä
 - käyttäjä voi hakea reseptejä ainakin raaka-aineiden perusteella (tehty)
 - käyttäjä voi luoda uuden reseptin (tehty)
   - reseptillä on oltava nimi, raaka-aineet, valmistusaika ja valmistusohjeet
-- käyttäjä voi poistaa lisäämänsä reseptin
+- käyttäjä voi poistaa lisäämänsä reseptin (vk5: tehty)
 - käyttäjä voi kirjautua ulos järjestelmästä
 
 ## Jatkokehitysideoita
