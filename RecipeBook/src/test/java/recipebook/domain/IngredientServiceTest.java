@@ -20,7 +20,7 @@ public class IngredientServiceTest {
     }
 
     @Test
-    public void addsIngredientProperly() {
+    public void addedIngredientHasRightProperties() {
         Ingredient ingredient = ingService.addIngredient("chicken", "g");
         assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
@@ -31,6 +31,14 @@ public class IngredientServiceTest {
         Ingredient ingredient = ingService.addIngredient("chicken");
         assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
+    }
+
+    @Test
+    public void addIngredientReturnsExistingIngredientIfIngredientAlreadyExists() {
+        Ingredient ingredient = ingService.addIngredient("tomato");
+        assertThat(ingredient.getId(), is(1));
+        ingredient = ingService.addIngredient("tomato");
+        assertThat(ingredient.getId(), is(1));
     }
 
     @Test
