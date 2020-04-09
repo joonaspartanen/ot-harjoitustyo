@@ -43,6 +43,14 @@ public class Ingredient implements Comparable<Ingredient> {
         this.unit = unit;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public int compareTo(Ingredient other) {
         return this.name.compareToIgnoreCase(other.getName());
