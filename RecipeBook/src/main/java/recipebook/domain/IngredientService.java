@@ -17,13 +17,17 @@ public class IngredientService {
     }
 
     public Ingredient addIngredient(String name) {
-        return ingDao.create(new Ingredient(formatName(name)));
+        Ingredient existingIngredient = ingDao.getByName(name);
+        if (existingIngredient == null) {
+            return ingDao.create(new Ingredient(formatName(name)));
+        }
+        return existingIngredient;
     }
-    
+
     public Ingredient addIngredient(String name, String unit) {
         return ingDao.create(new Ingredient(formatName(name), unit));
     }
-    
+
     public Ingredient findByName(String name) {
         return ingDao.getByName(formatName(name));
     }
