@@ -15,4 +15,7 @@ ingredients.txt
 recipes.txt
 recipesIngs.txt
 
+recipes.db
+recipesTest.db
+
 nbactions.xml
