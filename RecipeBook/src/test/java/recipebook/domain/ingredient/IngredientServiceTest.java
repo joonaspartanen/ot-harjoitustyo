@@ -1,14 +1,18 @@
-package recipebook.domain;
+package recipebook.domain.ingredient;
 
+import recipebook.domain.ingredient.IngredientService;
+import recipebook.domain.ingredient.Ingredient;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import recipebook.dao.ArrayListIngredientDao;
+import recipebook.dao.ingredientDao.ArrayListIngredientDao;
 
 public class IngredientServiceTest {
 
@@ -52,14 +56,23 @@ public class IngredientServiceTest {
     @Test
     public void findByNameReturnsRightIngredientIfFound() {
         ingService.addIngredient("chicken");
-        Ingredient ingredient = ingService.findByName("chicken");
-        assertThat(ingredient.getName(), is(equalTo("chicken")));
+        List<Ingredient> ingredients = ingService.findByName("chicken");
+        assertThat(ingredients.get(0).getName(), is(equalTo("chicken")));
     }
 
     @Test
-    public void findByNameReturnsNullIfIngredientNotFound() {
+    public void findByNameReturnsEmptyListIfIngredientNotFound() {
         ingService.addIngredient("chicken");
-        Ingredient ingredient = ingService.findByName("salmon");
-        assertThat(ingredient, is(nullValue()));
+        List<Ingredient> ingredients = ingService.findByName("salmon");
+        assertTrue(ingredients.isEmpty());
+    }
+
+    @Test
+    public void findByNameAndUnitReturnsRightIngredientIfFound() {
+        ingService.addIngredient("chicken", "g");
+        ingService.addIngredient("chicken", "kg");
+        Ingredient foundIngredient = ingService.findByNameAndUnit("chicken", "kg");
+        assertThat(foundIngredient.getName(), is(equalTo("chicken")));
+        assertThat(foundIngredient.getUnit(), is(equalTo("kg")));
     }
 }
