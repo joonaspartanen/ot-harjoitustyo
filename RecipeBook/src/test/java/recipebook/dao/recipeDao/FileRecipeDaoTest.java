@@ -1,9 +1,9 @@
 package recipebook.dao.recipeDao;
 
-import recipebook.dao.recipeDao.RecipeDao;
-import recipebook.dao.recipeDao.FileRecipeDao;
-import recipebook.dao.ingredientDao.IngredientDao;
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.recipedao.RecipeDao;
+import recipebook.dao.recipedao.FileRecipeDao;
+import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;

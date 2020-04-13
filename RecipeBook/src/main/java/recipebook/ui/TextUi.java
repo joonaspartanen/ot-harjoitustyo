@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
-import recipebook.dao.recipeDao.ArrayListRecipeDao;
-import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
+import recipebook.dao.recipedao.ArrayListRecipeDao;
+import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.ingredient.IngredientService;
 import recipebook.domain.recipe.Recipe;

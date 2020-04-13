@@ -1,7 +1,7 @@
 package recipebook.dao.ingredientDao;
 
-import recipebook.dao.ingredientDao.IngredientDao;
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;

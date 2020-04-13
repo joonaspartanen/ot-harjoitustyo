@@ -1,6 +1,6 @@
-package recipebook.dao.ingredientDao;
+package recipebook.dao.ingredientdao;
 
-import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

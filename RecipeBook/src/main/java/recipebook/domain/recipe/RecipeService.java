@@ -5,7 +5,7 @@ import recipebook.domain.ingredient.Ingredient;
 import java.util.List;
 import java.util.Map;
 
-import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.dao.recipedao.RecipeDao;
 
 public class RecipeService {
 

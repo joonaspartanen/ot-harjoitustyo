@@ -17,10 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import recipebook.TestHelper;
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
-import recipebook.dao.recipeDao.ArrayListRecipeDao;
-import recipebook.dao.ingredientDao.IngredientDao;
-import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
+import recipebook.dao.recipedao.ArrayListRecipeDao;
+import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.recipedao.RecipeDao;
 
 public class RecipeServiceTest {
 

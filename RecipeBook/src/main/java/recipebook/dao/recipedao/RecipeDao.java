@@ -1,4 +1,4 @@
-package recipebook.dao.recipeDao;
+package recipebook.dao.recipedao;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package recipebook.domain.ingredient;
 
 import java.util.List;
 
-import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
 
 public class IngredientService {
 

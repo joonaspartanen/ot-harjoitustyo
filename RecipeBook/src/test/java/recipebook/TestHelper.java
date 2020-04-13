@@ -3,9 +3,9 @@ package recipebook;
 import java.util.HashMap;
 import java.util.Map;
 
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
-import recipebook.dao.ingredientDao.IngredientDao;
-import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.recipedao.RecipeDao;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 

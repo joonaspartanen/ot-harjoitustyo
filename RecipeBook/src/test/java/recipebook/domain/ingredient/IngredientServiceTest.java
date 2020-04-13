@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
 
 public class IngredientServiceTest {
 

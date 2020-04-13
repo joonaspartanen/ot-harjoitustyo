@@ -1,8 +1,8 @@
 package recipebook.dao.recipeDao;
 
-import recipebook.dao.recipeDao.RecipeDao;
-import recipebook.dao.recipeDao.ArrayListRecipeDao;
-import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.recipedao.RecipeDao;
+import recipebook.dao.recipedao.ArrayListRecipeDao;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

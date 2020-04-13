@@ -1,6 +1,6 @@
-package recipebook.dao.recipeDao;
+package recipebook.dao.recipedao;
 
-import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -168,7 +168,6 @@ public class DatabaseRecipeDao implements RecipeDao {
     @Override
     public List<Recipe> getByIngredient(String ingredientName) {
         List<Integer> recipeIds = new ArrayList<>();
-
         List<Ingredient> matchingIngredients = ingDao.getByName(ingredientName);
 
         if (matchingIngredients.isEmpty()) {
@@ -181,16 +180,15 @@ public class DatabaseRecipeDao implements RecipeDao {
             PreparedStatement pstmt = connection.prepareStatement(selectByIngredientIdsQuery);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
-                int recipeId = resultSet.getInt("recipe_id");
-                recipeIds.add(recipeId);
+                recipeIds.add(resultSet.getInt("recipe_id"));
             }
             pstmt.close();
         } catch (SQLException e) {
             System.out.println("Fetching recipes with ingredient " + ingredientName + " from database failed.");
             e.printStackTrace();
         }
-        List<Recipe> recipes = getRecipesByIdList(recipeIds);
-        return recipes;
+
+        return getRecipesByIdList(recipeIds);
     }
 
     private String generateSelectByIngredientIdsQuery(List<Ingredient> ingredients) {
