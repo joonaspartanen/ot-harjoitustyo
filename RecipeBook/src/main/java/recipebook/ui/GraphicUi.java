@@ -3,6 +3,7 @@ package recipebook.ui;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,38 +29,68 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import recipebook.dao.FileIngredientDao;
-import recipebook.dao.FileRecipeDao;
-import recipebook.dao.IngredientDao;
-import recipebook.dao.RecipeDao;
-import recipebook.domain.Ingredient;
-import recipebook.domain.IngredientService;
-import recipebook.domain.Recipe;
-import recipebook.domain.RecipeService;
+import recipebook.dao.DatabaseConnector;
+import recipebook.dao.ingredientDao.DatabaseIngredientDao;
+import recipebook.dao.ingredientDao.FileIngredientDao;
+import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.recipeDao.DatabaseRecipeDao;
+import recipebook.dao.recipeDao.FileRecipeDao;
+import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.ingredient.IngredientService;
+import recipebook.domain.recipe.Recipe;
+import recipebook.domain.recipe.RecipeService;
 
 public class GraphicUi extends Application {
 
     private RecipeService recipeService;
-    private IngredientService ingService;
-
+    private IngredientService ingredientService;
+    private IngredientDao ingredientDao;
+    private RecipeDao recipeDao;
+    Properties properties;
     private ListView<Recipe> recipeList;
-    Insets bottomPadding10 = new Insets(0, 0, 10, 0);
-    Insets padding25 = new Insets(25, 25, 25, 25);
+    private Insets bottomPadding10 = new Insets(0, 0, 10, 0);
+    private Insets padding25 = new Insets(25, 25, 25, 25);
+    private DatabaseConnector databaseConnector;
 
     @Override
-    public void init() throws FileNotFoundException, IOException {
-        Properties properties = new Properties();
-        properties.load(new FileInputStream("config.properties"));
+    public void init() {
 
+        properties = new Properties();
+        try {
+            properties.load(new FileInputStream("config.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String dataStore = properties.getProperty("dataStore");
+
+        if (dataStore.equals("database")) {
+            useDatabaseStore();
+        } else if (dataStore.equals("file")) {
+            useFileStore();
+        }
+
+        ingredientService = new IngredientService(ingredientDao);
+        recipeService = new RecipeService(recipeDao);
+    }
+
+    private void useDatabaseStore() {
+        String databasePath = properties.getProperty("databasePath");
+        databaseConnector = new DatabaseConnector("jdbc:sqlite:" + databasePath);
+        Connection connection = databaseConnector.initializeDatabase();
+        ingredientDao = new DatabaseIngredientDao(connection);
+        recipeDao = new DatabaseRecipeDao(connection, ingredientDao);
+    }
+
+    private void useFileStore() {
         String ingredientsFile = properties.getProperty("ingredientsFile");
         String recipesFile = properties.getProperty("recipesFile");
         String recipesIngredientsFile = properties.getProperty("recipesIngredientsFile");
-
-        IngredientDao ingDao = new FileIngredientDao(ingredientsFile);
-        RecipeDao recipeDao = new FileRecipeDao(ingDao, recipesFile, recipesIngredientsFile);
-        recipeService = new RecipeService(recipeDao);
-        ingService = new IngredientService(ingDao);
+        ingredientDao = new FileIngredientDao(ingredientsFile);
+        recipeDao = new FileRecipeDao(ingredientDao, recipesFile, recipesIngredientsFile);
     }
 
     @Override
@@ -103,6 +134,9 @@ public class GraphicUi extends Application {
         });
 
         deleteRecipeButton.setOnAction(e -> {
+            if (recipeList.getSelectionModel().getSelectedItem() == null) {
+                return;
+            }
             int recipeId = recipeList.getSelectionModel().getSelectedItem().getId();
             recipeService.deleteRecipeById(recipeId);
             refreshRecipes(recipeList);
@@ -134,7 +168,7 @@ public class GraphicUi extends Application {
         nameFieldWrapper.setSpacing(10);
         nameFieldWrapper.setPadding(bottomPadding10);
 
-        HBox timeFieldWrapper = new HBox(new Label("Cooking time:"), timeField);
+        HBox timeFieldWrapper = new HBox(new Label("Cooking time (minutes):"), timeField);
         timeFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         timeFieldWrapper.setSpacing(10);
         timeFieldWrapper.setPadding(bottomPadding10);
@@ -150,20 +184,42 @@ public class GraphicUi extends Application {
 
         Button saveRecipeButton = new Button("Save recipe");
 
+        Label errorLabel = new Label();
+        errorLabel.setTextFill(Color.web("#E42800"));
+        errorLabel.setPadding(new Insets(10, 0, 0, 0));
+
         addRecipeWrapper.getChildren().add(nameFieldWrapper);
         addRecipeWrapper.getChildren().add(timeFieldWrapper);
         addRecipeWrapper.getChildren().add(addIngredientWrapper);
         addRecipeWrapper.getChildren().add(instructionsAreaWrapper);
         addRecipeWrapper.getChildren().add(saveRecipeButton);
+        addRecipeWrapper.getChildren().add(errorLabel);
 
         addRecipeWrapper.setPadding(padding25);
 
         addRecipeTab.setContent(addRecipeWrapper);
 
         saveRecipeButton.setOnAction(e -> {
+            errorLabel.setText("");
+
             String name = nameField.getText();
-            int time = Integer.parseInt(timeField.getText());
+            if (name.isBlank()) {
+                errorLabel.setText("The recipe name can't be empty!");
+                return;
+            }
+
+            int time = 0;
+            try {
+                time = Integer.parseInt(timeField.getText());
+            } catch (NumberFormatException ex) {
+                errorLabel.setText("The cooking time must be a number!");
+            }
+
             String instructions = instructionsArea.getText();
+            if (instructions.isBlank()) {
+                errorLabel.setText("The recipe instructions are missing!");
+                return;
+            }
 
             Map<Ingredient, Integer> ingredients = new HashMap<>();
 
@@ -178,9 +234,14 @@ public class GraphicUi extends Application {
                 int singleIngAmount = Integer.parseInt(singleIngAmountField.getText());
                 ChoiceBox<String> singleIngUnitChoiceBox = (ChoiceBox<String>) singleIng.getChildren().get(4);
                 String singleIngUnit = singleIngUnitChoiceBox.getValue();
-                Ingredient ingredient = ingService.addIngredient(singleIngName, singleIngUnit);
+                Ingredient ingredient = ingredientService.addIngredient(singleIngName, singleIngUnit);
                 ingredients.put(ingredient, singleIngAmount);
             });
+
+            if (ingredients.isEmpty()) {
+                errorLabel.setText("The recipe must have at least one ingredient!");
+                return;
+            }
 
             recipeService.addRecipe(name, ingredients, time, instructions);
             nameField.clear();
@@ -250,7 +311,8 @@ public class GraphicUi extends Application {
         buttonsWrapper.setSpacing(10);
         buttonsWrapper.getChildren().addAll(showRecipeButton);
 
-        VBox searchRecipeWrapper = new VBox(ingredientSearchFieldWrapper, searchButton, foundRecipes, buttonsWrapper, recipeLabel);
+        VBox searchRecipeWrapper = new VBox(ingredientSearchFieldWrapper, searchButton, foundRecipes, buttonsWrapper,
+                recipeLabel);
         searchRecipeWrapper.setPadding(padding25);
 
         searchRecipeTab.setContent(searchRecipeWrapper);
@@ -284,9 +346,11 @@ public class GraphicUi extends Application {
 
         ChoiceBox<String> unitChoiceBox = new ChoiceBox<>();
         unitChoiceBox.getItems().add("g");
-        unitChoiceBox.getItems().add("l");
+        unitChoiceBox.getItems().add("dl");
         unitChoiceBox.getItems().add("pcs");
         unitChoiceBox.getItems().add("tbs");
+        unitChoiceBox.getItems().add("tsp");
+
         unitChoiceBox.getSelectionModel().selectFirst();
 
         Button addIngredientButton = new Button("+");
@@ -309,9 +373,17 @@ public class GraphicUi extends Application {
     private Button generateShowRecipeButton(ListView<Recipe> recipeList, Label recipeLabel) {
         Button showRecipeButton = new Button("Show recipe");
         showRecipeButton.setOnAction(e -> {
+            if (recipeList.getSelectionModel().getSelectedItem() == null) {
+                return;
+            }
             recipeLabel.setText(recipeList.getSelectionModel().getSelectedItem().toString());
         });
         return showRecipeButton;
+    }
+
+    @Override
+    public void stop() {
+        databaseConnector.closeConnection();
     }
 
     public static void main(String[] args) {
