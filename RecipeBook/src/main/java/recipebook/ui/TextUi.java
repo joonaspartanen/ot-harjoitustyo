@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import recipebook.dao.ArrayListIngredientDao;
-import recipebook.dao.ArrayListRecipeDao;
-import recipebook.dao.IngredientDao;
-import recipebook.domain.Ingredient;
-import recipebook.domain.IngredientService;
-import recipebook.domain.Recipe;
-import recipebook.domain.RecipeService;
+import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.recipeDao.ArrayListRecipeDao;
+import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.ingredient.IngredientService;
+import recipebook.domain.recipe.Recipe;
+import recipebook.domain.recipe.RecipeService;
 
 public class TextUi {
 
@@ -86,12 +86,10 @@ public class TextUi {
                 break;
             }
 
-            Ingredient ingredient = ingService.findByName(name);
-            if (ingredient == null) {
-                System.out.println("Unit: ");
-                String unit = scanner.nextLine();
-                ingredient = ingService.addIngredient(name, unit);
-            }
+            System.out.println("Unit: ");
+            String unit = scanner.nextLine();
+
+            Ingredient ingredient = ingService.addIngredient(name, unit);
 
             System.out.println("Amount (" + ingredient.getUnit() + "): ");
             try {
