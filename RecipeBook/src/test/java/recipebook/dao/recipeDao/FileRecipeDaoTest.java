@@ -1,5 +1,9 @@
-package recipebook.dao;
+package recipebook.dao.recipeDao;
 
+import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.dao.recipeDao.FileRecipeDao;
+import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.ingredientDao.ArrayListIngredientDao;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -19,7 +23,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import recipebook.TestHelper;
-import recipebook.domain.Recipe;
+import recipebook.domain.recipe.Recipe;
 
 public class FileRecipeDaoTest {
 
@@ -80,7 +84,7 @@ public class FileRecipeDaoTest {
     }
 
     @Test
-    public void getByNameReturnsEmptyListIsRecipesNoutFound() {
+    public void getByNameReturnsEmptyListIfRecipesNotFound() {
         helper.initializeRecipeBook(3, recipeDao);
         List<Recipe> foundRecipes = recipeDao.getByName("Knish");
         assertTrue(foundRecipes.isEmpty());
