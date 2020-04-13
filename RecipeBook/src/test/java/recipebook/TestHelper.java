@@ -1,27 +1,41 @@
 package recipebook;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import recipebook.dao.RecipeDao;
-import recipebook.domain.Ingredient;
-import recipebook.domain.Recipe;
+import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.recipe.Recipe;
 
 public class TestHelper {
 
+  IngredientDao ingDao;
+
+  public TestHelper(IngredientDao ingDao) {
+    this.ingDao = ingDao;
+  }
+
+  public TestHelper() {
+    this.ingDao = new ArrayListIngredientDao();
+  }
+
   public Map<Ingredient, Integer> createTestIngredientList() {
     Map<Ingredient, Integer> ingredients = new HashMap<>();
-    ingredients.put(new Ingredient("ingredient1"), 300);
-    ingredients.put(new Ingredient("ingredient2"), 40);
+    Ingredient ingredient1 = ingDao.create(new Ingredient("ingredient1", "g"));
+    Ingredient ingredient2 = ingDao.create(new Ingredient("ingredient2", "g"));
+
+    ingredients.put(ingredient1, 300);
+    ingredients.put(ingredient2, 40);
     return ingredients;
   }
 
   public Map<Ingredient, Integer> createTestIngredientListWithNames(String... ingredientNames) {
     Map<Ingredient, Integer> ingredients = new HashMap<>();
     for (String name : ingredientNames) {
-      ingredients.put(new Ingredient(name), 300);
+      Ingredient ingredient = ingDao.create(new Ingredient(name, "g"));
+      ingredients.put(ingredient, 300);
     }
     return ingredients;
   }
@@ -34,20 +48,18 @@ public class TestHelper {
   public Recipe createTestRecipeWithIngredients(String recipeName, String... ingredientNames) {
     Map<Ingredient, Integer> ingredients = new HashMap<>();
     for (String name : ingredientNames) {
-      ingredients.put(new Ingredient(name), 100);
+      Ingredient ingredient = ingDao.create(new Ingredient(name, "g"));
+      ingredients.put(ingredient, 300);
     }
     Recipe recipe = new Recipe(recipeName, ingredients, 20, "Cook well");
     return recipe;
   }
 
   public void initializeRecipeBook(int numberOfRecipes, RecipeDao recipeDao) {
-    List<Recipe> recipes = new ArrayList<>();
     Map<Ingredient, Integer> ingredients = createTestIngredientList();
-
     for (int i = 0; i < numberOfRecipes; i++) {
-      recipes.add(new Recipe(i, "Recipe " + i, ingredients, 40, "Cook until done"));
+      recipeDao.create(new Recipe(i, "Recipe " + i, ingredients, 40, "Cook until done"));
     }
-    recipeDao.setRecipes(recipes);
   }
 
 }
