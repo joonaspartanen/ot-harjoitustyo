@@ -11,4 +11,7 @@
 | 3.4.  | 1    | Arkkitehtuurikuvauksen luominen.                                                                                                                  |
 | 8.4.  | 3    | Lisätty tiedostoon tallentavat daot ja näille testejä.                                                                                            |
 | 9.4.  | 2    | Lisätty testejä FileRecipeDao:lle. Refaktoroitu graafista käyttöliittymää.                                                                        |
-|  yht  | 16   |                                                                                                                                                   |
+| 11.4. | 1    | Luotu sqlite-tietokantaan tallentava DatabaseIngredientDao.                                                                                       |
+| 12.4. | 3    | Luotu sqlite-tietokantaan tallentava DatabaseRecipeDao ja sille testejä.                                                                          |
+| 13.4. | 3    | Tietokantaan tallennettavia daoja täydennetty ja testejä lisätty.                                                                                 |
+|  yht  | 23   |                                                                                                                                                   |
