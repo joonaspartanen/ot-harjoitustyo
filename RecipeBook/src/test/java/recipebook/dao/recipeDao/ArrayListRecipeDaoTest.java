@@ -1,13 +1,20 @@
-package recipebook.dao;
+package recipebook.dao.recipeDao;
 
+import recipebook.dao.recipeDao.RecipeDao;
+import recipebook.dao.recipeDao.ArrayListRecipeDao;
+import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import recipebook.domain.recipe.Recipe;
 import recipebook.TestHelper;
-import recipebook.domain.Recipe;
 
 public class ArrayListRecipeDaoTest {
 
@@ -18,6 +25,7 @@ public class ArrayListRecipeDaoTest {
     public void setUp() {
         recipeDao = new ArrayListRecipeDao(new ArrayListIngredientDao());
         helper = new TestHelper();
+        
     }
 
     @Test
@@ -36,5 +44,17 @@ public class ArrayListRecipeDaoTest {
         assertThat(recipeDao.getAll().size(), is(1));
     }
 
-   
+    @Test
+    public void getByNameReturnsAllMatchingRecipes() {
+        helper.initializeRecipeBook(3, recipeDao);
+        recipeDao.create(helper.createTestRecipe("Chicken soup"));
+        recipeDao.create(helper.createTestRecipe("Salmon soup"));
+        recipeDao.create(helper.createTestRecipe("Noodles"));
+        List<Recipe> foundRecipes = recipeDao.getByName("soup");
+        List<String> recipeNames = foundRecipes.stream().map(r -> r.getName()).collect(Collectors.toList());
+        assertThat(recipeNames.size(), is(2));
+        assertThat(recipeNames, hasItem("Chicken soup"));
+        assertThat(recipeNames, hasItem("Salmon soup"));
+    }
+
 }
