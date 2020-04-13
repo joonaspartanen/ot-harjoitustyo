@@ -1,5 +1,8 @@
-package recipebook.domain;
+package recipebook.domain.recipe;
 
+import recipebook.domain.recipe.Recipe;
+import recipebook.domain.recipe.RecipeService;
+import recipebook.domain.ingredient.Ingredient;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -14,10 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import recipebook.TestHelper;
-import recipebook.dao.ArrayListIngredientDao;
-import recipebook.dao.ArrayListRecipeDao;
-import recipebook.dao.IngredientDao;
-import recipebook.dao.RecipeDao;
+import recipebook.dao.ingredientDao.ArrayListIngredientDao;
+import recipebook.dao.recipeDao.ArrayListRecipeDao;
+import recipebook.dao.ingredientDao.IngredientDao;
+import recipebook.dao.recipeDao.RecipeDao;
 
 public class RecipeServiceTest {
 
