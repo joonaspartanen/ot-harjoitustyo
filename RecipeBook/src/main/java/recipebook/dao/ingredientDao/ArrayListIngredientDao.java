@@ -1,10 +1,10 @@
-package recipebook.dao;
+package recipebook.dao.ingredientDao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import recipebook.domain.Ingredient;
-import recipebook.domain.Recipe;
+import recipebook.domain.ingredient.Ingredient;
 
 // Preliminary implementation that stores ingredients in ArrayList
 public class ArrayListIngredientDao implements IngredientDao {
@@ -28,27 +28,23 @@ public class ArrayListIngredientDao implements IngredientDao {
     }
 
     @Override
-    public Ingredient getByName(String name) {
-        return ingredients.stream().filter(i -> i.getName().equals(name)).findFirst().orElse(null);
+    public List<Ingredient> getByName(String name) {
+        return ingredients.stream().filter(i -> i.getName().equals(name)).collect(Collectors.toList());
     }
 
     @Override
     public Ingredient getById(int id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void createNewIngredients(Recipe recipe) {
-        for (Ingredient ingredient : recipe.getIngredients().keySet()) {
-            if (getByName(ingredient.getName()) == null) {
-                create(ingredient);
-            }
-        }
+        return ingredients.stream().filter(i -> i.getId() == id).findFirst().orElse(null);
     }
 
     private int generateId() {
         return ingredients.size() + 1;
+    }
+
+    @Override
+    public Ingredient getByNameAndUnit(String name, String unit) {
+        return ingredients.stream().filter(i -> i.getName().equals(name)).filter(i -> i.getUnit().equals(unit))
+                .findFirst().orElse(null);
     }
 
 }

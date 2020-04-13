@@ -1,5 +1,6 @@
-package recipebook.dao;
+package recipebook.dao.ingredientDao;
 
+import recipebook.dao.ingredientDao.IngredientDao;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -7,9 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
-import recipebook.domain.Ingredient;
-import recipebook.domain.Recipe;
+import recipebook.domain.ingredient.Ingredient;
 
 public class FileIngredientDao implements IngredientDao {
 
@@ -47,15 +48,6 @@ public class FileIngredientDao implements IngredientDao {
         }
     }
 
-    public void createNewIngredients(Recipe recipe) {
-        // TODO: Handle the case of two ingredients with same name but different units
-        for (Ingredient ingredient : recipe.getIngredients().keySet()) {
-            if (getByName(ingredient.getName()) == null) {
-                create(ingredient);
-            }
-        }
-    }
-
     @Override
     public Ingredient create(Ingredient ingredient) {
         ingredient.setId(generateId());
@@ -70,8 +62,8 @@ public class FileIngredientDao implements IngredientDao {
     }
 
     @Override
-    public Ingredient getByName(String name) {
-        return ingredients.stream().filter(i -> i.getName().equals(name)).findFirst().orElse(null);
+    public List<Ingredient> getByName(String name) {
+        return ingredients.stream().filter(i -> i.getName().equals(name)).collect(Collectors.toList());
     }
 
     public Ingredient getById(int id) {
@@ -80,5 +72,11 @@ public class FileIngredientDao implements IngredientDao {
 
     private int generateId() {
         return ingredients.size() + 1;
+    }
+
+    @Override
+    public Ingredient getByNameAndUnit(String name, String unit) {
+        return ingredients.stream().filter(i -> i.getName().equals(name)).filter(i -> i.getUnit().equals(unit))
+                .findFirst().orElse(null);
     }
 }

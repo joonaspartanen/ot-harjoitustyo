@@ -1,9 +1,8 @@
-package recipebook.dao;
+package recipebook.dao.ingredientDao;
 
 import java.util.List;
 
-import recipebook.domain.Ingredient;
-import recipebook.domain.Recipe;
+import recipebook.domain.ingredient.Ingredient;
 
 public interface IngredientDao {
 
@@ -11,9 +10,10 @@ public interface IngredientDao {
 
     List<Ingredient> getAll();
 
-    Ingredient getByName(String name);
+    List<Ingredient> getByName(String name);
 
     Ingredient getById(int id);
 
-	void createNewIngredients(Recipe recipe);
+    Ingredient getByNameAndUnit(String name, String unit);
+
 }
