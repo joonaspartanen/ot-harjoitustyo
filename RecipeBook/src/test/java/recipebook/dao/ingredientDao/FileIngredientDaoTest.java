@@ -1,5 +1,7 @@
-package recipebook.dao;
+package recipebook.dao.ingredientDao;
 
+import recipebook.dao.ingredientDao.FileIngredientDao;
+import recipebook.dao.ingredientDao.IngredientDao;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -16,7 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import recipebook.domain.Ingredient;
+import recipebook.domain.ingredient.Ingredient;
 
 public class FileIngredientDaoTest {
 
@@ -63,15 +65,15 @@ public class FileIngredientDaoTest {
     public void getByNameReturnsRightIngredientWhenFound() {
         ingDao.create(new Ingredient("salmon"));
         ingDao.create(new Ingredient("milk"));
-        Ingredient ingredient = ingDao.getByName("salmon");
-        assertThat(ingredient.getName(), is(equalTo("salmon")));
+        List<Ingredient> ingredients = ingDao.getByName("salmon");
+        assertThat(ingredients.get(0).getName(), is(equalTo("salmon")));
     }
 
     @Test
-    public void getByNameReturnsNullIfNotFound() {
+    public void getByNameReturnsEmptyListIfNotFound() {
         ingDao.create(new Ingredient("salmon"));
-        Ingredient ingredient = ingDao.getByName("chicken");
-        assertThat(ingredient, is(nullValue()));
+        List<Ingredient> ingredients = ingDao.getByName("chicken");
+        assertTrue(ingredients.isEmpty());
     }
 
     @Test
@@ -102,6 +104,21 @@ public class FileIngredientDaoTest {
         assertTrue(ingredientNames.contains("salmon"));
         assertTrue(ingredientNames.contains("milk"));
         assertTrue(ingredientNames.contains("chicken"));
+    }
+
+    @Test
+    public void getByNameAndUnitReturnsRightIngredientWhenFound() {
+        ingDao.create(new Ingredient("salmon"));
+        ingDao.create(new Ingredient("milk"));
+        Ingredient ingredient = ingDao.getByNameAndUnit("salmon", "g");
+        assertThat(ingredient.getName(), is(equalTo("salmon")));
+    }
+
+    @Test
+    public void getByNameAndUnitReturnsNullIfNotFound() {
+        ingDao.create(new Ingredient("salmon"));
+        Ingredient ingredient = ingDao.getByNameAndUnit("chicken", "g");
+        assertThat(ingredient, is(nullValue()));
     }
 
 }
