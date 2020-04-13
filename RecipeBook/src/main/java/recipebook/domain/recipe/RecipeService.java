@@ -1,10 +1,11 @@
 
-package recipebook.domain;
+package recipebook.domain.recipe;
 
+import recipebook.domain.ingredient.Ingredient;
 import java.util.List;
 import java.util.Map;
 
-import recipebook.dao.RecipeDao;
+import recipebook.dao.recipeDao.RecipeDao;
 
 public class RecipeService {
 
@@ -35,4 +36,5 @@ public class RecipeService {
         recipeDao.delete(recipe);
         return true;
     }
+
 }

@@ -1,5 +1,6 @@
-package recipebook.domain;
+package recipebook.domain.recipe;
 
+import recipebook.domain.ingredient.Ingredient;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -11,19 +12,16 @@ public class Recipe {
     private int time;
     private String instructions;
 
-    public Recipe(int id, String name, Map<Ingredient, Integer> ingredients, int time, String instructions) {
-        this.id = id;
+    public Recipe(String name, Map<Ingredient, Integer> ingredients, int time, String instructions) {
         this.name = name;
         this.ingredients = ingredients;
         this.time = time;
         this.instructions = instructions;
     }
 
-    public Recipe(String name, Map<Ingredient, Integer> ingredients, int time, String instructions) {
-        this.name = name;
-        this.ingredients = ingredients;
-        this.time = time;
-        this.instructions = instructions;
+    public Recipe(int id, String name, Map<Ingredient, Integer> ingredients, int time, String instructions) {
+        this(name, ingredients, time, instructions);
+        this.id = id;
     }
 
     public String stringifyIngredients() {
@@ -55,6 +53,10 @@ public class Recipe {
         return ingredients;
     }
 
+    public void setIngredients(Map<Ingredient, Integer> ingredients) {
+        this.ingredients = ingredients;
+    }
+
     public int getTime() {
         return time;
     }
@@ -63,4 +65,20 @@ public class Recipe {
         return instructions;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
+
+        if (!(object instanceof Recipe)) {
+            return false;
+        }
+
+        Recipe other = (Recipe) object;
+
+        return this.id == other.getId() && this.name.equals(other.getName())
+                && this.ingredients.equals(other.getIngredients()) && this.time == other.getTime()
+                && this.instructions.equals(other.getInstructions());
+    }
 }
