@@ -1,8 +1,8 @@
-package recipebook.dao;
+package recipebook.dao.recipeDao;
 
 import java.util.List;
 
-import recipebook.domain.Recipe;
+import recipebook.domain.recipe.Recipe;
 
 public interface RecipeDao {
 
@@ -17,6 +17,4 @@ public interface RecipeDao {
     List<Recipe> getByIngredient(String name);
 
     void delete(Recipe recipe);
-
-    void setRecipes(List<Recipe> recipes);
 }

@@ -1,5 +1,6 @@
-package recipebook.dao;
+package recipebook.dao.recipeDao;
 
+import recipebook.dao.ingredientDao.IngredientDao;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -13,8 +14,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import recipebook.domain.Ingredient;
-import recipebook.domain.Recipe;
+import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.recipe.Recipe;
 
 public class FileRecipeDao implements RecipeDao {
 
@@ -112,7 +113,6 @@ public class FileRecipeDao implements RecipeDao {
     public Recipe create(Recipe recipe) {
         recipe.setId(generateId());
         recipes.add(recipe);
-        ingDao.createNewIngredients(recipe);
         saveRecipes();
         return recipe;
     }
@@ -155,11 +155,6 @@ public class FileRecipeDao implements RecipeDao {
     public void delete(Recipe recipe) {
         recipes.remove(recipe);
         saveRecipes();
-    }
-
-    @Override
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
     }
 
     private int generateId() {

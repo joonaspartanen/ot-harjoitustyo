@@ -1,11 +1,11 @@
-package recipebook.dao;
+package recipebook.dao.recipeDao;
 
+import recipebook.dao.ingredientDao.IngredientDao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import recipebook.domain.Ingredient;
-import recipebook.domain.Recipe;
+import recipebook.domain.recipe.Recipe;
 
 // Preliminary implementation that stores recipes in ArrayList
 public class ArrayListRecipeDao implements RecipeDao {
@@ -68,10 +68,6 @@ public class ArrayListRecipeDao implements RecipeDao {
 
     private int generateId() {
         return recipes.size() + 1;
-    }
-
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
     }
 
 }
