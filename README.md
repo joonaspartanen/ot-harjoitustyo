@@ -20,7 +20,7 @@ Java 11 ja Maven tulee olla asennettuna.
 
 ## Komentorivitoiminnot
 
-Muista ensin siirtyä reposition juuresta sovelluksen kansioon komennolla ```cd RecipeBook```.
+Muista ensin siirtyä reposition juuresta sovelluksen kansioon komennolla `cd RecipeBook`.
 
 ### Ohjelman suorittaminen
 
@@ -47,3 +47,13 @@ Voit luoda Checkstyle-raportin komennolla
 `mvn jxr:jxr checkstyle:checkstyle`
 
 Raportti löytyy polusta `/target/site/checkstyle.html`.
+
+### Jarin generointi
+
+Voit generoida projektista jar-paketin komennolla
+
+`mvn package`.
+
+Paketin voi suorittaa komennolla
+
+`java -jar target/RecipeBook-1.0-SNAPSHOT.jar`.
