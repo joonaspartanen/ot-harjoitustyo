@@ -35,3 +35,21 @@ Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täy
 Edellisestä kaaviosta näkyy myös, että tietojen tallennuksesta ja lukemisesta vastaavat rajapintojen RecipeDao, IngredientDao ja UserDao toteutukset.
 
 Kehityksen alkuvaiheessa näistä on olemassa vain ArrayList-tietorakennetta hyödyntävät toteutukset, jotka tullaan korvaamaan myöhemmin ainakin tiedostoon ja mahdollisesti myös tietokantaan tallentavilla toteutuksilla. Tässä auttaa se, että service-luokat tuntevat vain dao-rajapinnat. ArrayList-toteutuksia voidaan kuitenkin jatkossakin hyödyntää esimerkiksi service-luokkien testauksessa mock-olioina.
+
+### Eräitä toiminnallisuuksia sekvenssikaavioina
+
+Eräs sovelluksen keskeisimmistä toiminnallisuuksista on uuden reseptin luominen ja tallentaminen. Käyttäjä syöttää reseptin nimen, keittoajan, ainesosat yksikköineen ja määrineen sekä valmistusohjeet graafisen käyttöliittymän kenttiin. Käyttöliittymä validoi aluksi syötteet eli tarkistaa esimerkiksi, ettei mikään kentistä ole tyhjä ja että keittoaika on annettu kokonaislukuna. Tämän jälkeen reseptin ainesosat käydään yksitellen lävitse ja tarkistetaan löytyvätkö ne jo tietokannasta/ainesosatiedostosta. Jos ainesosa on uusi, se lisätään kantaan. Tätä voidaan kuvata seuraavalla sekvenssikaaviolla:
+
+![Sekvenssikaavio ainesosan lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/ingredient_sekvenssikaavio.png)
+
+Käyttöliittymä kutsuu siis ingredientService-luokan metodia _addIngredient_, minkä jälkeen tietokantayhteyksistä vastaavan ingredientDao-olion avulla tarkistetaan, löytyykö vastaava ainesosa jo kannasta. Mikäli ei löydy, palautetaan _null_, luodaan uusi ainesosaolio ja annetaan se parametrina ingredientDao:n metodille _create_, joka tallentaa ainesosan tietokantaan.
+
+Huomionarvoinen yksityiskohta on, että ingredientDao hakee tietokantaoperaatioihin liittyviä yleisiä aputoimintoja tarjoavasta daoHelper-luokasta tallennetun ainesosan id-numeron.
+
+Uusi ainesosaolio palautetaan aina käyttöliittymälle asti, missä se lisätään reseptin ainemäärät sisältävään hajautustauluun. Kun kaikki ainesosat on käsitelty, on kaikki valmista itse reseptin lisäämistä varten. Tätä havainnollistaa seuraava sekvenssikaavio:
+
+![Sekvenssikaavio reseptin lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/recipe_sekvenssikaavio.png)
+
+Reseptin lisääminen etenee pääpiirteissään hyvin samalla tavalla kuin yksittäisen ainesosankin tapauksessa. Huomionarvoista on, että itse resepti (nimi, keittoaika, ohjeet) tallennetaan yhteen tietokantatauluun (tai tiedostoon) ja tieto siihen liittyvistä ainesosista erilliseen liitostauluun (tai tiedostoon) metodin _saveRecipeIngredients_ avulla.
+
+Kun resepti on tallennettu, tyhjentää käyttöliittymä reseptin lisäämiseen liittyvät kentät ja päivittää kaikki reseptit sisältävän näkymän.
