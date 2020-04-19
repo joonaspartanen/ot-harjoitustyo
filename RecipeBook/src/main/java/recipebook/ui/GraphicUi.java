@@ -195,6 +195,7 @@ public class GraphicUi extends Application {
                 time = Integer.parseInt(timeField.getText());
             } catch (NumberFormatException ex) {
                 errorLabel.setText("The cooking time must be a number!");
+                return;
             }
 
             String instructions = instructionsArea.getText();
@@ -206,18 +207,28 @@ public class GraphicUi extends Application {
             Map<Ingredient, Integer> ingredients = new HashMap<>();
 
             addIngredientWrapper.getChildren().forEach(node -> {
-                HBox singleIng = (HBox) node;
-                TextField singleIngNameField = (TextField) singleIng.getChildren().get(1);
-                String singleIngName = singleIngNameField.getText();
-                if (singleIngName.isEmpty()) {
+                HBox singleIngredient = (HBox) node;
+                TextField singleIngredientNameField = (TextField) singleIngredient.getChildren().get(1);
+                String singleIngredientName = singleIngredientNameField.getText();
+                if (singleIngredientName.isEmpty()) {
+                    errorLabel.setText("The ingredient name must be specified!");
                     return;
                 }
-                TextField singleIngAmountField = (TextField) singleIng.getChildren().get(3);
-                int singleIngAmount = Integer.parseInt(singleIngAmountField.getText());
-                ChoiceBox<String> singleIngUnitChoiceBox = (ChoiceBox<String>) singleIng.getChildren().get(4);
-                String singleIngUnit = singleIngUnitChoiceBox.getValue();
-                Ingredient ingredient = ingredientService.addIngredient(singleIngName, singleIngUnit);
-                ingredients.put(ingredient, singleIngAmount);
+
+                TextField singleIngredientAmountField = (TextField) singleIngredient.getChildren().get(3);
+                int singleIngredientAmount = 0;
+                try {
+                    singleIngredientAmount = Integer.parseInt(singleIngredientAmountField.getText());
+                } catch (NumberFormatException ex) {
+                    errorLabel.setText("The ingredient amount must be numeric!");
+                    return;
+                }
+
+                ChoiceBox<String> singleIngredientUnitChoiceBox = (ChoiceBox<String>) singleIngredient.getChildren()
+                        .get(4);
+                String singleIngredientUnit = singleIngredientUnitChoiceBox.getValue();
+                Ingredient ingredient = ingredientService.createIngredient(singleIngredientName, singleIngredientUnit);
+                ingredients.put(ingredient, singleIngredientAmount);
             });
 
             if (ingredients.isEmpty()) {
@@ -225,7 +236,7 @@ public class GraphicUi extends Application {
                 return;
             }
 
-            recipeService.addRecipe(name, ingredients, time, instructions);
+            recipeService.createRecipe(name, ingredients, time, instructions);
             nameField.clear();
             timeField.clear();
             instructionsArea.clear();
