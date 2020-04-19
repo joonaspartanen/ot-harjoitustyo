@@ -1,25 +1,32 @@
 package recipebook.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class DatabaseConnector {
+import recipebook.dao.ingredientdao.DatabaseIngredientDao;
+import recipebook.dao.recipedao.DatabaseRecipeDao;
+
+public class DatabaseConnector extends DataStoreConnector {
 
     private Connection connection = null;
-    private String databasePath;
 
-    public DatabaseConnector(String databasePath) {
-        this.databasePath = databasePath;
+    public DatabaseConnector(String dataStoreLocation) {
+        this.dataStoreLocation = dataStoreLocation;
     }
 
-    public Connection initializeDatabase() {
-        connectToDatabase(databasePath);
+    @Override
+    public void initializeDataStore() {
+        createDirectoryIfNotExists();
+        connectToDatabase();
         createTables();
-        return connection;
+        createDaoImplementations();
     }
 
-    private void connectToDatabase(String databasePath) {
+    private void connectToDatabase() {
         try {
-            connection = DriverManager.getConnection(databasePath);
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dataStoreLocation + "recipes.db");
         } catch (SQLException e) {
             System.out.println("Connection to database failed.");
             e.printStackTrace();
@@ -47,7 +54,17 @@ public class DatabaseConnector {
         }
     }
 
-    public void closeConnection() {
+    private void createDaoImplementations() {
+        ingredientDao = new DatabaseIngredientDao(connection);
+        recipeDao = new DatabaseRecipeDao(connection, ingredientDao);
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    @Override
+    public void closeDataStore() {
         try {
             if (connection != null) {
                 connection.close();
@@ -57,5 +74,4 @@ public class DatabaseConnector {
             e.printStackTrace();
         }
     }
-
 }
