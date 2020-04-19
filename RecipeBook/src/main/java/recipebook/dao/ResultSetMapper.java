@@ -29,13 +29,23 @@ public class ResultSetMapper {
         Ingredient ingredient = null;
 
         try (ResultSet resultSet = pstmt.executeQuery()) {
-            ingredient = createIngredientFromResultSetRow(resultSet);
+
+            if (resultSetIsEmpty(resultSet)) {
+                System.out.println("No ingredients found.");
+                return ingredient;
+            }
+
+            ingredient = mapResultSetRowToIngredient(resultSet);
         }
 
         return ingredient;
     }
 
-    private Ingredient createIngredientFromResultSetRow(ResultSet resultSet) throws SQLException {
+    private boolean resultSetIsEmpty(ResultSet resultSet) throws SQLException {
+        return !resultSet.isBeforeFirst();
+    }
+
+    private Ingredient mapResultSetRowToIngredient(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("ingredient_id");
         String name = resultSet.getString("ingredient_name");
         String unit = resultSet.getString("ingredient_unit");
