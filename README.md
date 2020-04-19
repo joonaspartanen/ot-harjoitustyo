@@ -57,3 +57,18 @@ Voit generoida projektista jar-paketin komennolla
 Paketin voi suorittaa komennolla
 
 `java -jar target/RecipeBook-1.0-SNAPSHOT.jar`.
+
+## Sovelluksen konfiguraatio
+
+Eräitä sovelluksen toimintoja voi konfiguroida muokkaamalla projektin juuressa sijaitsevaa _config.properties_-tiedostoa.
+
+### Tallennustavan muuttaminen
+
+Sovelluksen käsittelemä data voidaan tallentaa joko tietokantaan (oletusasetus) tai tiedostoon. Tallennustavan voi valita muokkaamalla _dataStore_-ominaisuutta:
+
+- Tietokanta: `dataStore=database`
+- Tiedosto: `dataStore=file`
+
+### Tietokannan tai datatiedostojen sijainti
+
+Oletusasetuksena tietokantatiedosto tai muut tallennustiedostot sijoitetaan projektin juureen. Käyttäjällä on kuitenkin mahdollisuus muuttaa näiden tiedostojen nimeä tai sijaintia muokkaamalla konfiguraatiotiedoston ominaisuuksia `dataBasePath` (tietokannan sijainti) tai `ingredientsFile`, `recipesFile` ja `recipesIngredientsFile` (tiedostotallennuksessa käytetyt tekstitiedostot).
