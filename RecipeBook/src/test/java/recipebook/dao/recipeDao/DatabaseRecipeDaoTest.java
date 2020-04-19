@@ -12,8 +12,8 @@ import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 import recipebook.TestHelper;
+import recipebook.dao.DataStoreConnector;
 import recipebook.dao.DatabaseConnector;
-import recipebook.dao.ingredientdao.DatabaseIngredientDao;
 import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.dao.recipedao.DatabaseRecipeDao;
 import recipebook.dao.recipedao.RecipeDao;
@@ -26,22 +26,22 @@ public class DatabaseRecipeDaoTest {
 
     RecipeDao recipeDao;
     IngredientDao ingDaoMock;
-    DatabaseConnector databaseConnector;
+    DataStoreConnector connector;
     Connection connection;
     TestHelper helper;
 
     @Before
     public void setUp() {
-        databaseConnector = new DatabaseConnector("jdbc:sqlite:" + testFolder.getRoot() + "/recipesTest.db");
-        connection = databaseConnector.initializeDatabase();
-        ingDaoMock = new DatabaseIngredientDao(connection);
-        recipeDao = new DatabaseRecipeDao(connection, ingDaoMock);
+        connector = new DatabaseConnector(testFolder.getRoot().toString() +"/");
+        connector.initializeDataStore();
+        ingDaoMock = connector.getIngredientDao();
+        recipeDao = connector.getRecipeDao();
         helper = new TestHelper(ingDaoMock);
     }
 
     @After
     public void finalize() {
-        databaseConnector.closeConnection();
+        connector.closeDataStore();
     }
 
     @Test
@@ -119,7 +119,7 @@ public class DatabaseRecipeDaoTest {
         recipeDao.create(helper.createTestRecipe("Salmon soup"));
         recipeDao.create(helper.createTestRecipe("Pasta carbonara"));
 
-        RecipeDao newRecipeDao = new DatabaseRecipeDao(connection, ingDaoMock);
+        RecipeDao newRecipeDao = connector.getRecipeDao();
         List<Recipe> recipes = newRecipeDao.getAll();
         List<String> recipeNames = recipes.stream().map(r -> r.getName()).collect(Collectors.toList());
         assertTrue(recipeNames.contains("Meatballs"));

@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
+import recipebook.dao.DataStoreConnector;
 import recipebook.dao.DatabaseConnector;
-import recipebook.dao.ingredientdao.DatabaseIngredientDao;
 import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.domain.ingredient.Ingredient;
 
@@ -22,19 +22,19 @@ public class DatabaseIngredientDaoTest {
     public TemporaryFolder testFolder = new TemporaryFolder();
 
     IngredientDao ingDao;
-    DatabaseConnector databaseConnector;
+    DataStoreConnector connector;
     Connection connection;
 
     @Before
     public void setUp() {
-        databaseConnector = new DatabaseConnector("jdbc:sqlite:" + testFolder.getRoot() + "/recipesTest.db");
-        connection = databaseConnector.initializeDatabase();
-        ingDao = new DatabaseIngredientDao(connection);
+        connector = new DatabaseConnector(testFolder.getRoot().toString() +"/");
+        connector.initializeDataStore();
+        ingDao = connector.getIngredientDao();
     }
 
     @After
     public void finalize() {
-        databaseConnector.closeConnection();
+        connector.closeDataStore();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class DatabaseIngredientDaoTest {
         ingDao.create(new Ingredient("salmon"));
         ingDao.create(new Ingredient("milk"));
         ingDao.create(new Ingredient("chicken"));
-        IngredientDao newIngDao = new DatabaseIngredientDao(connection);
+        IngredientDao newIngDao = connector.getIngredientDao();
         List<Ingredient> ingredients = newIngDao.getAll();
         List<String> ingredientNames = ingredients.stream().map(i -> i.getName()).collect(Collectors.toList());
         assertTrue(ingredientNames.contains("salmon"));
