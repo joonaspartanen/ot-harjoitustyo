@@ -1,6 +1,6 @@
 # Arkkitehtuurikuvaus
 
-_Huom. Sovelluksen rakenne ei vielä tässä vaiheessa (vk4) kaikilta osin noudata tämän kuvauksen mukaista tavoitearkkitehtuuria._
+_Huom. Sovelluksen rakenne ei vielä tässä vaiheessa (vk5) kaikilta osin noudata tämän kuvauksen mukaista tavoitearkkitehtuuria._
 
 ## Rakenne
 
@@ -8,7 +8,16 @@ Sovellus muodostuu kolmesta kerroksesta, joita myös sen pakkausrakenne noudatta
 
 - recipebook.ui (käyttöliittymä)
 - recipebook.domain (sovelluslogiikka)
+
+  - recipebook.domain.ingredient (ainesosiin liittyvä logiikka)
+  - recipebook.domain.recipe (resepteihin liittyvä logiikka)
+  - recipebook.domain.user (käyttäjiin liittyvä logiikka; _ei vielä toteutettu_)
+
 - recipebook.dao (tietojen tallennus ja lukeminen)
+
+  - recipebook.dao.ingredientdao (ainesosien tallennus)
+  - recipebook.dao.recipedao (reseptien tallennus)
+  - recipebook.dao.userdao (käyttäjien tallennus; _ei vielä toteutettu_)
 
 ### Käyttöliittymä
 
@@ -35,6 +44,8 @@ Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täy
 Edellisestä kaaviosta näkyy myös, että tietojen tallennuksesta ja lukemisesta vastaavat rajapintojen RecipeDao, IngredientDao ja UserDao toteutukset.
 
 Kehityksen alkuvaiheessa näistä on olemassa vain ArrayList-tietorakennetta hyödyntävät toteutukset, jotka tullaan korvaamaan myöhemmin ainakin tiedostoon ja mahdollisesti myös tietokantaan tallentavilla toteutuksilla. Tässä auttaa se, että service-luokat tuntevat vain dao-rajapinnat. ArrayList-toteutuksia voidaan kuitenkin jatkossakin hyödyntää esimerkiksi service-luokkien testauksessa mock-olioina.
+
+Tietokantaoperaatioiden apuna käytetään luokkia DaoHelper (tarjoaa eri daoille yhteisiä apumetodeja), QueryBuilder (tarjoaa SQL-kyselyitä), ResultSetMapper (käsittelee tietokantakyselyjen tulokset ja muuttaa ne Java-olioiksi) sekä DatabaseConnector (tarjoaa toiminnot tietokantayhteyden avaamiseen ja sulkemiseen).
 
 ### Eräitä toiminnallisuuksia sekvenssikaavioina
 
