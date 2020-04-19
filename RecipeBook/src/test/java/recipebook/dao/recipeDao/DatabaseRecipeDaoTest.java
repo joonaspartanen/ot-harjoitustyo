@@ -1,14 +1,6 @@
 package recipebook.dao.recipeDao;
 
-import recipebook.dao.recipedao.RecipeDao;
-import recipebook.dao.recipedao.DatabaseRecipeDao;
-import recipebook.dao.ingredientdao.IngredientDao;
-import recipebook.dao.ingredientdao.DatabaseIngredientDao;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -16,14 +8,15 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 import recipebook.TestHelper;
 import recipebook.dao.DatabaseConnector;
+import recipebook.dao.ingredientdao.DatabaseIngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.recipedao.DatabaseRecipeDao;
+import recipebook.dao.recipedao.RecipeDao;
 import recipebook.domain.recipe.Recipe;
 
 public class DatabaseRecipeDaoTest {

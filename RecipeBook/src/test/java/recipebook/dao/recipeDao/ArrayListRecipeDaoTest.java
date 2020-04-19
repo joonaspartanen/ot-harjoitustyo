@@ -1,8 +1,5 @@
 package recipebook.dao.recipeDao;
 
-import recipebook.dao.recipedao.RecipeDao;
-import recipebook.dao.recipedao.ArrayListRecipeDao;
-import recipebook.dao.ingredientdao.ArrayListIngredientDao;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -13,8 +10,11 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
-import recipebook.domain.recipe.Recipe;
 import recipebook.TestHelper;
+import recipebook.dao.ingredientdao.ArrayListIngredientDao;
+import recipebook.dao.recipedao.ArrayListRecipeDao;
+import recipebook.dao.recipedao.RecipeDao;
+import recipebook.domain.recipe.Recipe;
 
 public class ArrayListRecipeDaoTest {
 
