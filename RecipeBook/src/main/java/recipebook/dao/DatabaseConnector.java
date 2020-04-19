@@ -27,10 +27,9 @@ public class DatabaseConnector {
     }
 
     private void createTables() {
-        String createRecipesTable = "CREATE TABLE IF NOT EXISTS Recipes (id integer PRIMARY KEY NOT NULL UNIQUE, name varchar(30), time integer, instructions varchar(300));";
-        String createIngredientsTable = "CREATE TABLE IF NOT EXISTS Ingredients (id integer PRIMARY KEY NOT NULL UNIQUE, name varchar(30), unit varchar(5));";
-        String createRecipesIngredientsTable = "CREATE TABLE IF NOT EXISTS RecipesIngredients (id integer PRIMARY KEY NOT NULL UNIQUE, recipe_id integer, ingredient_id integer, "
-                + "amount integer, FOREIGN KEY(recipe_id) REFERENCES Recipes(id), FOREIGN KEY(ingredient_id) REFERENCES Ingredients(id));";
+        String createRecipesTable = QueryBuilder.generateCreateRecipesTableQuery();
+        String createIngredientsTable = QueryBuilder.generateCreateIngredientsTableQuery();
+        String createRecipesIngredientsTable = QueryBuilder.generateCreateRecipesIngredientsTableQuery();
 
         PreparedStatement pstmt;
 
