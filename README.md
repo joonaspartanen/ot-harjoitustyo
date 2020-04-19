@@ -58,6 +58,16 @@ Paketin voi suorittaa komennolla
 
 `java -jar target/RecipeBook-1.0-SNAPSHOT.jar`.
 
+## Julkaistut versio
+
+Sovelluksesta on julkaistu versio (_release_) viikolla 5:
+
+- [Release week5](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
+
+Julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week5.jar`.
+
+Tarvittavat tietokanta- ja muut tiedostot luodaan automaattisesti, mikäli ne puuttuvat.
+
 ## Sovelluksen konfiguraatio
 
 Eräitä sovelluksen toimintoja voi konfiguroida muokkaamalla projektin juuressa sijaitsevaa _config.properties_-tiedostoa.
