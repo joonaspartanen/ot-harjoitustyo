@@ -17,7 +17,7 @@ public class ResultSetMapper {
 
         try (ResultSet resultSet = pstmt.executeQuery()) {
             while (resultSet.next()) {
-                Ingredient ingredient = createIngredientFromResultSetRow(resultSet);
+                Ingredient ingredient = mapResultSetRowToIngredient(resultSet);
                 ingredients.add(ingredient);
             }
         }
@@ -50,11 +50,11 @@ public class ResultSetMapper {
         while (resultSet.next()) {
             Recipe recipe = null;
             int recipeId = resultSet.getInt("recipe_id");
-            Ingredient ingredient = createIngredientFromResultSetRow(resultSet);
+            Ingredient ingredient = mapResultSetRowToIngredient(resultSet);
             int amount = resultSet.getInt("amount");
 
             if (recipeNotYetMapped(recipeMap, recipeId)) {
-                recipe = extractRecipeFromResultSetRow(resultSet, ingredient, amount, recipeId);
+                recipe = mapResultSetRowToRecipe(resultSet, ingredient, amount, recipeId);
                 recipeMap.put(recipeId, recipe);
             } else {
                 recipe = recipeMap.get(recipeId);
@@ -65,7 +65,7 @@ public class ResultSetMapper {
         return recipeMap.values().stream().collect(Collectors.toList());
     }
 
-    private Recipe extractRecipeFromResultSetRow(ResultSet resultSet, Ingredient ingredient, int amount, int recipeId)
+    private Recipe mapResultSetRowToRecipe(ResultSet resultSet, Ingredient ingredient, int amount, int recipeId)
             throws SQLException {
         String recipeName = resultSet.getString("recipe_name");
         int time = resultSet.getInt("time");
@@ -81,5 +81,4 @@ public class ResultSetMapper {
     private boolean recipeNotYetMapped(Map<Integer, Recipe> recipeMap, int recipeId) {
         return !recipeMap.containsKey(recipeId);
     }
-
 }
