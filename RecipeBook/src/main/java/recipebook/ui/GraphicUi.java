@@ -1,7 +1,6 @@
 package recipebook.ui;
 
 import java.io.*;
-import java.sql.Connection;
 import java.util.*;
 
 import javafx.application.Application;
@@ -16,7 +15,9 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import recipebook.dao.DataStoreConnector;
 import recipebook.dao.DatabaseConnector;
+import recipebook.dao.FileConnector;
 import recipebook.dao.ingredientdao.*;
 import recipebook.dao.recipedao.*;
 import recipebook.domain.ingredient.Ingredient;
@@ -34,6 +35,7 @@ public class GraphicUi extends Application {
     private ListView<Recipe> recipeList;
     private Insets PADDINGBOTTOM10 = new Insets(0, 0, 10, 0);
     private Insets PADDING25 = new Insets(25, 25, 25, 25);
+    DataStoreConnector connector;
     private DatabaseConnector databaseConnector;
 
     @Override
@@ -46,32 +48,21 @@ public class GraphicUi extends Application {
             e.printStackTrace();
         }
 
-        String dataStore = properties.getProperty("dataStore");
+        String dataStoreType = properties.getProperty("dataStoreType");
+        String dataStoreLocation = properties.getProperty("dataStoreLocation");
 
-        if (dataStore.equals("database")) {
-            useDatabaseStore();
-        } else if (dataStore.equals("file")) {
-            useFileStore();
+        if (dataStoreType.equals("database")) {
+            connector = new DatabaseConnector(dataStoreLocation);
+        } else if (dataStoreType.equals("file")) {
+            connector = new FileConnector(dataStoreLocation);
         }
+
+        connector.initializeDataStore();
+        ingredientDao = connector.getIngredientDao();
+        recipeDao = connector.getRecipeDao();
 
         ingredientService = new IngredientService(ingredientDao);
         recipeService = new RecipeService(recipeDao);
-    }
-
-    private void useDatabaseStore() {
-        String databasePath = properties.getProperty("databasePath");
-        databaseConnector = new DatabaseConnector("jdbc:sqlite:" + databasePath);
-        Connection connection = databaseConnector.initializeDatabase();
-        ingredientDao = new DatabaseIngredientDao(connection);
-        recipeDao = new DatabaseRecipeDao(connection, ingredientDao);
-    }
-
-    private void useFileStore() {
-        String ingredientsFile = properties.getProperty("ingredientsFile");
-        String recipesFile = properties.getProperty("recipesFile");
-        String recipesIngredientsFile = properties.getProperty("recipesIngredientsFile");
-        ingredientDao = new FileIngredientDao(ingredientsFile);
-        recipeDao = new FileRecipeDao(ingredientDao, recipesFile, recipesIngredientsFile);
     }
 
     @Override
@@ -376,7 +367,7 @@ public class GraphicUi extends Application {
 
     @Override
     public void stop() {
-        databaseConnector.closeConnection();
+        databaseConnector.closeDataStore();
     }
 
     public static void main(String[] args) {
