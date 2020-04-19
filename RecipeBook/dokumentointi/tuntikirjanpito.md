@@ -14,5 +14,6 @@
 | 11.4. | 1    | Luotu sqlite-tietokantaan tallentava DatabaseIngredientDao.                                                                                       |
 | 12.4. | 3    | Luotu sqlite-tietokantaan tallentava DatabaseRecipeDao ja sille testejä.                                                                          |
 | 13.4. | 3    | Tietokantaan tallennettavia daoja täydennetty ja testejä lisätty.                                                                                 |
-| 19.4. | 3    | SQL-kyselyiden luonti ja ResultSet:ien mäppäys objekteiksi siirretty erillisiin luokkiin. Refaktorointia                                          |
-|  yht  | 26   |                                                                                                                                                   |
+| 19.4. | 3    | SQL-kyselyiden luonti ja ResultSet:ien mäppäys objekteiksi siirretty erillisiin luokkiin. Refaktorointia.                                         |
+| 19.4. | 2    | Siirretty tietokantayhteyden/tallennustiedostojen luominen omiin luokkiinsa template method -patternia hyödyntäen.                                |
+|  yht  | 28   |                                                                                                                                                   |
