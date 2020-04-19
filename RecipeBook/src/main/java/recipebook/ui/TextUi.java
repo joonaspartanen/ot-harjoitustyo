@@ -67,7 +67,7 @@ public class TextUi {
         String name = scanner.nextLine();
         System.out.println("Unit: ");
         String unit = scanner.nextLine();
-        ingService.addIngredient(name, unit);
+        ingService.createIngredient(name, unit);
     }
 
     public void printIngredients() {
@@ -89,7 +89,7 @@ public class TextUi {
             System.out.println("Unit: ");
             String unit = scanner.nextLine();
 
-            Ingredient ingredient = ingService.addIngredient(name, unit);
+            Ingredient ingredient = ingService.createIngredient(name, unit);
 
             System.out.println("Amount (" + ingredient.getUnit() + "): ");
             try {
@@ -112,7 +112,7 @@ public class TextUi {
         System.out.println("Instructions: ");
         String instructions = scanner.nextLine();
 
-        recipeService.addRecipe(recipeName, ingredients, time, instructions);
+        recipeService.createRecipe(recipeName, ingredients, time, instructions);
     }
 
     public void printRecipes() {
