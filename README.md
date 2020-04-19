@@ -58,7 +58,7 @@ Paketin voi suorittaa komennolla
 
 `java -jar target/RecipeBook-1.0-SNAPSHOT.jar`.
 
-## Julkaistut versio
+## Julkaistut versiot
 
 Sovelluksesta on julkaistu versio (_release_) viikolla 5:
 
