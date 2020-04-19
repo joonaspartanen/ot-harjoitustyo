@@ -16,7 +16,7 @@ public class IngredientService {
         return ingDao.getAll();
     }
 
-    public Ingredient addIngredient(String name, String unit) {
+    public Ingredient createIngredient(String name, String unit) {
         Ingredient foundIngredient = ingDao.getByNameAndUnit(formatName(name), unit);
         if (foundIngredient == null) {
             return ingDao.create(new Ingredient(formatName(name), unit));
@@ -25,7 +25,7 @@ public class IngredientService {
     }
 
     public Ingredient addIngredient(String name) {
-        return addIngredient(name, "g");
+        return createIngredient(name, "g");
     }
 
     public List<Ingredient> findByName(String name) {
