@@ -1,10 +1,7 @@
 package recipebook.dao.ingredientdao;
 
 import recipebook.dao.ingredientdao.IngredientDao;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
