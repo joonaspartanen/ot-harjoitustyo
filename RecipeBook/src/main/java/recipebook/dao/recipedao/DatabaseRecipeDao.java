@@ -1,19 +1,11 @@
 package recipebook.dao.recipedao;
 
 import recipebook.dao.ingredientdao.IngredientDao;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.sql.*;
+import java.util.*;
 import recipebook.dao.DaoHelper;
-
+import recipebook.dao.QueryBuilder;
+import recipebook.dao.ResultSetMapper;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 
@@ -22,23 +14,22 @@ public class DatabaseRecipeDao implements RecipeDao {
     private Connection connection;
     private IngredientDao ingDao;
     private DaoHelper daoHelper;
-    private String selectRecipeWithIngredientsQuery = "SELECT Recipes.id AS recipe_id, Recipes.name AS recipe_name, Recipes.time, "
-            + "Recipes.instructions, Ingredients.id AS ingredient_id, Ingredients.name AS ingredient_name, Ingredients.unit, "
-            + "RecipesIngredients.amount FROM Recipes JOIN RecipesIngredients ON Recipes.id = RecipesIngredients.recipe_id "
-            + "JOIN Ingredients ON RecipesIngredients.ingredient_id = Ingredients.id";
+    private ResultSetMapper mapper;
 
     public DatabaseRecipeDao(Connection connection, IngredientDao ingDao) {
         this.connection = connection;
         this.ingDao = ingDao;
         daoHelper = new DaoHelper();
+        mapper = new ResultSetMapper();
     }
 
     @Override
     public Recipe create(Recipe recipe) {
-        String createRecipeQuery = "INSERT INTO Recipes (name, time, instructions) VALUES (?, ?, ?);";
+        String createRecipeQuery = QueryBuilder.generateInsertRecipeQuery();
 
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(createRecipeQuery, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement pstmt = connection.prepareStatement(createRecipeQuery,
+                Statement.RETURN_GENERATED_KEYS)) {
+
             pstmt.setString(1, recipe.getName());
             pstmt.setInt(2, recipe.getTime());
             pstmt.setString(3, recipe.getInstructions());
@@ -47,10 +38,9 @@ public class DatabaseRecipeDao implements RecipeDao {
             recipe.setId(daoHelper.getCreatedItemId(pstmt));
 
             saveRecipeIngredients(recipe);
-
-            pstmt.close();
         } catch (SQLException e) {
             System.out.println("Creating recipe " + recipe.getName() + " failed.");
+            e.printStackTrace();
         }
 
         return recipe;
@@ -65,16 +55,29 @@ public class DatabaseRecipeDao implements RecipeDao {
         });
     }
 
+    private void createCrossReferenceTableRows(int recipeId, int ingredientId, int ingredientAmount) {
+        String createRecipesIngredientsRow = QueryBuilder.generateInsertRecipesIngredientsQuery();
+
+        try (PreparedStatement pstmt = connection.prepareStatement(createRecipesIngredientsRow)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.setInt(2, ingredientId);
+            pstmt.setInt(3, ingredientAmount);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Creating cross reference row for recipe id " + recipeId + " and ingredient id "
+                    + ingredientId + " failed");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Recipe> getAll() {
-        String selectAllQuery = selectRecipeWithIngredientsQuery + ";";
         List<Recipe> recipes = new ArrayList<>();
+        String selectAllQuery = QueryBuilder.generateSelectAllRecipesQuery();
 
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(selectAllQuery);
-            ResultSet resultSet = pstmt.executeQuery();
-            recipes = extractAllRecipesFromResultSet(resultSet);
-            pstmt.close();
+        try (PreparedStatement pstmt = connection.prepareStatement(selectAllQuery)) {
+            recipes = mapper.extractRecipeList(pstmt);
         } catch (SQLException e) {
             System.out.println("Fetching the recipes from database failed.");
         }
@@ -82,62 +85,14 @@ public class DatabaseRecipeDao implements RecipeDao {
         return recipes;
     }
 
-    private List<Recipe> extractAllRecipesFromResultSet(ResultSet resultSet) throws SQLException {
-        Map<Integer, Recipe> recipeMap = new HashMap<>();
-
-        while (resultSet.next()) {
-            Recipe recipe = null;
-            int recipeId = resultSet.getInt("recipe_id");
-            Ingredient ingredient = extractIngredientFromResultSetRow(resultSet);
-            int amount = resultSet.getInt("amount");
-
-            if (recipeNotYetMapped(recipeMap, recipeId)) {
-                recipe = extractRecipeFromResultSetRow(resultSet, ingredient, amount, recipeId);
-                recipeMap.put(recipeId, recipe);
-            } else {
-                recipe = recipeMap.get(recipeId);
-                recipe.getIngredients().put(ingredient, amount);
-            }
-        }
-        return recipeMap.values().stream().collect(Collectors.toList());
-    }
-
-    private Ingredient extractIngredientFromResultSetRow(ResultSet resultSet) throws SQLException {
-        int ingredientId = resultSet.getInt("ingredient_id");
-        String ingredientName = resultSet.getString("ingredient_name");
-        String unit = resultSet.getString("unit");
-        Ingredient ingredient = new Ingredient(ingredientId, ingredientName, unit);
-        return ingredient;
-    }
-
-    private Recipe extractRecipeFromResultSetRow(ResultSet resultSet, Ingredient ingredient, int amount, int recipeId)
-            throws SQLException {
-        String recipeName = resultSet.getString("recipe_name");
-        int time = resultSet.getInt("time");
-        String instructions = resultSet.getString("instructions");
-
-        Map<Ingredient, Integer> ingredients = new HashMap<>();
-        ingredients.put(ingredient, amount);
-
-        Recipe recipe = new Recipe(recipeId, recipeName, ingredients, time, instructions);
-        return recipe;
-    }
-
-    private boolean recipeNotYetMapped(Map<Integer, Recipe> recipeMap, int recipeId) {
-        return !recipeMap.containsKey(recipeId);
-    }
-
     @Override
     public List<Recipe> getByName(String recipeName) {
         List<Recipe> recipes = new ArrayList<>();
-        String selectByNameQuery = selectRecipeWithIngredientsQuery + " WHERE recipe_name LIKE ?";
+        String selectByNameQuery = QueryBuilder.generateSelectAllRecipesByRecipeNameQuery();
 
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(selectByNameQuery);
+        try (PreparedStatement pstmt = connection.prepareStatement(selectByNameQuery)) {
             pstmt.setString(1, "%" + recipeName + "%");
-            ResultSet resultSet = pstmt.executeQuery();
-            recipes = extractAllRecipesFromResultSet(resultSet);
-            pstmt.close();
+            recipes = mapper.extractRecipeList(pstmt);
         } catch (SQLException e) {
             System.out.println("Fetching recipe with name " + recipeName + " from database failed.");
             e.printStackTrace();
@@ -149,14 +104,11 @@ public class DatabaseRecipeDao implements RecipeDao {
     @Override
     public Recipe getById(int id) {
         List<Recipe> recipes = new ArrayList<>();
-        String selectByIdQuery = selectRecipeWithIngredientsQuery + " WHERE recipe_id = ?";
+        String selectByIdQuery = QueryBuilder.generateSelectAllRecipesByRecipeIdQuery();
 
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(selectByIdQuery);
+        try (PreparedStatement pstmt = connection.prepareStatement(selectByIdQuery)) {
             pstmt.setInt(1, id);
-            ResultSet resultSet = pstmt.executeQuery();
-            recipes = extractAllRecipesFromResultSet(resultSet);
-            pstmt.close();
+            recipes = mapper.extractRecipeList(pstmt);
         } catch (SQLException e) {
             System.out.println("Fetching recipe with id " + id + " from database failed.");
             e.printStackTrace();
@@ -174,15 +126,16 @@ public class DatabaseRecipeDao implements RecipeDao {
             return Collections.emptyList();
         }
 
-        String selectByIngredientIdsQuery = generateSelectByIngredientIdsQuery(matchingIngredients);
+        String selectByIngredientIdsQuery = QueryBuilder
+                .generateSelectAllRecipesByIngredientIdsQuery(matchingIngredients);
 
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(selectByIngredientIdsQuery);
-            ResultSet resultSet = pstmt.executeQuery();
+        try (PreparedStatement pstmt = connection.prepareStatement(selectByIngredientIdsQuery);
+                ResultSet resultSet = pstmt.executeQuery()) {
+
             while (resultSet.next()) {
                 recipeIds.add(resultSet.getInt("recipe_id"));
             }
-            pstmt.close();
+
         } catch (SQLException e) {
             System.out.println("Fetching recipes with ingredient " + ingredientName + " from database failed.");
             e.printStackTrace();
@@ -191,15 +144,7 @@ public class DatabaseRecipeDao implements RecipeDao {
         return getRecipesByIdList(recipeIds);
     }
 
-    private String generateSelectByIngredientIdsQuery(List<Ingredient> ingredients) {
-        List<String> ingredientIds = ingredients.stream().map(i -> "ingredient_id = " + Integer.toString(i.getId()))
-                .collect(Collectors.toList());
-        String ingredientIdsCondition = ingredientIds.stream().collect(Collectors.joining(" OR "));
-        String selectByIngredientQuery = selectRecipeWithIngredientsQuery + " WHERE " + ingredientIdsCondition;
-        return selectByIngredientQuery;
-    }
-
-    public List<Recipe> getRecipesByIdList(List<Integer> recipeIds) {
+    private List<Recipe> getRecipesByIdList(List<Integer> recipeIds) {
         List<Recipe> recipes = new ArrayList<>();
 
         for (Integer recipeId : recipeIds) {
@@ -230,28 +175,10 @@ public class DatabaseRecipeDao implements RecipeDao {
     }
 
     private void deleteRecipesIngredients(int recipeId) throws SQLException {
-        String deleteRecipesIngredientsQuery = "DELETE FROM RecipesIngredients WHERE id = ?";
+        String deleteRecipesIngredientsQuery = "DELETE FROM RecipesIngredients WHERE recipe_id = ?";
         PreparedStatement pstmtRecipeIngs = connection.prepareStatement(deleteRecipesIngredientsQuery);
         pstmtRecipeIngs.setInt(1, recipeId);
         pstmtRecipeIngs.executeUpdate();
-    }
-
-    private void createCrossReferenceTableRows(int recipeId, int ingredientId, int ingredientAmount) {
-        String createRecipesIngredientsRow = "INSERT INTO RecipesIngredients (recipe_id, ingredient_id, amount) VALUES (?, ?, ?);";
-
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(createRecipesIngredientsRow);
-            pstmt.setInt(1, recipeId);
-            pstmt.setInt(2, ingredientId);
-            pstmt.setInt(3, ingredientAmount);
-
-            pstmt.executeUpdate();
-
-            pstmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
     }
 
 }
