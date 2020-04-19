@@ -62,7 +62,7 @@ Paketin voi suorittaa komennolla
 
 Sovelluksesta on julkaistu versio (_release_) viikolla 5:
 
-- [Release week5](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
+- [Week 5 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
 
 Julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week5.jar`.
 
