@@ -74,11 +74,11 @@ Eräitä sovelluksen toimintoja voi konfiguroida muokkaamalla projektin juuressa
 
 ### Tallennustavan muuttaminen
 
-Sovelluksen käsittelemä data voidaan tallentaa joko tietokantaan (oletusasetus) tai tiedostoon. Tallennustavan voi valita muokkaamalla _dataStore_-ominaisuutta:
+Sovelluksen käsittelemä data voidaan tallentaa joko tietokantaan (oletusasetus) tai tiedostoon. Tallennustavan voi valita muokkaamalla _dataStoreType_-ominaisuutta:
 
-- Tietokanta: `dataStore=database`
-- Tiedosto: `dataStore=file`
+- Tietokanta: `dataStoreType=database`
+- Tiedosto: `dataStoreType=file`
 
 ### Tietokannan tai datatiedostojen sijainti
 
-Oletusasetuksena tietokantatiedosto tai muut tallennustiedostot sijoitetaan projektin juureen. Käyttäjällä on kuitenkin mahdollisuus muuttaa näiden tiedostojen nimeä tai sijaintia muokkaamalla konfiguraatiotiedoston ominaisuuksia `dataBasePath` (tietokannan sijainti) tai `ingredientsFile`, `recipesFile` ja `recipesIngredientsFile` (tiedostotallennuksessa käytetyt tekstitiedostot).
+Oletusasetuksena tietokantatiedosto tai muut tallennustiedostot sijoitetaan kansioon `/resources/db/`. Käyttäjällä on kuitenkin mahdollisuus muuttaa näiden tiedostojen sijaintia muokkaamalla konfiguraatiotiedoston _dataStoreLocation_-ominaisuutta. Mikäli polkua ei ole olemassa, se luodaan automaattisesti.
