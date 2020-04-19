@@ -1,7 +1,5 @@
 package recipebook.domain.ingredient;
 
-import recipebook.domain.ingredient.IngredientService;
-import recipebook.domain.ingredient.Ingredient;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -24,8 +22,8 @@ public class IngredientServiceTest {
     }
 
     @Test
-    public void addedIngredientHasRightProperties() {
-        Ingredient ingredient = ingService.addIngredient("chicken", "g");
+    public void createIngredientReturnsIngredientWithRightProperties() {
+        Ingredient ingredient = ingService.createIngredient("chicken", "g");
         assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
     }
@@ -38,7 +36,7 @@ public class IngredientServiceTest {
     }
 
     @Test
-    public void addIngredientReturnsExistingIngredientIfIngredientAlreadyExists() {
+    public void createIngredientReturnsExistingIngredientIfIngredientAlreadyExists() {
         Ingredient ingredient = ingService.addIngredient("tomato");
         assertThat(ingredient.getId(), is(1));
         ingredient = ingService.addIngredient("tomato");
@@ -69,8 +67,8 @@ public class IngredientServiceTest {
 
     @Test
     public void findByNameAndUnitReturnsRightIngredientIfFound() {
-        ingService.addIngredient("chicken", "g");
-        ingService.addIngredient("chicken", "kg");
+        ingService.createIngredient("chicken", "g");
+        ingService.createIngredient("chicken", "kg");
         Ingredient foundIngredient = ingService.findByNameAndUnit("chicken", "kg");
         assertThat(foundIngredient.getName(), is(equalTo("chicken")));
         assertThat(foundIngredient.getUnit(), is(equalTo("kg")));

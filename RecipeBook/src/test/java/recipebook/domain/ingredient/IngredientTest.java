@@ -1,16 +1,13 @@
 package recipebook.domain.ingredient;
 
-import recipebook.domain.recipe.Recipe;
-import recipebook.domain.ingredient.Ingredient;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import recipebook.TestHelper;
+import recipebook.domain.recipe.Recipe;
 
 public class IngredientTest {
 
