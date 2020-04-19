@@ -132,7 +132,7 @@ public class GraphicUi extends Application {
         allRecipesWrapper.getChildren().add(recipeList);
         allRecipesWrapper.getChildren().add(buttonsWrapper);
         allRecipesWrapper.getChildren().add(recipeLabel);
-        allRecipesWrapper.setPadding(padding25);
+        allRecipesWrapper.setPadding(PADDING25);
         allRecipesTab.setContent(allRecipesWrapper);
 
         return allRecipesTab;
@@ -148,15 +148,15 @@ public class GraphicUi extends Application {
         HBox nameFieldWrapper = new HBox(new Label("Recipe name:"), nameField);
         nameFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         nameFieldWrapper.setSpacing(10);
-        nameFieldWrapper.setPadding(bottomPadding10);
+        nameFieldWrapper.setPadding(PADDINGBOTTOM10);
 
         HBox timeFieldWrapper = new HBox(new Label("Cooking time (minutes):"), timeField);
         timeFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         timeFieldWrapper.setSpacing(10);
-        timeFieldWrapper.setPadding(bottomPadding10);
+        timeFieldWrapper.setPadding(PADDINGBOTTOM10);
 
         VBox instructionsAreaWrapper = new VBox(new Label("Instructions:"), instructionsArea);
-        instructionsAreaWrapper.setPadding(bottomPadding10);
+        instructionsAreaWrapper.setPadding(PADDINGBOTTOM10);
 
         VBox addRecipeWrapper = new VBox();
 
@@ -177,7 +177,7 @@ public class GraphicUi extends Application {
         addRecipeWrapper.getChildren().add(saveRecipeButton);
         addRecipeWrapper.getChildren().add(errorLabel);
 
-        addRecipeWrapper.setPadding(padding25);
+        addRecipeWrapper.setPadding(PADDING25);
 
         addRecipeTab.setContent(addRecipeWrapper);
 
@@ -253,14 +253,14 @@ public class GraphicUi extends Application {
         HBox nameSearchFieldWrapper = new HBox(nameSearchFieldLabel, nameSearchField);
         nameSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         nameSearchFieldWrapper.setSpacing(10);
-        nameSearchFieldWrapper.setPadding(bottomPadding10);
+        nameSearchFieldWrapper.setPadding(PADDINGBOTTOM10);
 
         TextField ingredientSearchField = new TextField();
         Label ingredientSearchFieldLabel = new Label("Search by ingredient:");
         HBox ingredientSearchFieldWrapper = new HBox(ingredientSearchFieldLabel, ingredientSearchField);
         ingredientSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         ingredientSearchFieldWrapper.setSpacing(10);
-        ingredientSearchFieldWrapper.setPadding(bottomPadding10);
+        ingredientSearchFieldWrapper.setPadding(PADDINGBOTTOM10);
 
         ListView<Recipe> foundRecipes = new ListView<>();
 
@@ -295,7 +295,7 @@ public class GraphicUi extends Application {
 
         VBox searchRecipeWrapper = new VBox(ingredientSearchFieldWrapper, searchButton, foundRecipes, buttonsWrapper,
                 recipeLabel);
-        searchRecipeWrapper.setPadding(padding25);
+        searchRecipeWrapper.setPadding(PADDING25);
 
         searchRecipeTab.setContent(searchRecipeWrapper);
 
