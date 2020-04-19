@@ -1,10 +1,6 @@
 package recipebook.dao.ingredientDao;
 
-import recipebook.dao.ingredientdao.FileIngredientDao;
-import recipebook.dao.ingredientdao.IngredientDao;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -13,11 +9,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
+import recipebook.dao.ingredientdao.FileIngredientDao;
+import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.domain.ingredient.Ingredient;
 
 public class FileIngredientDaoTest {
