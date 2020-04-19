@@ -1,12 +1,6 @@
 package recipebook.domain.recipe;
 
-import recipebook.domain.recipe.Recipe;
-import recipebook.domain.recipe.RecipeService;
-import recipebook.domain.ingredient.Ingredient;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
@@ -18,9 +12,10 @@ import org.junit.Test;
 
 import recipebook.TestHelper;
 import recipebook.dao.ingredientdao.ArrayListIngredientDao;
-import recipebook.dao.recipedao.ArrayListRecipeDao;
 import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.recipedao.ArrayListRecipeDao;
 import recipebook.dao.recipedao.RecipeDao;
+import recipebook.domain.ingredient.Ingredient;
 
 public class RecipeServiceTest {
 
@@ -38,9 +33,9 @@ public class RecipeServiceTest {
     }
 
     @Test
-    public void addRecipeReturnsRecipeWithRightProperties() {
+    public void createRecipeReturnsRecipeWithRightProperties() {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
-        Recipe recipe = recipeService.addRecipe("Chicken soup", ingredients, 20, "Cook until done.");
+        Recipe recipe = recipeService.createRecipe("Chicken soup", ingredients, 20, "Cook until done.");
         assertThat(recipe.getName(), is(equalTo("Chicken soup")));
         assertThat(recipe.getIngredients(), is(equalTo(ingredients)));
         assertThat(recipe.getTime(), is(20));
@@ -51,11 +46,11 @@ public class RecipeServiceTest {
     public void findByIngredientReturnsRightRecipes() {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientListWithNames("chicken", "onion", "garlic",
                 "cream", "lemon");
-        Recipe lemonChicken = recipeService.addRecipe("Lemon chicken", ingredients, 10, "Cook.");
+        Recipe lemonChicken = recipeService.createRecipe("Lemon chicken", ingredients, 10, "Cook.");
         ingredients = helper.createTestIngredientListWithNames("salmon", "butter", "lemon");
-        Recipe roastedSalmon = recipeService.addRecipe("Roasted salmon", ingredients, 10, "Cook");
+        Recipe roastedSalmon = recipeService.createRecipe("Roasted salmon", ingredients, 10, "Cook");
         ingredients = helper.createTestIngredientListWithNames("chicken", "potato", "corn", "carrot");
-        Recipe chickenSoup = recipeService.addRecipe("Chicken soup", ingredients, 10, "Cook");
+        Recipe chickenSoup = recipeService.createRecipe("Chicken soup", ingredients, 10, "Cook");
         List<Recipe> foundRecipes = recipeService.findByIngredient("lemon");
         assertThat(foundRecipes, hasItem(lemonChicken));
         assertThat(foundRecipes, hasItem(roastedSalmon));
@@ -65,7 +60,7 @@ public class RecipeServiceTest {
     @Test
     public void deleteRecipeByIdDeletesRecipeIfExistent() {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
-        Recipe garlicChicken = recipeService.addRecipe("Garlic chicken", ingredients, 10, "Cook");
+        Recipe garlicChicken = recipeService.createRecipe("Garlic chicken", ingredients, 10, "Cook");
         assertThat(recipeService.listAll(), hasItem(garlicChicken));
         int id = garlicChicken.getId();
         recipeService.deleteRecipeById(id);
@@ -75,7 +70,7 @@ public class RecipeServiceTest {
     @Test
     public void deleteRecipeByIdReturnsFalseIfRecipeNotFound() {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
-        recipeService.addRecipe("Garlic chicken", ingredients, 10, "Cook");
+        recipeService.createRecipe("Garlic chicken", ingredients, 10, "Cook");
         assertFalse(recipeService.deleteRecipeById(5));
     }
 
