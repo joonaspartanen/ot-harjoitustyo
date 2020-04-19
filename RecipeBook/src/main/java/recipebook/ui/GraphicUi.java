@@ -121,6 +121,7 @@ public class GraphicUi extends Application {
             int recipeId = recipeList.getSelectionModel().getSelectedItem().getId();
             recipeService.deleteRecipeById(recipeId);
             refreshRecipes(recipeList);
+            recipeLabel.setText("");
         });
 
         HBox buttonsWrapper = new HBox();
