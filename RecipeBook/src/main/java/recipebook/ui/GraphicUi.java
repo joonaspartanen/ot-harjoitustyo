@@ -32,8 +32,8 @@ public class GraphicUi extends Application {
     private RecipeDao recipeDao;
     Properties properties;
     private ListView<Recipe> recipeList;
-    private Insets bottomPadding10 = new Insets(0, 0, 10, 0);
-    private Insets padding25 = new Insets(25, 25, 25, 25);
+    private Insets PADDINGBOTTOM10 = new Insets(0, 0, 10, 0);
+    private Insets PADDING25 = new Insets(25, 25, 25, 25);
     private DatabaseConnector databaseConnector;
 
     @Override
