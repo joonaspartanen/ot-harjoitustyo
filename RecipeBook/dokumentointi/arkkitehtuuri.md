@@ -53,9 +53,9 @@ Eräs sovelluksen keskeisimmistä toiminnallisuuksista on uuden reseptin luomine
 
 ![Sekvenssikaavio ainesosan lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/ingredient_sekvenssikaavio.png)
 
-Käyttöliittymä kutsuu siis ingredientService-luokan metodia _addIngredient_, minkä jälkeen tietokantayhteyksistä vastaavan ingredientDao-olion avulla tarkistetaan, löytyykö vastaava ainesosa jo kannasta. Mikäli ei löydy, palautetaan _null_, luodaan uusi ainesosaolio ja annetaan se parametrina ingredientDao:n metodille _create_, joka tallentaa ainesosan tietokantaan.
+Käyttöliittymä kutsuu siis ingredientService-olion metodia _addIngredient_, minkä jälkeen tietokantayhteyksistä vastaavan ingredientDao-olion avulla tarkistetaan, löytyykö vastaava ainesosa jo kannasta. Mikäli ei löydy, palautetaan _null_, luodaan uusi ainesosaolio ja annetaan se parametrina ingredientDao:n metodille _create_, joka tallentaa ainesosan tietokantaan.
 
-Huomionarvoinen yksityiskohta on, että ingredientDao hakee tietokantaoperaatioihin liittyviä yleisiä aputoimintoja tarjoavasta daoHelper-luokasta tallennetun ainesosan id-numeron.
+Huomionarvoinen yksityiskohta on, että ingredientDao hakee tietokantaoperaatioihin liittyviä yleisiä aputoimintoja tarjoavasta DaoHelper-luokasta tallennetun ainesosan id-numeron.
 
 Uusi ainesosaolio palautetaan aina käyttöliittymälle asti, missä se lisätään reseptin ainemäärät sisältävään hajautustauluun. Kun kaikki ainesosat on käsitelty, on kaikki valmista itse reseptin lisäämistä varten. Tätä havainnollistaa seuraava sekvenssikaavio:
 
