@@ -12,6 +12,8 @@ Kyseessä on harjoitustyö Helsingin yliopiston kurssille [Ohjelmistotekniikka, 
 
 - [Arkkitehtuurikuvaus](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/arkkitehtuuri.md)
 
+- [Käyttöohje](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kayttoohje.md)
+
 - [Tuntikirjanpito](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/tuntikirjanpito.md)
 
 ## Vaatimukset
