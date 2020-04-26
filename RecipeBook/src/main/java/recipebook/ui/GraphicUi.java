@@ -41,7 +41,7 @@ public class GraphicUi extends Application {
     VBox mainContainer;
     BorderPane titleWrapper;
     BorderPane userControlView;
-    TabPane tabPane;
+    TabPane recipesTabPane;
     private ListView<Recipe> recipeList;
     Label currentUserLabel;
     Button logoutButton;
@@ -88,21 +88,21 @@ public class GraphicUi extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Java Recipe Book");
 
-        tabPane = new TabPane();
-        tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        recipesTabPane = new TabPane();
+        recipesTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
         Tab allRecipesTab = initiateAllRecipesTab();
         Tab addRecipeTab = initiateAddRecipeTab();
         Tab searchRecipeTab = initiateSearchRecipeTab();
         Tab recipeBookTab = new Tab("My Recipebook");
 
-        tabPane.getTabs().add(allRecipesTab);
-        tabPane.getTabs().add(addRecipeTab);
-        tabPane.getTabs().add(searchRecipeTab);
-        tabPane.getTabs().add(recipeBookTab);
+        recipesTabPane.getTabs().add(allRecipesTab);
+        recipesTabPane.getTabs().add(addRecipeTab);
+        recipesTabPane.getTabs().add(searchRecipeTab);
+        recipesTabPane.getTabs().add(recipeBookTab);
 
         StackPane tabs = new StackPane();
-        tabs.getChildren().add(tabPane);
+        tabs.getChildren().add(recipesTabPane);
 
         alert = new Alert(AlertType.NONE);
 
@@ -151,11 +151,11 @@ public class GraphicUi extends Application {
 
     private void showLoggedInView() {
         mainContainer.getChildren().remove(userControlView);
-        mainContainer.getChildren().add(tabPane);
+        mainContainer.getChildren().add(recipesTabPane);
     }
 
     private void showLogoutView() {
-        mainContainer.getChildren().remove(tabPane);
+        mainContainer.getChildren().remove(recipesTabPane);
         showUserControlView();
     }
 
