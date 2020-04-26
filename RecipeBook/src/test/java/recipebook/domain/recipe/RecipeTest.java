@@ -12,13 +12,14 @@ import org.junit.Test;
 
 import recipebook.TestHelper;
 import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.user.User;
 
 public class RecipeTest {
 
     Recipe butterChicken;
     HashMap<Ingredient, Integer> ingredients;
     TestHelper helper;
-    
+
     @Before
     public void setUp() {
         helper = new TestHelper();
@@ -29,14 +30,15 @@ public class RecipeTest {
         ingredients.put(chicken, 400);
         ingredients.put(butter, 50);
         ingredients.put(onion, 50);
-        butterChicken = new Recipe(1, "Butter Chicken", ingredients, 40, "Cook until ready");
+        User testUser = new User("tester");
+        butterChicken = new Recipe(1, "Butter Chicken", ingredients, 40, "Cook until ready", testUser);
     }
 
     @Test
     public void toStringFormatsRecipeProperly() {
         String result = butterChicken.toString();
         assertEquals(
-                "Butter Chicken\n\nIngredients:\n50 g butter\n400 g chicken\n50 g onion\n\nCooking time: 40 min\n\nInstructions:\nCook until ready\n",
+                "Butter Chicken\n\nIngredients:\n50 g butter\n400 g chicken\n50 g onion\n\nCooking time: 40 min\n\nInstructions:\nCook until ready\n\nRecipe created by: tester\n",
                 result);
     }
 
@@ -45,7 +47,6 @@ public class RecipeTest {
         Recipe otherRecipe = new Recipe(1, "Butter Chicken", ingredients, 40, "Cook until ready");
         assertThat(butterChicken, is(equalTo(otherRecipe)));
     }
-
 
     @Test
     public void equalsReturnsFalseIfRecipeIdsDiffer() {
@@ -73,7 +74,8 @@ public class RecipeTest {
 
     @Test
     public void equalsReturnsFalseIfRecipeIngredientsDiffer() {
-        Map<Ingredient, Integer> otherIngredients = helper.createTestIngredientListWithNames("chicken", "butter", "cream");
+        Map<Ingredient, Integer> otherIngredients = helper.createTestIngredientListWithNames("chicken", "butter",
+                "cream");
         Recipe otherRecipe = new Recipe(1, "Butter Chicken", otherIngredients, 40, "Cook until ready");
         assertThat(butterChicken, is(not(equalTo(otherRecipe))));
     }

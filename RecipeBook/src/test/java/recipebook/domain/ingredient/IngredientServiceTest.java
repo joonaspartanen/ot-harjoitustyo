@@ -30,37 +30,37 @@ public class IngredientServiceTest {
 
     @Test
     public void unitDefaultsToGramsIfNotSpecified() {
-        Ingredient ingredient = ingService.addIngredient("chicken");
+        Ingredient ingredient = ingService.createIngredient("chicken");
         assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
     }
 
     @Test
     public void createIngredientReturnsExistingIngredientIfIngredientAlreadyExists() {
-        Ingredient ingredient = ingService.addIngredient("tomato");
+        Ingredient ingredient = ingService.createIngredient("tomato");
         assertThat(ingredient.getId(), is(1));
-        ingredient = ingService.addIngredient("tomato");
+        ingredient = ingService.createIngredient("tomato");
         assertThat(ingredient.getId(), is(1));
     }
 
     @Test
     public void listAllReturnsRightNumberOfIngredients() {
-        ingService.addIngredient("chicken");
-        ingService.addIngredient("garlic");
-        ingService.addIngredient("milk");
+        ingService.createIngredient("chicken");
+        ingService.createIngredient("garlic");
+        ingService.createIngredient("milk");
         assertThat(ingService.listAll().size(), is(equalTo(3)));
     }
 
     @Test
     public void findByNameReturnsRightIngredientIfFound() {
-        ingService.addIngredient("chicken");
+        ingService.createIngredient("chicken");
         List<Ingredient> ingredients = ingService.findByName("chicken");
         assertThat(ingredients.get(0).getName(), is(equalTo("chicken")));
     }
 
     @Test
     public void findByNameReturnsEmptyListIfIngredientNotFound() {
-        ingService.addIngredient("chicken");
+        ingService.createIngredient("chicken");
         List<Ingredient> ingredients = ingService.findByName("salmon");
         assertTrue(ingredients.isEmpty());
     }
