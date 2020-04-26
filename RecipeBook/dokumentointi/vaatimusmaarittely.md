@@ -12,24 +12,23 @@ Aluksi sovelluksen ainoa käyttäjärooli on _peruskäyttäjä_. Myöhemmin sove
 
 ### Ennen kirjautumista
 
-- käyttäjä voi luoda sovellukseen käyttäjätunnuksen
-  - käyttäjätunnuksen on oltava uniikki ja vähintään 5 merkkiä pitkä
-  - sovellus ilmoittaa, mikäli käyttäjätunnus ei täytä yllä olevia vaatimuksia
-- käyttäjä voi kirjautua järjestelmään
-  - kirjautuminen onnistuu, kun käyttäjä syöttää sovellukseen lisätyn käyttäjätunnuksen kirjautumislomakkeella
-  - sovellus ilmoittaa, mikäli käyttäjää ei ole olemassa
+- käyttäjä voi luoda sovellukseen käyttäjätunnuksen (tehty)
+  - käyttäjätunnuksen on oltava uniikki ja 5–20 merkkiä pitkä (tehty)
+  - sovellus ilmoittaa, mikäli käyttäjätunnus ei täytä yllä olevia vaatimuksia (tehty)
+- käyttäjä voi kirjautua järjestelmään (tehty)
+  - kirjautuminen onnistuu, kun käyttäjä syöttää sovellukseen lisätyn käyttäjätunnuksen kirjautumislomakkeella (tehty)
+  - sovellus ilmoittaa, mikäli käyttäjää ei ole olemassa (tehty)
 
 ### Kirjautumisen jälkeen
 
 - käyttäjä voi tarkastella sovellukseen tallentamiaan reseptejä (tehty; tiedot voi tallentaa joko tietokantaan tai tiedostoon)
-  - reseptejä voi tarkastella tekstikäyttöliittymällä (tehty)
   - reseptejä voi tarkastella graafisella käyttöliittymällä (tehty)
-- käyttäjä voi tarkastella muiden käyttäjien sovellukseen tallentamia reseptejä
+- käyttäjä voi tarkastella muiden käyttäjien sovellukseen tallentamia reseptejä (tehty)
 - käyttäjä voi hakea reseptejä ainakin raaka-aineiden perusteella (tehty)
 - käyttäjä voi luoda uuden reseptin (tehty)
-  - reseptillä on oltava nimi, raaka-aineet, valmistusaika ja valmistusohjeet
+  - reseptillä on oltava nimi, raaka-aineet, valmistusaika ja valmistusohjeet (tehty)
 - käyttäjä voi poistaa lisäämänsä reseptin (tehty)
-- käyttäjä voi kirjautua ulos järjestelmästä
+- käyttäjä voi kirjautua ulos järjestelmästä (tehty)
 
 ## Jatkokehitysideoita
 
