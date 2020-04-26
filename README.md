@@ -66,27 +66,10 @@ Voit generoida projektille javadoc-dokumentaation komennolla `mvn javadoc:javado
 
 ## Julkaistut versiot
 
-Sovelluksesta on julkaistu versio (_release_) viikolla 5:
+- [Week 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6)
 
 - [Week 5 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
 
-- [Week 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6)
-
-Julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week6.jar`.
+Viikolla 6 julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week6.jar`.
 
 Tarvittavat tietokanta- ja muut tiedostot luodaan automaattisesti, mikäli ne puuttuvat.
-
-## Sovelluksen konfiguraatio
-
-Eräitä sovelluksen toimintoja voi konfiguroida muokkaamalla projektin juuressa sijaitsevaa _config.properties_-tiedostoa.
-
-### Tallennustavan muuttaminen
-
-Sovelluksen käsittelemä data voidaan tallentaa joko tietokantaan (oletusasetus) tai tiedostoon. Tallennustavan voi valita muokkaamalla _dataStoreType_-ominaisuutta:
-
-- Tietokanta: `dataStoreType=database`
-- Tiedosto: `dataStoreType=file`
-
-### Tietokannan tai datatiedostojen sijainti
-
-Oletusasetuksena tietokantatiedosto tai muut tallennustiedostot sijoitetaan kansioon `/resources/db/`. Käyttäjällä on kuitenkin mahdollisuus muuttaa näiden tiedostojen sijaintia muokkaamalla konfiguraatiotiedoston _dataStoreLocation_-ominaisuutta. Mikäli polkua ei ole olemassa, se luodaan automaattisesti.
