@@ -50,7 +50,7 @@ public class QueryBuilder {
     }
 
     public static String generateSelectAllIngredientsByNameQuery() {
-        return SELECT_INGREDIENTS_QUERY + " WHERE name = ?;";
+        return SELECT_INGREDIENTS_QUERY + " WHERE name LIKE ?;";
     }
 
     public static String generateSelectAllIngredientsByIdQuery() {

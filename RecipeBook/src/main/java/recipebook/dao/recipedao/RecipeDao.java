@@ -4,6 +4,9 @@ import java.util.List;
 
 import recipebook.domain.recipe.Recipe;
 
+/**
+ * Dao interface for handling Recipes-related data.
+ */
 public interface RecipeDao {
 
     Recipe create(Recipe recipe);

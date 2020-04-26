@@ -4,6 +4,9 @@ import java.util.List;
 
 import recipebook.domain.ingredient.Ingredient;
 
+/**
+ * Dao interface for handling Ingredient-related data. 
+ */
 public interface IngredientDao {
 
     Ingredient create(Ingredient ingredient);

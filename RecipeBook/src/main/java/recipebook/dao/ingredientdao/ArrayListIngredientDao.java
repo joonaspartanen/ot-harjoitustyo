@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import recipebook.domain.ingredient.Ingredient;
 
-// Preliminary implementation that stores ingredients in ArrayList
 public class ArrayListIngredientDao implements IngredientDao {
 
     List<Ingredient> ingredients;
