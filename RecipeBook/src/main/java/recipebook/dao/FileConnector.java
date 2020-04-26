@@ -37,6 +37,9 @@ public class FileConnector extends DataStoreConnector {
         recipesIngredientsFile = dataStoreLocation + "recipesIngredients.txt";
     }
 
+    /**
+     * Abstract method that needs no implementation when the data store is a file.
+     */
     @Override
     public void closeDataStore() {
         // No implementation needed.
