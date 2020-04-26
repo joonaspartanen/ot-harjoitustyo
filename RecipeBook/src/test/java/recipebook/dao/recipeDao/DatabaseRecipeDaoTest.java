@@ -14,8 +14,8 @@ import org.junit.rules.TemporaryFolder;
 import recipebook.TestHelper;
 import recipebook.dao.DataStoreConnector;
 import recipebook.dao.DatabaseConnector;
+import recipebook.dao.DatabaseException;
 import recipebook.dao.ingredientdao.IngredientDao;
-import recipebook.dao.recipedao.DatabaseRecipeDao;
 import recipebook.dao.recipedao.RecipeDao;
 import recipebook.domain.recipe.Recipe;
 
@@ -31,8 +31,8 @@ public class DatabaseRecipeDaoTest {
     TestHelper helper;
 
     @Before
-    public void setUp() {
-        connector = new DatabaseConnector(testFolder.getRoot().toString() +"/");
+    public void setUp() throws DatabaseException {
+        connector = new DatabaseConnector(testFolder.getRoot().toString() + "/");
         connector.initializeDataStore();
         ingDaoMock = connector.getIngredientDao();
         recipeDao = connector.getRecipeDao();
@@ -40,7 +40,7 @@ public class DatabaseRecipeDaoTest {
     }
 
     @After
-    public void finalize() {
+    public void finalize() throws DatabaseException {
         connector.closeDataStore();
     }
 
