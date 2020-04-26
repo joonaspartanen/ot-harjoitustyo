@@ -5,14 +5,24 @@ import recipebook.dao.recipedao.FileRecipeDao;
 
 public class FileConnector extends DataStoreConnector {
 
-    String ingredientsFile;
-    String recipesFile;
-    String recipesIngredientsFile;
+    private String ingredientsFile;
+    private String recipesFile;
+    private String recipesIngredientsFile;
 
+    /**
+     * Constructor
+     * 
+     * @param dataStoreLocation Path to the folder where the datastore file is
+     *                          located.
+     */
     public FileConnector(String dataStoreLocation) {
         this.dataStoreLocation = dataStoreLocation;
     }
 
+    /**
+     * Creates the datastore directory if necessary, concatenates the path to
+     * datastore file names and creates the dao implementations.
+     */
     @Override
     public void initializeDataStore() {
         createDirectoryIfNotExists();
