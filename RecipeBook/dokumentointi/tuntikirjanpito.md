@@ -16,4 +16,6 @@
 | 13.4. | 3    | Tietokantaan tallennettavia daoja täydennetty ja testejä lisätty.                                                                                 |
 | 19.4. | 3    | SQL-kyselyiden luonti ja ResultSet:ien mäppäys objekteiksi siirretty erillisiin luokkiin. Refaktorointia.                                         |
 | 19.4. | 2    | Siirretty tietokantayhteyden/tallennustiedostojen luominen omiin luokkiinsa template method -patternia hyödyntäen.                                |
-|  yht  | 28   |                                                                                                                                                   |
+| 21.4. | 2    | Tehty User-luokka ja alustavat toteutukset UserServicestä, UserDaosta ja graafisen käyttöliittymän kirjautumissivusta.                            |
+| 23.4. | 2    | Täydennetty UserDao ja käyttöliittymää. Testit Useria käyttäville luokille.                                                                       |
+|  yht  | 32   |                                                                                                                                                   |
