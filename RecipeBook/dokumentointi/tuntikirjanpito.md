@@ -18,4 +18,5 @@
 | 19.4. | 2    | Siirretty tietokantayhteyden/tallennustiedostojen luominen omiin luokkiinsa template method -patternia hyödyntäen.                                |
 | 21.4. | 2    | Tehty User-luokka ja alustavat toteutukset UserServicestä, UserDaosta ja graafisen käyttöliittymän kirjautumissivusta.                            |
 | 23.4. | 2    | Täydennetty UserDao ja käyttöliittymää. Testit Useria käyttäville luokille.                                                                       |
-|  yht  | 32   |                                                                                                                                                   |
+| 26.4. | 2    | Refaktorointia. Dokumentoinnin täydentämistä, mukaan lukien javadoc. Viikon 6 release.                                                            |
+|  yht  | 34   |                                                                                                                                                   |
