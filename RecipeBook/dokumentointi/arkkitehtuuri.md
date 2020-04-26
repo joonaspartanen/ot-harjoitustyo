@@ -1,7 +1,5 @@
 # Arkkitehtuurikuvaus
 
-_Huom. Sovelluksen rakenne ei vielä tässä vaiheessa (vk5) kaikilta osin noudata tämän kuvauksen mukaista tavoitearkkitehtuuria._
-
 ## Rakenne
 
 Sovellus muodostuu kolmesta kerroksesta, joita myös sen pakkausrakenne noudattaa:
@@ -11,17 +9,28 @@ Sovellus muodostuu kolmesta kerroksesta, joita myös sen pakkausrakenne noudatta
 
   - recipebook.domain.ingredient (ainesosiin liittyvä logiikka)
   - recipebook.domain.recipe (resepteihin liittyvä logiikka)
-  - recipebook.domain.user (käyttäjiin liittyvä logiikka; _ei vielä toteutettu_)
+  - recipebook.domain.user (käyttäjiin liittyvä logiikka)
 
 - recipebook.dao (tietojen tallennus ja lukeminen)
 
   - recipebook.dao.ingredientdao (ainesosien tallennus)
   - recipebook.dao.recipedao (reseptien tallennus)
-  - recipebook.dao.userdao (käyttäjien tallennus; _ei vielä toteutettu_)
+  - recipebook.dao.userdao (käyttäjien tallennus)
 
 ### Käyttöliittymä
 
-Aluksi sovellus sisältää tekstikäyttöliittymän (luokka TextUi), joka korvataan kuitenkin kehityksen edetessä graafisella JavaFX-käyttöliittymällä (luokka GraphicUi). Sovelluksen jatkokehityksessä keskityttäneen graafiseen käyttöliittymään eli uusia ominaisuuksia ei välttämättä tuoda tekstikäyttöliittymään.
+Sovelluksella on graafinen JavaFx:n avulla toteutettu käyttöliittymä. Kaikki käyttöliittymään liittyvä koodi on tällä hetkellä (vk6) yhdessä luokassa, mutta se olisi syytä jakaa pienempiin luokkiin.
+
+Käyttöliittymän _stageen_ on sijoitettu _mainContainer_-niminen _Scene_-olio, joka sisältää sovelluksen nimen sekä tiedon kirjautuneesta käyttäjästä. _mainContainerin_ sisään asetetaan joko _BorderPane_-oliona toteutettu kirjautumisnäkymä tai _TabPane_-oliona toteutettu sisäänkirjautuneen käyttäjän näkymä (_recipesTabPane_).
+
+Sisäänkirjautuneen käyttäjän näkymä koostuu neljästä välilehdestä (_Tab_):
+
+- All Recipes (lista kaikista sovellukseen tallennetuista resepteistä)
+- Add Recipe (näkymä uuden reseptin lisäämiseksi)
+- Search Recipe (reseptien hakeminen)
+- My Recipebook (käyttäjän omat suosikkireseptit; _ei vielä toteutettu viikolla 6_)
+
+Käyttöliittymää luotaessa (_init()_-metodi) luetaan myös _config.properties_-tiedostossa määritellyt konfiguraatiot ja luodaan niiden perusteella yhteys tietokantaan tai tiedostoon soveliaan _DataStoreConnector_-toteutuksen avulla. Samalla luodaan käyttöliittymän tarvitsemat service-luokkien toteutukset, joille injektoidaan niiden tarvitsemat dao-toteutukset (asianmukaiset dao-toteutukset saadaan _DatasStoreConnectorilta_).
 
 ### Sovelluslogiikka
 
@@ -29,15 +38,13 @@ Sovelluksen käsittelemää dataa mallintavat kolme luokkaa: Recipe, Ingredient 
 
 ![Luokkakaavio](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/luokkakaavio.png)
 
-_User-luokkaa ei ole vielä toteutettu (vk5)._
-
 Varsinaisesta sovelluslogiikasta vastaavat kolme service-luokkaa, joiden suhteita seuraava kaavio kuvaa:
 
 ![Sovelluslogiikka](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/sovelluslogiikka.png)
 
-RecipeService vastaa reseptien käsittelystä, IngredientService ainesosien käsittelystä ja UserService käyttäjähallintaan liittyvästä logiikasta (_UserServiceä ei vielä toteutettu viikolla 5_).
+RecipeService vastaa reseptien käsittelystä, IngredientService ainesosien käsittelystä ja UserService käyttäjähallintaan liittyvästä logiikasta.
 
-Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täytyy RecipeServicen käyttää myös IngredientServicen ja UserServicen tarjoamia metodeja: esimerkiksi uutta reseptiä lisättäessä tulee tarkistaa UserServicen avulla, kuka käyttäjistä on kirjautuneena sisään. Tarvittavat IngredientServicen ja UserServicen toteutukset injektoidaan RecipeServicelle.
+Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täytyy RecipeServicen käyttää myös IngredientServicen ja UserServicen tarjoamia metodeja: esimerkiksi uutta reseptiä lisättäessä tulee tarkistaa UserServicen avulla, kuka käyttäjistä on kirjautuneena sisään. Tarvittava UserService-toteutus injektoidaan RecipeServicelle konstruktorissa.
 
 ### Tietojen tallennus ja lukeminen
 
