@@ -58,13 +58,19 @@ Paketin voi suorittaa komennolla
 
 `java -jar target/RecipeBook-1.0-SNAPSHOT.jar`.
 
+### Javadocin generointi
+
+Voit generoida projektille javadoc-dokumentaation komennolla `mvn javadoc:javadoc`. Dokumentaatio löytyy polusta `target/site/apidocs/`.
+
 ## Julkaistut versiot
 
 Sovelluksesta on julkaistu versio (_release_) viikolla 5:
 
 - [Week 5 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
 
-Julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week5.jar`.
+- [Week 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6)
+
+Julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week6.jar`.
 
 Tarvittavat tietokanta- ja muut tiedostot luodaan automaattisesti, mikäli ne puuttuvat.
 
