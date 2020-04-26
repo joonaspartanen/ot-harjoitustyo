@@ -1,6 +1,9 @@
 package recipebook.dao.recipedao;
 
 import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.userdao.DatabaseUserDao;
+import recipebook.dao.userdao.UserDao;
+
 import java.sql.*;
 import java.util.*;
 import recipebook.dao.DaoHelper;
@@ -8,6 +11,7 @@ import recipebook.dao.QueryBuilder;
 import recipebook.dao.ResultSetMapper;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
+import recipebook.domain.user.User;
 
 public class DatabaseRecipeDao implements RecipeDao {
 
@@ -15,12 +19,14 @@ public class DatabaseRecipeDao implements RecipeDao {
     private IngredientDao ingDao;
     private DaoHelper daoHelper;
     private ResultSetMapper mapper;
+    private UserDao userDao;
 
     public DatabaseRecipeDao(Connection connection, IngredientDao ingDao) {
         this.connection = connection;
         this.ingDao = ingDao;
         daoHelper = new DaoHelper();
-        mapper = new ResultSetMapper();
+        userDao = new DatabaseUserDao(connection);
+        mapper = new ResultSetMapper(userDao);
     }
 
     @Override
@@ -33,11 +39,13 @@ public class DatabaseRecipeDao implements RecipeDao {
             pstmt.setString(1, recipe.getName());
             pstmt.setInt(2, recipe.getTime());
             pstmt.setString(3, recipe.getInstructions());
+            pstmt.setInt(4, recipe.getAuthorId());
             pstmt.executeUpdate();
 
             recipe.setId(daoHelper.getCreatedItemId(pstmt));
 
             saveRecipeIngredients(recipe);
+            saveRecipeToFavorites(recipe.getAuthorId(), recipe.getId());
         } catch (SQLException e) {
             System.out.println("Creating recipe " + recipe.getName() + " failed.");
             e.printStackTrace();
@@ -46,7 +54,7 @@ public class DatabaseRecipeDao implements RecipeDao {
         return recipe;
     }
 
-    private void saveRecipeIngredients(Recipe recipe) {
+    public void saveRecipeIngredients(Recipe recipe) {
         Map<Ingredient, Integer> ingredientAmounts = recipe.getIngredients();
         ingredientAmounts.keySet().stream().forEach(i -> {
             int ingredientId = i.getId();
@@ -71,6 +79,20 @@ public class DatabaseRecipeDao implements RecipeDao {
         }
     }
 
+    private void saveRecipeToFavorites(int userId, int recipeId) {
+        String createFavoriteRecipe = "INSERT INTO FavoriteRecipes (user_id, recipe_id) values (?, ?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(createFavoriteRecipe)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, recipeId);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Creating favorite recipe row failed.");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Recipe> getAll() {
         List<Recipe> recipes = new ArrayList<>();
@@ -80,6 +102,7 @@ public class DatabaseRecipeDao implements RecipeDao {
             recipes = mapper.extractRecipeList(pstmt);
         } catch (SQLException e) {
             System.out.println("Fetching the recipes from database failed.");
+            e.printStackTrace();
         }
 
         return recipes;
