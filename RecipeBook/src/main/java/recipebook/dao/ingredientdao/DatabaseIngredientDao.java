@@ -7,6 +7,8 @@ import java.util.List;
 import recipebook.dao.DaoHelper;
 import recipebook.dao.QueryBuilder;
 import recipebook.dao.ResultSetMapper;
+import recipebook.dao.userdao.DatabaseUserDao;
+import recipebook.dao.userdao.UserDao;
 import recipebook.domain.ingredient.Ingredient;
 
 public class DatabaseIngredientDao implements IngredientDao {
@@ -14,11 +16,13 @@ public class DatabaseIngredientDao implements IngredientDao {
     private Connection connection;
     private DaoHelper daoHelper;
     private ResultSetMapper mapper;
+    private UserDao userDao;
 
     public DatabaseIngredientDao(Connection connection) {
         this.connection = connection;
         daoHelper = new DaoHelper();
-        mapper = new ResultSetMapper();
+        userDao = new DatabaseUserDao(connection);
+        mapper = new ResultSetMapper(userDao);
     }
 
     @Override
