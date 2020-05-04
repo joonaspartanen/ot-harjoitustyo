@@ -2,7 +2,7 @@
 
 ## Alkutoimet
 
-Kloonaa repositorio komennolla `git clone https://github.com/joonaspartanen/ot-harjoitustyo.git` tai lataa projektin [jar-tiedosto](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6).
+Kloonaa repositorio komennolla `git clone https://github.com/joonaspartanen/ot-harjoitustyo.git` tai lataa projektin [jar-tiedosto](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/final).
 
 ## Konfiguraatio
 
@@ -22,7 +22,7 @@ Ominaisuus `dataStoreLocation` puolestaan määrittelee tietokannan tai tallennu
 
 ## Käynnistäminen
 
-Ohjelma voidaan käynnistää jar-paketista komennolla `java -jar RecipeBook-week6.jar`. Mikäli kloonaat koko repositorion, voit käynnistää ohjelman komennolla `mvn compile exec:java -Dexec.mainClass=recipebook.Main`.
+Ohjelma voidaan käynnistää jar-paketista komennolla `java -jar RecipeBook-final.jar`. Mikäli kloonaat koko repositorion, voit käynnistää ohjelman komennolla `mvn compile exec:java -Dexec.mainClass=recipebook.Main`.
 
 ## Käyttäjän luominen ja kirjautuminen
 
@@ -62,9 +62,11 @@ Voit hakea reseptejä _Search recipes_ -näkymästä.
 
 ![Hae reseptejä -näkymä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/search_recipe.png)
 
-Tässä vaiheessa voit hakea reseptejä ainesosien perusteella. Kirjoita _Search by ingredient_ -kenttään haluamasi ainesosa ja paina _Search_-painiketta. Ohjelma näyttää listassa kaikki reseptit, joihin kuuluu hakemasi ainesosa.
+Hae reseptiä nimellä kirjoittamalla hakusana _Search by name_ -kenttään ja painamalla kentän oikealla puolella olevaa _Search_-painiketta. Ohjelma näyttää listassa kaikki reseptit, joiden nimessä esiintyy käyttämäsi hakusana.
 
-Voit tarkastella reseptiä lähemmin painamalla _Show recipe_ -painiketta.
+Jos haluat hakea reseptejä ainesosien perusteella, kirjoita _Search by ingredient_ -kenttään haluamasi ainesosa ja paina kentän vieressä olevaa _Search_-painiketta. Ohjelma näyttää listassa kaikki reseptit, joihin kuuluu hakemasi ainesosa.
+
+Voit tarkastella valitsemaasi reseptiä lähemmin painamalla _Show recipe_ -painiketta.
 
 ## Suosikkireseptit
 
