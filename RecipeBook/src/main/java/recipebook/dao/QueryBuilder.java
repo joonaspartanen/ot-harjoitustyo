@@ -11,7 +11,7 @@ import recipebook.domain.ingredient.Ingredient;
 public class QueryBuilder {
 
     private static final String SELECT_RECIPE_WITH_INGREDIENTS_QUERY = "SELECT Recipes.id AS recipe_id, Recipes.name AS recipe_name, Recipes.time, "
-            + "Recipes.instructions, Recipes.user_id, Ingredients.id AS ingredient_id, Ingredients.name AS ingredient_name, Ingredients.unit AS ingredient_unit, "
+            + "Recipes.instructions, Recipes.author_id, Ingredients.id AS ingredient_id, Ingredients.name AS ingredient_name, Ingredients.unit AS ingredient_unit, "
             + "RecipesIngredients.amount FROM Recipes JOIN RecipesIngredients ON Recipes.id = RecipesIngredients.recipe_id "
             + "JOIN Ingredients ON RecipesIngredients.ingredient_id = Ingredients.id";
 
@@ -21,7 +21,7 @@ public class QueryBuilder {
         return SELECT_RECIPE_WITH_INGREDIENTS_QUERY + ";";
     }
 
-    public static String generateSelectAllRecipesByRecipeNameQuery() {
+    public static String generateSelectAllRecipesWhereRecipeNameLikeQuery() {
         return SELECT_RECIPE_WITH_INGREDIENTS_QUERY + " WHERE recipe_name LIKE ?;";
     }
 
@@ -38,7 +38,7 @@ public class QueryBuilder {
     }
 
     public static String generateInsertRecipeQuery() {
-        return "INSERT INTO Recipes (name, time, instructions, user_id) VALUES (?, ?, ?, ?);";
+        return "INSERT INTO Recipes (name, time, instructions, author_id) VALUES (?, ?, ?, ?);";
     }
 
     public static String generateInsertRecipesIngredientsQuery() {
@@ -81,13 +81,17 @@ public class QueryBuilder {
         return "SELECT id AS user_id, username FROM Users WHERE user_id = ?;";
     }
 
+    public static String generateInsertIntoFavoriteRecipesQuery() {
+        return "INSERT INTO FavoriteRecipes (user_id, recipe_id) values (?, ?);";
+    }
+
     public static String generateCreateUsersTableQuery() {
         return "CREATE TABLE IF NOT EXISTS Users (id integer PRIMARY KEY NOT NULL UNIQUE, username VARCHAR(20));";
     }
 
     public static String generateCreateRecipesTableQuery() {
         return "CREATE TABLE IF NOT EXISTS Recipes (id INTEGER PRIMARY KEY NOT NULL UNIQUE, name VARCHAR(30), time INTEGER, "
-                + "instructions VARCHAR(300), user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(id));";
+                + "instructions VARCHAR(1000), author_id INTEGER, FOREIGN KEY(author_id) REFERENCES Users(id));";
     }
 
     public static String generateCreateIngredientsTableQuery() {
@@ -101,6 +105,22 @@ public class QueryBuilder {
 
     public static String generateCreateFavoriteRecipesTablesQuery() {
         return "CREATE TABLE IF NOT EXISTS FavoriteRecipes (user_id INTEGER, recipe_id INTEGER, FOREIGN KEY(user_id) REFERENCES User(id), FOREIGN KEY(recipe_id) REFERENCES Recipe(id));";
+    }
+
+    public static String generateSelectFavoriteRecipesQuery() {
+        return "SELECT Recipes.id AS recipe_id, Recipes.name AS recipe_name, Recipes.time, "
+                + "Recipes.instructions, Recipes.author_id, Ingredients.id AS ingredient_id, Ingredients.name AS ingredient_name, Ingredients.unit AS ingredient_unit, "
+                + "RecipesIngredients.amount, FavoriteRecipes.user_id FROM Recipes JOIN RecipesIngredients ON Recipes.id = RecipesIngredients.recipe_id "
+                + "JOIN Ingredients ON RecipesIngredients.ingredient_id = Ingredients.id JOIN FavoriteRecipes ON Recipes.id = FavoriteRecipes.recipe_id "
+                + "WHERE user_id = ?;";
+    }
+
+    public static String generateDeleteRecipeQuery() {
+        return "DELETE FROM Recipes WHERE id = ?;";
+    }
+
+    public static String generateDeleteRecipeIngredientsQuery() {
+        return "DELETE FROM RecipesIngredients WHERE recipe_id = ?;";
     }
 
 }
