@@ -30,17 +30,17 @@ Sisäänkirjautuneen käyttäjän näkymä koostuu neljästä välilehdestä (_T
 - _Search recipe_ (reseptien hakeminen)
 - _Favorite recipes_ (käyttäjän suosikkireseptit)
 
-Käyttöliittymää luotaessa (_init()_-metodi) luetaan myös _config.properties_-tiedostossa määritellyt konfiguraatiot ja luodaan niiden perusteella yhteys tietokantaan tai tiedostoon soveliaan _DataStoreConnector_-toteutuksen avulla. Samalla luodaan käyttöliittymän tarvitsemat service-luokkien toteutukset, joille injektoidaan niiden tarvitsemat dao-toteutukset (asianmukaiset dao-toteutukset saadaan _DataStoreConnectorilta_).
+Käyttöliittymää luotaessa (_init()_-metodi) luetaan myös _config.properties_-tiedostossa määritellyt konfiguraatiot ja luodaan niiden perusteella yhteys tietokantaan tai tiedostoon soveliaan _DataStoreConnector_-toteutuksen avulla. Samalla luodaan käyttöliittymän tarvitsemat service-luokkien toteutukset, joille injektoidaan niiden tarvitsemat DAO-toteutukset (asianmukaiset DAO-toteutukset saadaan _DataStoreConnectorilta_).
 
 ### Sovelluslogiikka
 
 Sovelluksen käsittelemää dataa mallintavat kolme luokkaa: Recipe, Ingredient ja User, jotka kuvaavat sovellukseen tallennettavia reseptejä ja niiden ainesosia sekä sovelluksen käyttäjiä:
 
-![Luokkakaavio](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/luokkakaavio.png)
+![Luokkakaavio](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/luokkakaavio.png)
 
 Varsinaisesta sovelluslogiikasta vastaavat kolme service-luokkaa, joiden suhteita seuraava kaavio kuvaa:
 
-![Sovelluslogiikka](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/sovelluslogiikka.png)
+![Sovelluslogiikka](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/sovelluslogiikka.png)
 
 RecipeService vastaa reseptien käsittelystä, IngredientService ainesosien käsittelystä ja UserService käyttäjähallintaan liittyvästä logiikasta.
 
@@ -50,9 +50,9 @@ Koska resepteihin liityy tieto ainesosista ja ne luoneesta käyttäjästä, täy
 
 Edellisestä kaaviosta näkyy myös, että tietojen tallennuksesta ja lukemisesta vastaavat rajapintojen RecipeDao, IngredientDao ja UserDao toteutukset.
 
-Kustakin dao-rajapinnasta on olemassa sekä tiedostoon että tietokantaan tallentava toteutus. Käyttäjä voi valita tallennustavan konfiguraatiotiedoston avulla (ks. [käyttöohje](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kayttoohje.md)).
+Kustakin DAO-rajapinnasta on olemassa sekä tiedostoon että tietokantaan tallentava toteutus. Käyttäjä voi valita tallennustavan konfiguraatiotiedoston avulla (ks. [käyttöohje](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kayttoohje.md)).
 
-Tietokantaoperaatioiden apuna käytetään luokkia QueryBuilder (tarjoaa SQL-kyselyitä) ja ResultSetMapper (käsittelee tietokantakyselyjen tulokset ja muuttaa ne Java-olioiksi). Lisäksi IdExtractor-luokka tarjoaa dao-toteutuksille apumetodit, joilla ne saavat selville tietokantaan/tiedostoon juuri lisätyn tietueen (resepti/ainesosa/käyttäjä) yksilöivän id-numeron.
+Tietokantaoperaatioiden apuna käytetään luokkia QueryBuilder (tarjoaa SQL-kyselyitä) ja ResultSetMapper (käsittelee tietokantakyselyjen tulokset ja muuttaa ne Java-olioiksi). Lisäksi IdExtractor-luokka tarjoaa DAO-toteutuksille apumetodit, joilla ne saavat selville tietokantaan/tiedostoon juuri lisätyn tietueen (resepti/ainesosa/käyttäjä) yksilöivän id-numeron.
 
 Dao-paketissa on myös abstrakti DataStoreConnector-luokka, jonka aliluokat DatabaseConnector ja FileConnector vastaavat tietokantayhteyden ja tallennustiedostojen alustamisesta.
 
@@ -60,7 +60,7 @@ Dao-paketissa on myös abstrakti DataStoreConnector-luokka, jonka aliluokat Data
 
 Eräs sovelluksen keskeisimmistä toiminnallisuuksista on uuden reseptin luominen ja tallentaminen. Käyttäjä syöttää reseptin nimen, keittoajan, ainesosat yksikköineen ja määrineen sekä valmistusohjeet graafisen käyttöliittymän kenttiin. Käyttöliittymä validoi aluksi syötteet eli tarkistaa esimerkiksi, ettei mikään kentistä ole tyhjä ja että keittoaika on annettu kokonaislukuna. Tämän jälkeen reseptin ainesosat käydään yksitellen lävitse ja tarkistetaan, löytyvätkö ne jo tietokannasta/ainesosatiedostosta. Jos ainesosa on uusi, se lisätään kantaan. Tätä voidaan kuvata seuraavalla sekvenssikaaviolla:
 
-![Sekvenssikaavio ainesosan lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/ingredient_sekvenssikaavio.png)
+![Sekvenssikaavio ainesosan lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/ingredient_sekvenssikaavio.png)
 
 Käyttöliittymä kutsuu siis ingredientService-olion metodia _addIngredient_, minkä jälkeen tietokantayhteyksistä vastaavan ingredientDao-olion avulla tarkistetaan, löytyykö vastaava ainesosa jo kannasta. Mikäli ei löydy, palautetaan _null_, luodaan uusi ainesosaolio ja annetaan se parametrina ingredientDao:n metodille _create_, joka tallentaa ainesosan tietokantaan.
 
@@ -68,7 +68,7 @@ Huomionarvoinen yksityiskohta on, että ingredientDao hakee tietokantaoperaatioi
 
 Uusi ainesosaolio palautetaan aina käyttöliittymälle asti, missä se lisätään reseptin ainemäärät sisältävään hajautustauluun. Kun kaikki ainesosat on käsitelty, on kaikki valmista itse reseptin lisäämistä varten. Tätä havainnollistaa seuraava sekvenssikaavio:
 
-![Sekvenssikaavio reseptin lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/recipe_sekvenssikaavio.png)
+![Sekvenssikaavio reseptin lisäämisestä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/recipe_sekvenssikaavio.png)
 
 Reseptin lisääminen etenee pääpiirteissään hyvin samalla tavalla kuin yksittäisen ainesosankin tapauksessa. Huomionarvoista on, että itse resepti (nimi, keittoaika, ohjeet) tallennetaan yhteen tietokantatauluun (tai tiedostoon) ja tieto siihen liittyvistä ainesosista erilliseen liitostauluun (tai tiedostoon) metodin _saveRecipeIngredients_ avulla.
 
@@ -76,7 +76,7 @@ Kun resepti on tallennettu, tyhjentää käyttöliittymä reseptin lisäämiseen
 
 ### Virheidenkäsittely
 
-Koska sovellus tallettaa tietoja tietokantaan tai tiedostoon, on dao-luokissa lukuisia metodeja, jotka voivat aiheuttaa SQLException- tai IOException-tyyppisen poikkeuksen. Nämä tietokannan tai tiedoston käsittelyyn liittyvät virheet kääritään asiaankuuluvan virheviestin kanssa erilliseen DataStoreException-poikkeukseen, joka heitetään sovellusten kerrosten läpi aina käyttöliittymätasolle asti. Käyttöliittymässä nämä virheet napataan ja käyttäjälle näytetään selväkielinen virheilmoitus JavaFx:n Alert-komponentin avulla.
+Koska sovellus tallettaa tietoja tietokantaan tai tiedostoon, on DAO-luokissa lukuisia metodeja, jotka voivat aiheuttaa SQLException- tai IOException-tyyppisen poikkeuksen. Nämä tietokannan tai tiedoston käsittelyyn liittyvät virheet kääritään asiaankuuluvan virheviestin kanssa erilliseen DataStoreException-poikkeukseen, joka heitetään sovellusten kerrosten läpi aina käyttöliittymätasolle asti. Käyttöliittymässä nämä virheet napataan ja käyttäjälle näytetään selväkielinen virheilmoitus JavaFx:n Alert-komponentin avulla.
 
 Sovelluksessa on myös eräitä muita erityisiä poikkeuksia, jotka käsitellään käyttöliittymässä:
 
