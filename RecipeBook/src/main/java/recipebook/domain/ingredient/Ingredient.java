@@ -2,6 +2,9 @@ package recipebook.domain.ingredient;
 
 import java.util.Objects;
 
+/**
+ * Represents the ingredients used in the recipes.
+ */
 public class Ingredient implements Comparable<Ingredient> {
 
     private int id;
@@ -81,7 +84,5 @@ public class Ingredient implements Comparable<Ingredient> {
         hash = 97 * hash + Objects.hashCode(this.unit);
         return hash;
     }
-    
-    
 
 }
