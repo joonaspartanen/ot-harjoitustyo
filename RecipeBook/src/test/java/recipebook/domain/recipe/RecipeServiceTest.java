@@ -25,7 +25,7 @@ import recipebook.domain.user.UserService;
 public class RecipeServiceTest {
 
     private RecipeService recipeService;
-    private IngredientDao ingDaoMock;
+    private IngredientDao ingredientDaoMock;
     private RecipeDao recipeDaoMock;
     private UserDao userDaoMock;
     private UserService userService;
@@ -33,9 +33,9 @@ public class RecipeServiceTest {
 
     @Before
     public void setUp() throws DataStoreException {
-        ingDaoMock = new IngredientDaoMock();
+        ingredientDaoMock = new IngredientDaoMock();
         userDaoMock = new UserDaoMock();
-        recipeDaoMock = new RecipeDaoMock(ingDaoMock, userDaoMock);
+        recipeDaoMock = new RecipeDaoMock(ingredientDaoMock, userDaoMock);
         userService = new UserService(userDaoMock);
         recipeService = new RecipeService(recipeDaoMock, userService);
         helper = new TestHelper();
