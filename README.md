@@ -72,7 +72,7 @@ Voit generoida projektille javadoc-dokumentaation komennolla `mvn javadoc:javado
 
 - [Viikon 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6)
 
-- [Viikon 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
+- [Viikon 5 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
 
 Loppupalautuksena julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-final.jar`.
 
