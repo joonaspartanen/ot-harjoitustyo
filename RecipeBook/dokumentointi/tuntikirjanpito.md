@@ -22,5 +22,5 @@
 | 1.5.  | 4    | Refaktorointia. Javadocin täydentämistä. Lisätty tiedostoon tallentava UserDao-toteutus ja integraatiotestejä.                                    |
 | 2.5.  | 3    | Refaktorointia ja Javadocin täydentämistä. Virheenkäsittelyä lisätty. Lisätty mahdollisuus suosikkireseptien tallentamiseen.                      |
 | 3.5.  | 3    | Dokumentointia ja refaktorointia.                                                                                                                 |
-| 4.5.  | 1    | Lisätty testausdokumentaatiota ja tehty loppupalautus-release.                                                                                    |
-|  yht  | 45   |                                                                                                                                                   |
+| 4.5.  | 3    | Lisätty testausdokumentaatiota ja tehty loppupalautus-release.                                                                                    |
+|  yht  | 47   |                                                                                                                                                   |
