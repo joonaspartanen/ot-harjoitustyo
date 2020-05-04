@@ -16,7 +16,7 @@ dataStoreLocation=./resources/db/
 
 ```
 
-Ominaisuus `dataStoreType=database` määrittelee, että ohjelma tallentaa käsittelemänsä tiedot tietokantaan. Mikäli haluat tallentaa tiedot tekstitiedostoon, voit asettaa ominaisuuden arvoksi `dataStoreType=file` (**HUOM: Viikon 6 releasen kohdalla ei suositella tiedostotallennuksen käyttöä, sillä esimerkiksi käyttäjätietojen tiedostotallennusta ei ole vielä toteutettu!**).
+Ominaisuus `dataStoreType=database` määrittelee, että ohjelma tallentaa käsittelemänsä tiedot tietokantaan. Mikäli haluat tallentaa tiedot tekstitiedostoon, voit asettaa ominaisuuden arvoksi `dataStoreType=file`.
 
 Ominaisuus `dataStoreLocation` puolestaan määrittelee tietokannan tai tallennustiedostojen sijainnin. Oletuksena käytetään käynnistyshakemiston sisällä olevaa hakemistoa _/resources/db/_. Mikäli hakemistoa ei ole olemassa, se luodaan automaattisesti.
 
@@ -66,9 +66,9 @@ Tässä vaiheessa voit hakea reseptejä ainesosien perusteella. Kirjoita _Search
 
 Voit tarkastella reseptiä lähemmin painamalla _Show recipe_ -painiketta.
 
-## Oma reseptikirja (_toteuttamaton ominaisuus_)
+## Suosikkireseptit
 
-Kaikki itse luomasi reseptit lisätään automaattisesti omaan reseptikirjaasi, jonka löydät _My recipebook_ -näkymästä. Voit lisätä myös muiden luomia reseptejä talteen omaan reseptikirjaasi.
+Kaikki itse luomasi reseptit lisätään automaattisesti omaan suosikkireseptilistaasi, jonka löydät _My favorite recipes_ -näkymästä. Voit lisätä myös muiden luomia reseptejä talteen omaan reseptikirjaasi valitsemalla haluamasi reseptin _All recipes_ -näkymästä ja painamalla _Add to favorites_ -painiketta.
 
 ## Uloskirjautuminen
 
