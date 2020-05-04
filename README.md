@@ -68,10 +68,12 @@ Voit generoida projektille javadoc-dokumentaation komennolla `mvn javadoc:javado
 
 ## Julkaistut versiot
 
-- [Week 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6)
+- [Loppupalautus](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/final)
 
-- [Week 5 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
+- [Viikon 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week6)
 
-Viikolla 6 julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-week6.jar`.
+- [Viikon 6 release](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/week5)
 
-Tarvittavat tietokanta- ja muut tiedostot luodaan automaattisesti, mikäli ne puuttuvat.
+Loppupalautuksena julkaistun version jar-paketin voi suorittaa komennolla `java -jar RecipeBook-final.jar`.
+
+Projektin juuressa tulee olla tiedosto config.properties (mukana releasessa). Tarvittavat tietokanta- ja muut tiedostot luodaan automaattisesti, mikäli ne puuttuvat.
