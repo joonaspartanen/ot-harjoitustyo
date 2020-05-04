@@ -16,6 +16,8 @@ Kyseessä on harjoitustyö Helsingin yliopiston kurssille [Ohjelmistotekniikka, 
 
 - [Tuntikirjanpito](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/tuntikirjanpito.md)
 
+- [Sovelluksen testaus](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/testaus.md)
+
 ## Vaatimukset
 
 Java 11 ja Maven tulee olla asennettuna.
