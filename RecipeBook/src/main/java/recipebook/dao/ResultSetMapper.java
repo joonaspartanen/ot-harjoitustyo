@@ -1,13 +1,11 @@
 package recipebook.dao;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import recipebook.dao.userdao.UserDao;
+import recipebook.dao.userdao.UserNotFoundException;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 import recipebook.domain.user.User;
@@ -22,7 +20,7 @@ public class ResultSetMapper {
 
     /**
      * Constructor
-     * 
+     *
      * @param userDao Needed to find the recipe author on the basis of the author
      *                id.
      */
@@ -33,7 +31,7 @@ public class ResultSetMapper {
     /**
      * Takes a prepared statement as parameter, executes it and maps the result set
      * to a list of ingredients.
-     * 
+     *
      * @param pstmt Prepared statement that returns a result set when executed.
      * @return List of ingredients or an empty list if no results found.
      * @throws SQLException
@@ -47,14 +45,14 @@ public class ResultSetMapper {
                 ingredients.add(ingredient);
             }
         }
-
+        
         return ingredients;
     }
 
     /**
      * Takes a prepared statement as parameter, executes it and maps the result set
      * to a single Ingredient object. Used when only a single result is expected.
-     * 
+     *
      * @param pstmt Prepared statement that returns a result set when executed.
      * @return A single Ingredient object that matches the query.
      * @throws SQLException
@@ -90,12 +88,12 @@ public class ResultSetMapper {
     /**
      * Takes a prepared statement as parameter, executes it and maps the result set
      * to a list of recipes.
-     * 
+     *
      * @param pstmt Prepared statement that returns a result set when executed.
      * @return List of recipes or an empty list if no results found.
      * @throws SQLException
      */
-    public List<Recipe> extractRecipeList(PreparedStatement pstmt) throws SQLException {
+    public List<Recipe> extractRecipeList(PreparedStatement pstmt) throws SQLException, UserNotFoundException {
         ResultSet resultSet = pstmt.executeQuery();
         Map<Integer, Recipe> recipeMap = new HashMap<>();
 
@@ -118,11 +116,11 @@ public class ResultSetMapper {
     }
 
     private Recipe mapResultSetRowToRecipe(ResultSet resultSet, Ingredient ingredient, int amount, int recipeId)
-            throws SQLException {
+            throws SQLException, UserNotFoundException {
         String recipeName = resultSet.getString("recipe_name");
         int time = resultSet.getInt("time");
         String instructions = resultSet.getString("instructions");
-        int authorId = resultSet.getInt("user_id");
+        int authorId = resultSet.getInt("author_id");
         User author = userDao.getById(authorId);
 
         Map<Ingredient, Integer> ingredients = new HashMap<>();
@@ -139,7 +137,7 @@ public class ResultSetMapper {
     /**
      * Takes a prepared statement as parameter, executes it and maps the result set
      * to a single User object. Used when only a single result is expected.
-     * 
+     *
      * @param pstmt Prepared statement that returns a result set when executed.
      * @return A single User object that matches the query.
      * @throws SQLException
