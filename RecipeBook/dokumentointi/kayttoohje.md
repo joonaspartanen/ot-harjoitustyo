@@ -2,7 +2,7 @@
 
 ## Alkutoimet
 
-Kloonaa repositorio komennolla `git clone https://github.com/joonaspartanen/ot-harjoitustyo.git` tai lataa projektin [jar-tiedosto](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/final).
+Kloonaa repositorio komennolla `git clone https://github.com/joonaspartanen/ot-harjoitustyo.git` tai lataa projektin [jar-tiedosto](https://github.com/joonaspartanen/ot-harjoitustyo/releases/tag/final). 
 
 ## Konfiguraatio
 
