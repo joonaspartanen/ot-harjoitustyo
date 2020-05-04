@@ -60,6 +60,7 @@ public class RecipeService {
      * @throws DataStoreException
      */
     public List<Recipe> findByIngredient(String name) throws DataStoreException, UserNotFoundException {
+        
         return recipeDao.getByIngredient(name);
     }
 
