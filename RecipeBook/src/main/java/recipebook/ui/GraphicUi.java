@@ -30,22 +30,26 @@ import recipebook.domain.user.BadUsernameException;
 import recipebook.domain.user.User;
 import recipebook.domain.user.UserService;
 
+/**
+ * The graphic UI for the application.
+ */
 public class GraphicUi extends Application {
 
     private RecipeService recipeService;
     private IngredientService ingredientService;
     private UserService userService;
-    DataStoreConnector connector;
-    Properties properties;
+    private DataStoreConnector connector;
+    private Properties properties;
 
-    VBox mainContainer;
-    BorderPane titleWrapper;
-    BorderPane userControlView;
-    TabPane recipesTabPane;
-    private ListView<Recipe> recipeList;
-    Label currentUserLabel;
-    Button logoutButton;
-    Alert alert;
+    private VBox mainContainer;
+    private BorderPane titleWrapper;
+    private BorderPane userControlView;
+    private TabPane recipesTabPane;
+    private ListView<Recipe> recipeListView;
+    private ListView<Recipe> favoriteRecipesListView;
+    private Label currentUserLabel;
+    private Button logoutButton;
+    private Alert alert;
 
     private Insets PADDINGBOTTOM10 = new Insets(0, 0, 10, 0);
     private Insets PADDING25 = new Insets(25, 25, 25, 25);
@@ -71,8 +75,10 @@ public class GraphicUi extends Application {
 
         try {
             connector.initializeDataStore();
-        } catch (DatabaseException e) {
-            showAlert("Database error", "Error!", e.getMessage(), AlertType.ERROR);
+        } catch (DataStoreException ex) {
+            showAlert("Database error", "Error!", ex.getMessage(), AlertType.ERROR);
+        } catch (UserNotFoundException ex) {
+            showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
         }
 
         IngredientDao ingredientDao = connector.getIngredientDao();
@@ -94,12 +100,12 @@ public class GraphicUi extends Application {
         Tab allRecipesTab = initiateAllRecipesTab();
         Tab addRecipeTab = initiateAddRecipeTab();
         Tab searchRecipeTab = initiateSearchRecipeTab();
-        Tab recipeBookTab = new Tab("My Recipebook");
+        Tab favoriteRecipesTab = initiateFavoriteRecipesTab();
 
         recipesTabPane.getTabs().add(allRecipesTab);
         recipesTabPane.getTabs().add(addRecipeTab);
         recipesTabPane.getTabs().add(searchRecipeTab);
-        recipesTabPane.getTabs().add(recipeBookTab);
+        recipesTabPane.getTabs().add(favoriteRecipesTab);
 
         StackPane tabs = new StackPane();
         tabs.getChildren().add(recipesTabPane);
@@ -191,6 +197,7 @@ public class GraphicUi extends Application {
                 currentUserLabel.setText(currentUser.getUsername());
                 logoutButton.setVisible(true);
                 showLoggedInView();
+                refreshFavoriteRecipesView(favoriteRecipesListView);
             } catch (UserNotFoundException ex) {
                 showAlert("User Error", "Error!", ex.getMessage(), AlertType.ERROR);
             }
@@ -220,6 +227,8 @@ public class GraphicUi extends Application {
                 alert.show();
             } catch (BadUsernameException ex) {
                 showAlert("User error", "Bad username", ex.getMessage(), AlertType.ERROR);
+            } catch (DataStoreException ex) {
+                showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
             }
         });
 
@@ -234,41 +243,68 @@ public class GraphicUi extends Application {
     }
 
     private Tab initiateAllRecipesTab() {
-        Tab allRecipesTab = new Tab("All Recipes");
+        Tab allRecipesTab = new Tab("All recipes");
 
-        recipeList = new ListView<>();
+        recipeListView = new ListView<>();
 
         VBox allRecipesWrapper = new VBox();
         Label recipeLabel = new Label();
         recipeLabel.setWrapText(true);
         recipeLabel.setMinHeight(Region.USE_PREF_SIZE);
-        Button showRecipeButton = generateShowRecipeButton(recipeList, recipeLabel);
-        Button deleteRecipeButton = new Button("Delete recipe");
+        Button showRecipeButton = generateShowRecipeButton(recipeListView, recipeLabel);
 
-        refreshRecipes(recipeList);
-
-        deleteRecipeButton.setOnAction(e -> {
-            if (recipeList.getSelectionModel().getSelectedItem() == null) {
+        Button addRecipeToFavoritesButton = new Button("Add to favorites");
+        addRecipeToFavoritesButton.setOnAction(e -> {
+            if (noRecipeSelected()) {
                 return;
             }
-            int recipeId = recipeList.getSelectionModel().getSelectedItem().getId();
-            recipeService.deleteRecipeById(recipeId);
-            refreshRecipes(recipeList);
+            Recipe recipe = recipeListView.getSelectionModel().getSelectedItem();
+            try {
+                recipeService.addRecipeToFavorites(recipe);
+            } catch (DataStoreException ex) {
+                showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+            } catch (UserNotFoundException ex) {
+                showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
+            }
+            refreshFavoriteRecipesView(favoriteRecipesListView);
+        });
+
+        Button deleteRecipeButton = new Button("Delete recipe");
+
+        deleteRecipeButton.setOnAction(e -> {
+            if (noRecipeSelected()) {
+                return;
+            }
+            int recipeId = recipeListView.getSelectionModel().getSelectedItem().getId();
+            try {
+                recipeService.deleteRecipeById(recipeId);
+            } catch (DataStoreException ex) {
+                showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+            } catch (UserNotFoundException ex) {
+                showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
+            }
+            refreshAllRecipesView(recipeListView);
             recipeLabel.setText("");
         });
 
         HBox buttonsWrapper = new HBox();
         buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
         buttonsWrapper.setSpacing(10);
-        buttonsWrapper.getChildren().addAll(showRecipeButton, deleteRecipeButton);
+        buttonsWrapper.getChildren().addAll(showRecipeButton, addRecipeToFavoritesButton, deleteRecipeButton);
 
-        allRecipesWrapper.getChildren().add(recipeList);
+        refreshAllRecipesView(recipeListView);
+
+        allRecipesWrapper.getChildren().add(recipeListView);
         allRecipesWrapper.getChildren().add(buttonsWrapper);
         allRecipesWrapper.getChildren().add(recipeLabel);
         allRecipesWrapper.setPadding(PADDING25);
         allRecipesTab.setContent(allRecipesWrapper);
 
         return allRecipesTab;
+    }
+
+    private boolean noRecipeSelected() {
+        return recipeListView.getSelectionModel().getSelectedItem() == null;
     }
 
     private Tab initiateAddRecipeTab() {
@@ -323,6 +359,11 @@ public class GraphicUi extends Application {
                 return;
             }
 
+            if (name.length() > 30) {
+                errorLabel.setText("The recipe name can contain only 30 characters!");
+                return;
+            }
+
             int time = 0;
             try {
                 time = Integer.parseInt(timeField.getText());
@@ -337,6 +378,10 @@ public class GraphicUi extends Application {
                 return;
             }
 
+            if (instructions.length() > 1000) {
+                errorLabel.setText("The instructions can contain only 1000 characters!");
+            }
+
             Map<Ingredient, Integer> ingredients = new HashMap<>();
 
             addIngredientWrapper.getChildren().forEach(node -> {
@@ -345,6 +390,11 @@ public class GraphicUi extends Application {
                 String singleIngredientName = singleIngredientNameField.getText();
                 if (singleIngredientName.isEmpty()) {
                     errorLabel.setText("The ingredient name must be specified!");
+                    return;
+                }
+
+                if (singleIngredientName.length() > 30) {
+                    errorLabel.setText("The ingredient name can contain only 30 characters!");
                     return;
                 }
 
@@ -357,11 +407,20 @@ public class GraphicUi extends Application {
                     return;
                 }
 
+                @SuppressWarnings("unchecked")
                 ChoiceBox<String> singleIngredientUnitChoiceBox = (ChoiceBox<String>) singleIngredient.getChildren()
                         .get(4);
+
                 String singleIngredientUnit = singleIngredientUnitChoiceBox.getValue();
-                Ingredient ingredient = ingredientService.createIngredient(singleIngredientName, singleIngredientUnit);
-                ingredients.put(ingredient, singleIngredientAmount);
+
+                try {
+                    Ingredient ingredient = ingredientService.createIngredient(singleIngredientName,
+                            singleIngredientUnit);
+                    ingredients.put(ingredient, singleIngredientAmount);
+
+                } catch (DataStoreException ex) {
+                    showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+                }
             });
 
             if (ingredients.isEmpty()) {
@@ -369,7 +428,11 @@ public class GraphicUi extends Application {
                 return;
             }
 
-            recipeService.createRecipe(name, ingredients, time, instructions);
+            try {
+                recipeService.createRecipe(name, ingredients, time, instructions);
+            } catch (DataStoreException ex) {
+                showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+            }
             nameField.clear();
             timeField.clear();
             instructionsArea.clear();
@@ -383,7 +446,8 @@ public class GraphicUi extends Application {
             singleIngAmountField.clear();
             Button addIngredientButton = (Button) ingredientWrapper.getChildren().get(5);
             addIngredientButton.setVisible(true);
-            refreshRecipes(recipeList);
+            refreshAllRecipesView(recipeListView);
+            refreshFavoriteRecipesView(favoriteRecipesListView);
         });
 
         return addRecipeTab;
@@ -411,7 +475,17 @@ public class GraphicUi extends Application {
         Button searchButton = new Button("Search");
         searchButton.setOnAction(e -> {
             String name = ingredientSearchField.getText();
-            List<Recipe> recipes = recipeService.findByIngredient(name);
+            List<Recipe> recipes;
+            try {
+                recipes = recipeService.findByIngredient(name);
+            } catch (DataStoreException ex) {
+                showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+                return;
+            } catch (UserNotFoundException ex) {
+                showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
+                return;
+            }
+            
             ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
             foundRecipes.setItems(observableRecipeList);
 
@@ -432,7 +506,7 @@ public class GraphicUi extends Application {
         Label recipeLabel = new Label();
         recipeLabel.setWrapText(true);
         recipeLabel.setMinHeight(Region.USE_PREF_SIZE);
-        
+
         Button showRecipeButton = generateShowRecipeButton(foundRecipes, recipeLabel);
 
         HBox buttonsWrapper = new HBox();
@@ -449,8 +523,66 @@ public class GraphicUi extends Application {
         return searchRecipeTab;
     }
 
-    private void refreshRecipes(ListView<Recipe> recipeList) {
-        List<Recipe> recipes = recipeService.listAll();
+    private Tab initiateFavoriteRecipesTab() {
+        Tab favoriteRecipesTab = new Tab("My favorite recipes");
+        favoriteRecipesListView = new ListView<>();
+
+        VBox favoriteRecipesWrapper = new VBox();
+        Label recipeLabel = new Label();
+        recipeLabel.setWrapText(true);
+        recipeLabel.setMinHeight(Region.USE_PREF_SIZE);
+        Button showRecipeButton = generateShowRecipeButton(favoriteRecipesListView, recipeLabel);
+
+        HBox buttonsWrapper = new HBox();
+        buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
+        buttonsWrapper.setSpacing(10);
+        buttonsWrapper.getChildren().addAll(showRecipeButton);
+
+        favoriteRecipesWrapper.getChildren().add(favoriteRecipesListView);
+        favoriteRecipesWrapper.getChildren().add(buttonsWrapper);
+        favoriteRecipesWrapper.getChildren().add(recipeLabel);
+        favoriteRecipesWrapper.setPadding(PADDING25);
+        favoriteRecipesTab.setContent(favoriteRecipesWrapper);
+
+        return favoriteRecipesTab;
+    }
+
+    private void refreshFavoriteRecipesView(ListView<Recipe> favoriteRecipesListView) {
+        List<Recipe> favoriteRecipes = new ArrayList<>();
+        try {
+            favoriteRecipes = recipeService.getFavoriteRecipes();
+        } catch (DataStoreException ex) {
+            showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+        } catch (UserNotFoundException ex) {
+            showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
+        }
+
+        ObservableList<Recipe> observableRecipeList = FXCollections.observableList(favoriteRecipes);
+        favoriteRecipesListView.setItems(observableRecipeList);
+
+        favoriteRecipesListView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Recipe item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.getName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+    }
+
+    private void refreshAllRecipesView(ListView<Recipe> recipeList) {
+        List<Recipe> recipes = new ArrayList<>();
+        try {
+            recipes = recipeService.listAll();
+        } catch (DataStoreException ex) {
+            showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
+        } catch (UserNotFoundException ex) {
+            showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
+        }
 
         ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
         recipeList.setItems(observableRecipeList);
@@ -514,8 +646,8 @@ public class GraphicUi extends Application {
     public void stop() {
         try {
             connector.closeDataStore();
-        } catch (DatabaseException e) {
-            showAlert("Database error", "Error!", e.getMessage(), AlertType.ERROR);
+        } catch (DataStoreException e) {
+            showAlert("Data store error", "Error!", e.getMessage(), AlertType.ERROR);
         }
     }
 
