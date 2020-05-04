@@ -47,6 +47,7 @@ public class GraphicUi extends Application {
     private TabPane recipesTabPane;
     private ListView<Recipe> recipeListView;
     private ListView<Recipe> favoriteRecipesListView;
+    private Label favoriteRecipeLabel;
     private Label currentUserLabel;
     private Button logoutButton;
     private Alert alert;
@@ -76,9 +77,9 @@ public class GraphicUi extends Application {
         try {
             connector.initializeDataStore();
         } catch (DataStoreException ex) {
-            showAlert("Database error", "Error!", ex.getMessage(), AlertType.ERROR);
+            System.out.println(ex.getMessage());
         } catch (UserNotFoundException ex) {
-            showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
+            System.out.println(ex.getMessage());
         }
 
         IngredientDao ingredientDao = connector.getIngredientDao();
@@ -87,12 +88,14 @@ public class GraphicUi extends Application {
 
         userService = new UserService(userDao);
         ingredientService = new IngredientService(ingredientDao);
-        recipeService = new RecipeService(recipeDao, userService);
+        recipeService = new RecipeService(recipeDao, userService, ingredientService);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Java Recipe Book");
+
+        alert = new Alert(AlertType.NONE);
 
         recipesTabPane = new TabPane();
         recipesTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -109,8 +112,6 @@ public class GraphicUi extends Application {
 
         StackPane tabs = new StackPane();
         tabs.getChildren().add(recipesTabPane);
-
-        alert = new Alert(AlertType.NONE);
 
         mainContainer = new VBox();
 
@@ -197,7 +198,7 @@ public class GraphicUi extends Application {
                 currentUserLabel.setText(currentUser.getUsername());
                 logoutButton.setVisible(true);
                 showLoggedInView();
-                refreshFavoriteRecipesView(favoriteRecipesListView);
+                refreshFavoriteRecipesView();
             } catch (UserNotFoundException ex) {
                 showAlert("User Error", "Error!", ex.getMessage(), AlertType.ERROR);
             }
@@ -266,7 +267,7 @@ public class GraphicUi extends Application {
             } catch (UserNotFoundException ex) {
                 showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
             }
-            refreshFavoriteRecipesView(favoriteRecipesListView);
+            refreshFavoriteRecipesView();
         });
 
         Button deleteRecipeButton = new Button("Delete recipe");
@@ -284,6 +285,7 @@ public class GraphicUi extends Application {
                 showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
             }
             refreshAllRecipesView(recipeListView);
+            refreshFavoriteRecipesView();
             recipeLabel.setText("");
         });
 
@@ -447,7 +449,7 @@ public class GraphicUi extends Application {
             Button addIngredientButton = (Button) ingredientWrapper.getChildren().get(5);
             addIngredientButton.setVisible(true);
             refreshAllRecipesView(recipeListView);
-            refreshFavoriteRecipesView(favoriteRecipesListView);
+            refreshFavoriteRecipesView();
         });
 
         return addRecipeTab;
@@ -456,28 +458,63 @@ public class GraphicUi extends Application {
     private Tab initiateSearchRecipeTab() {
         Tab searchRecipeTab = new Tab("Search recipes");
 
+        ListView<Recipe> foundRecipes = new ListView<>();
+
         TextField nameSearchField = new TextField();
         Label nameSearchFieldLabel = new Label("Search by name:");
-        HBox nameSearchFieldWrapper = new HBox(nameSearchFieldLabel, nameSearchField);
+        Button searchByNameButton = generateSearchButton(nameSearchField, foundRecipes, "name");
+
+        HBox nameSearchFieldWrapper = new HBox(nameSearchFieldLabel, nameSearchField, searchByNameButton);
         nameSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         nameSearchFieldWrapper.setSpacing(10);
         nameSearchFieldWrapper.setPadding(PADDINGBOTTOM10);
 
         TextField ingredientSearchField = new TextField();
         Label ingredientSearchFieldLabel = new Label("Search by ingredient:");
-        HBox ingredientSearchFieldWrapper = new HBox(ingredientSearchFieldLabel, ingredientSearchField);
+        Button searchByIngredientButton = generateSearchButton(ingredientSearchField, foundRecipes, "ingredient");
+
+        HBox ingredientSearchFieldWrapper = new HBox(ingredientSearchFieldLabel, ingredientSearchField,
+                searchByIngredientButton);
         ingredientSearchFieldWrapper.setAlignment(Pos.CENTER_LEFT);
         ingredientSearchFieldWrapper.setSpacing(10);
         ingredientSearchFieldWrapper.setPadding(PADDINGBOTTOM10);
 
-        ListView<Recipe> foundRecipes = new ListView<>();
+        Label recipeLabel = new Label();
+        recipeLabel.setWrapText(true);
+        recipeLabel.setMinHeight(Region.USE_PREF_SIZE);
 
+        Button showRecipeButton = generateShowRecipeButton(foundRecipes, recipeLabel);
+
+        HBox buttonsWrapper = new HBox();
+        buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
+        buttonsWrapper.setSpacing(10);
+        buttonsWrapper.getChildren().addAll(showRecipeButton);
+
+        VBox searchRecipeWrapper = new VBox(nameSearchFieldWrapper, ingredientSearchFieldWrapper, foundRecipes,
+                buttonsWrapper, recipeLabel);
+        searchRecipeWrapper.setPadding(PADDING25);
+
+        searchRecipeTab.setContent(searchRecipeWrapper);
+
+        return searchRecipeTab;
+    }
+
+    private Button generateSearchButton(TextField searchField, ListView<Recipe> foundRecipes, String searchTermType) {
         Button searchButton = new Button("Search");
         searchButton.setOnAction(e -> {
-            String name = ingredientSearchField.getText();
-            List<Recipe> recipes;
+            String searchTerm = searchField.getText();
+
+            if (searchTerm.isBlank()) {
+                return;
+            }
+
+            List<Recipe> recipes = new ArrayList<>();
             try {
-                recipes = recipeService.findByIngredient(name);
+                if (searchTermType.equals("name")) {
+                    recipes = recipeService.findByName(searchTerm);
+                } else if (searchTermType.equals("ingredient")) {
+                    recipes = recipeService.findByIngredient(searchTerm);
+                }
             } catch (DataStoreException ex) {
                 showAlert("Data store error", "Error!", ex.getMessage(), AlertType.ERROR);
                 return;
@@ -485,7 +522,7 @@ public class GraphicUi extends Application {
                 showAlert("User not found", "Error!", ex.getMessage(), AlertType.ERROR);
                 return;
             }
-            
+
             ObservableList<Recipe> observableRecipeList = FXCollections.observableList(recipes);
             foundRecipes.setItems(observableRecipeList);
 
@@ -501,26 +538,10 @@ public class GraphicUi extends Application {
                     }
                 }
             });
+
+            searchField.clear();
         });
-
-        Label recipeLabel = new Label();
-        recipeLabel.setWrapText(true);
-        recipeLabel.setMinHeight(Region.USE_PREF_SIZE);
-
-        Button showRecipeButton = generateShowRecipeButton(foundRecipes, recipeLabel);
-
-        HBox buttonsWrapper = new HBox();
-        buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
-        buttonsWrapper.setSpacing(10);
-        buttonsWrapper.getChildren().addAll(showRecipeButton);
-
-        VBox searchRecipeWrapper = new VBox(ingredientSearchFieldWrapper, searchButton, foundRecipes, buttonsWrapper,
-                recipeLabel);
-        searchRecipeWrapper.setPadding(PADDING25);
-
-        searchRecipeTab.setContent(searchRecipeWrapper);
-
-        return searchRecipeTab;
+        return searchButton;
     }
 
     private Tab initiateFavoriteRecipesTab() {
@@ -528,10 +549,10 @@ public class GraphicUi extends Application {
         favoriteRecipesListView = new ListView<>();
 
         VBox favoriteRecipesWrapper = new VBox();
-        Label recipeLabel = new Label();
-        recipeLabel.setWrapText(true);
-        recipeLabel.setMinHeight(Region.USE_PREF_SIZE);
-        Button showRecipeButton = generateShowRecipeButton(favoriteRecipesListView, recipeLabel);
+        favoriteRecipeLabel = new Label();
+        favoriteRecipeLabel.setWrapText(true);
+        favoriteRecipeLabel.setMinHeight(Region.USE_PREF_SIZE);
+        Button showRecipeButton = generateShowRecipeButton(favoriteRecipesListView, favoriteRecipeLabel);
 
         HBox buttonsWrapper = new HBox();
         buttonsWrapper.setPadding(new Insets(10, 0, 10, 0));
@@ -540,14 +561,14 @@ public class GraphicUi extends Application {
 
         favoriteRecipesWrapper.getChildren().add(favoriteRecipesListView);
         favoriteRecipesWrapper.getChildren().add(buttonsWrapper);
-        favoriteRecipesWrapper.getChildren().add(recipeLabel);
+        favoriteRecipesWrapper.getChildren().add(favoriteRecipeLabel);
         favoriteRecipesWrapper.setPadding(PADDING25);
         favoriteRecipesTab.setContent(favoriteRecipesWrapper);
 
         return favoriteRecipesTab;
     }
 
-    private void refreshFavoriteRecipesView(ListView<Recipe> favoriteRecipesListView) {
+    private void refreshFavoriteRecipesView() {
         List<Recipe> favoriteRecipes = new ArrayList<>();
         try {
             favoriteRecipes = recipeService.getFavoriteRecipes();
@@ -572,6 +593,7 @@ public class GraphicUi extends Application {
                 }
             }
         });
+        favoriteRecipeLabel.setText("");
     }
 
     private void refreshAllRecipesView(ListView<Recipe> recipeList) {
