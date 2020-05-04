@@ -60,7 +60,7 @@ Voit tallentaa reseptin painamalla _Save recipe_ -painiketta. Ohjelma ilmoittaa,
 
 Voit hakea reseptejä _Search recipes_ -näkymästä.
 
-![Hae reseptejä -näkymä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/search_recipe.png)
+![Hae reseptejä -näkymä](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/search_recipes.png)
 
 Hae reseptiä nimellä kirjoittamalla hakusana _Search by name_ -kenttään ja painamalla kentän oikealla puolella olevaa _Search_-painiketta. Ohjelma näyttää listassa kaikki reseptit, joiden nimessä esiintyy käyttämäsi hakusana.
 
