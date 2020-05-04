@@ -6,6 +6,9 @@ import recipebook.domain.user.User;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Class that represents a recipe.
+ */
 public class Recipe {
 
     private int id;
@@ -38,7 +41,7 @@ public class Recipe {
         this.author = author;
     }
 
-    public String stringifyIngredients() {
+    private String stringifyIngredients() {
         String result = ingredients.entrySet().stream().sorted(Map.Entry.comparingByKey())
                 .map(i -> i.getValue() + " " + i.getKey().getUnit() + " " + i.getKey() + "\n")
                 .collect(Collectors.joining());
