@@ -48,8 +48,8 @@ public class IntegrationTestsUsingDatabaseTest {
 
     @Test
     public void userCanAddRecipes() throws BadUsernameException, UserNotFoundException, DataStoreException {
-        createUserAndLogin("Integration tester");
-        Recipe salmonSoup = addTestRecipeWithName("Salmon soup");
+        helper.createUserAndLogin(userService, "Integration tester");
+        Recipe salmonSoup = helper.addTestRecipeWithName(recipeService, "Salmon soup");
 
         List<Recipe> allRecipes = recipeService.listAll();
         assertThat(allRecipes, hasItem(salmonSoup));
@@ -63,11 +63,11 @@ public class IntegrationTestsUsingDatabaseTest {
     @Test
     public void onlyRecipeAuthorCanDeleteRecipe()
             throws BadUsernameException, UserNotFoundException, DataStoreException {
-        createUserAndLogin("Tester 1");
-        Recipe salmonSoup = addTestRecipeWithName("Salmon soup");
+        helper.createUserAndLogin(userService, "Tester 1");
+        Recipe salmonSoup = helper.addTestRecipeWithName(recipeService, "Salmon soup");
         userService.logout();
 
-        createUserAndLogin("Tester 2");
+        helper.createUserAndLogin(userService, "Tester 2");
         recipeService.deleteRecipeById(salmonSoup.getId());
         List<Recipe> allRecipes = recipeService.listAll();
         assertThat(allRecipes, hasItem(salmonSoup));
@@ -82,12 +82,12 @@ public class IntegrationTestsUsingDatabaseTest {
 
     @Test
     public void userCanAddRecipesToFavorites() throws BadUsernameException, UserNotFoundException, DataStoreException {
-        createUserAndLogin("Tester 1");
-        Recipe salmonSoup = addTestRecipeWithName("Salmon soup");
+        helper.createUserAndLogin(userService, "Tester 1");
+        Recipe salmonSoup = helper.addTestRecipeWithName(recipeService, "Salmon soup");
         userService.logout();
 
-        createUserAndLogin("Tester 2");
-        Recipe chickenSoup = addTestRecipeWithName("Chicken soup");
+        helper.createUserAndLogin(userService, "Tester 2");
+        Recipe chickenSoup = helper.addTestRecipeWithName(recipeService, "Chicken soup");
         recipeService.addRecipeToFavorites(salmonSoup);
 
         List<Recipe> favoriteRecipes = recipeService.getFavoriteRecipes();
@@ -95,17 +95,4 @@ public class IntegrationTestsUsingDatabaseTest {
         assertThat(favoriteRecipes, hasItem(salmonSoup));
         assertThat(favoriteRecipes, hasItem(chickenSoup));
     }
-
-    private void createUserAndLogin(String username)
-            throws BadUsernameException, UserNotFoundException, DataStoreException {
-        userService.createUser(username);
-        userService.login(username);
-    }
-
-    private Recipe addTestRecipeWithName(String recipeName) throws DataStoreException {
-        Map<Ingredient, Integer> ingredients = helper.createTestIngredientListWithNames("salmon", "milk", "butter",
-                "potato");
-        return recipeService.createRecipe(recipeName, ingredients, 40, "Boil until done.");
-    }
-
 }

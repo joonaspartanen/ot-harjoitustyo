@@ -10,8 +10,12 @@ import recipebook.dao.recipedao.RecipeDao;
 import recipebook.dao.userdao.UserDao;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
+import recipebook.domain.recipe.RecipeService;
+import recipebook.domain.user.BadUsernameException;
 import recipebook.domain.user.User;
+import recipebook.domain.user.UserService;
 import recipebook.dao.userdao.UserDaoMock;
+import recipebook.dao.userdao.UserNotFoundException;
 
 public class TestHelper {
 
@@ -73,4 +77,17 @@ public class TestHelper {
     public User getTestUser() {
         return testUser;
     }
+
+    public void createUserAndLogin(UserService userService, String username)
+            throws BadUsernameException, UserNotFoundException, DataStoreException {
+        userService.createUser(username);
+        userService.login(username);
+    }
+
+	public Recipe addTestRecipeWithName(RecipeService recipeService, String recipeName) throws DataStoreException {
+	    Map<Ingredient, Integer> ingredients = createTestIngredientListWithNames("salmon", "milk", "butter",
+	            "potato");
+	    return recipeService.createRecipe(recipeName, ingredients, 40, "Boil until done.");
+	}
+
 }
