@@ -12,7 +12,7 @@ Sovelluksen avulla käyttäjät voivat tallentaa ruokareseptejä. Sovelluksella 
   - käyttäjätunnuksen on oltava uniikki ja 5–20 merkkiä pitkä (tehty)
   - sovellus ilmoittaa, mikäli käyttäjätunnus ei täytä yllä olevia vaatimuksia (tehty)
 - käyttäjä voi kirjautua järjestelmään (tehty)
-  - kirjautuminen onnistuu, kun käyttäjä syöttää sovellukseen lisätyn käyttäjätunnuksen kirjautumislomakkeella (tehty)
+  - kirjautuminen onnistuu, kun käyttäjä syöttää sovellukseen lisätyn käyttäjätunnuksen kirjautumisnäkymässä (tehty)
   - sovellus ilmoittaa, mikäli käyttäjää ei ole olemassa (tehty)
 
 ### Kirjautumisen jälkeen
