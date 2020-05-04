@@ -1,5 +1,6 @@
 package recipebook.domain.user;
 
+import recipebook.dao.DataStoreException;
 import recipebook.dao.userdao.UserDao;
 import recipebook.dao.userdao.UserNotFoundException;
 
@@ -41,11 +42,16 @@ public class UserService {
      * @param username Desired username.
      * @return The newly created User object is returned if creation is successful.
      * @throws BadUsernameException if username is not valid or is already taken.
+     * @throws DataStoreException
      */
-    public User createUser(String username) throws BadUsernameException {
+    public User createUser(String username) throws BadUsernameException, DataStoreException {
 
         if (username.length() < 5 || username.length() > 20) {
             throw new BadUsernameException("The username must be 5-20 characters long.");
+        }
+
+        if (username.contains(";")) {
+            throw new BadUsernameException("The username can't contain semicolons.");
         }
 
         if (usernameTaken(username)) {
@@ -66,6 +72,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Returns the user that is currently using the application.
+     * 
+     * @return
+     */
     public User getCurrentUser() {
         return currentUser;
     }
