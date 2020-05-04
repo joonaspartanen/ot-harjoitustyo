@@ -18,11 +18,11 @@ Käyttöliittymä (GraphicUi) jää kokonaan automaattisen testauksen ulkopuolel
 
 Edellä mainittujen testien lisäksi sovelluksessa on joitakin laajempia integraatiotestejä (IntegrationTestsUsingDatabaseTest, IntegrationTestsUsingFileTest), jotka testaavat sekä service- että DAO-luokkien yhteistoimintaa eräissä sovelluksen tyypillisissä käyttötilanteissa.
 
-### Testauskattavuus
+### Testikattavuus
 
 Kun käyttöliittymä ja sovelluksen käynnistävä Main-luokka jätetään pois laskuista, on testauksen rivikattavuus 89 % ja haarautumakattavuus 94 %. Rivikattavuutta laskee lähinnä se, ettei virheiden käsittelyä kaikissa odottamattomissa poikkeustapauksissa (kuten SQLException, jos tietokantayhteys katkeaa) testata.
 
-[!Testauskattavuusraportti](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/testauskattavuus.png)
+![Testikattavuusraportti](https://github.com/joonaspartanen/ot-harjoitustyo/blob/master/RecipeBook/dokumentointi/kuvat/testauskattavuus.png)
 
 ## Järjestelmätestaus
 
