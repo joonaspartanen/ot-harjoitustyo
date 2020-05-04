@@ -10,7 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import recipebook.dao.ingredientdao.ArrayListIngredientDao;
+import recipebook.dao.DataStoreException;
+import recipebook.dao.ingredientdao.IngredientDaoMock;
 
 public class IngredientServiceTest {
 
@@ -18,25 +19,25 @@ public class IngredientServiceTest {
 
     @Before
     public void setUp() {
-        ingService = new IngredientService(new ArrayListIngredientDao());
+        ingService = new IngredientService(new IngredientDaoMock());
     }
 
     @Test
-    public void createIngredientReturnsIngredientWithRightProperties() {
+    public void createIngredientReturnsIngredientWithRightProperties() throws DataStoreException {
         Ingredient ingredient = ingService.createIngredient("chicken", "g");
         assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
     }
 
     @Test
-    public void unitDefaultsToGramsIfNotSpecified() {
+    public void unitDefaultsToGramsIfNotSpecified() throws DataStoreException {
         Ingredient ingredient = ingService.createIngredient("chicken");
         assertThat(ingredient.getName(), is(equalTo("chicken")));
         assertThat(ingredient.getUnit(), is(equalTo("g")));
     }
 
     @Test
-    public void createIngredientReturnsExistingIngredientIfIngredientAlreadyExists() {
+    public void createIngredientReturnsExistingIngredientIfIngredientAlreadyExists() throws DataStoreException {
         Ingredient ingredient = ingService.createIngredient("tomato");
         assertThat(ingredient.getId(), is(1));
         ingredient = ingService.createIngredient("tomato");
@@ -44,7 +45,7 @@ public class IngredientServiceTest {
     }
 
     @Test
-    public void listAllReturnsRightNumberOfIngredients() {
+    public void listAllReturnsRightNumberOfIngredients() throws DataStoreException {
         ingService.createIngredient("chicken");
         ingService.createIngredient("garlic");
         ingService.createIngredient("milk");
@@ -52,21 +53,21 @@ public class IngredientServiceTest {
     }
 
     @Test
-    public void findByNameReturnsRightIngredientIfFound() {
+    public void findByNameReturnsRightIngredientIfFound() throws DataStoreException {
         ingService.createIngredient("chicken");
         List<Ingredient> ingredients = ingService.findByName("chicken");
         assertThat(ingredients.get(0).getName(), is(equalTo("chicken")));
     }
 
     @Test
-    public void findByNameReturnsEmptyListIfIngredientNotFound() {
+    public void findByNameReturnsEmptyListIfIngredientNotFound() throws DataStoreException {
         ingService.createIngredient("chicken");
         List<Ingredient> ingredients = ingService.findByName("salmon");
         assertTrue(ingredients.isEmpty());
     }
 
     @Test
-    public void findByNameAndUnitReturnsRightIngredientIfFound() {
+    public void findByNameAndUnitReturnsRightIngredientIfFound() throws DataStoreException {
         ingService.createIngredient("chicken", "g");
         ingService.createIngredient("chicken", "kg");
         Ingredient foundIngredient = ingService.findByNameAndUnit("chicken", "kg");

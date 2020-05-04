@@ -11,15 +11,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import recipebook.TestHelper;
-import recipebook.dao.ingredientdao.ArrayListIngredientDao;
+import recipebook.dao.DataStoreException;
+import recipebook.dao.ingredientdao.IngredientDaoMock;
 import recipebook.dao.ingredientdao.IngredientDao;
-import recipebook.dao.recipedao.ArrayListRecipeDao;
+import recipebook.dao.recipedao.RecipeDaoMock;
 import recipebook.dao.recipedao.RecipeDao;
-import recipebook.dao.userdao.UserDao;
-import recipebook.dao.userdao.UserNotFoundException;
+import recipebook.dao.userdao.UserDaoMock;
+import recipebook.dao.userdao.*;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.user.BadUsernameException;
-import recipebook.domain.user.UserDaoMock;
 import recipebook.domain.user.UserService;
 
 public class RecipeServiceTest {
@@ -32,17 +32,17 @@ public class RecipeServiceTest {
     private TestHelper helper;
 
     @Before
-    public void setUp() {
-        ingDaoMock = new ArrayListIngredientDao();
-        recipeDaoMock = new ArrayListRecipeDao(ingDaoMock);
+    public void setUp() throws DataStoreException {
+        ingDaoMock = new IngredientDaoMock();
         userDaoMock = new UserDaoMock();
+        recipeDaoMock = new RecipeDaoMock(ingDaoMock, userDaoMock);
         userService = new UserService(userDaoMock);
         recipeService = new RecipeService(recipeDaoMock, userService);
         helper = new TestHelper();
     }
 
     @Test
-    public void createRecipeReturnsRecipeWithRightProperties() {
+    public void createRecipeReturnsRecipeWithRightProperties() throws DataStoreException {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
 
         Recipe recipe = recipeService.createRecipe("Chicken soup", ingredients, 20, "Cook until done.");
@@ -54,7 +54,7 @@ public class RecipeServiceTest {
     }
 
     @Test
-    public void findByIngredientReturnsRightRecipes() {
+    public void findByIngredientReturnsRightRecipes() throws DataStoreException, UserNotFoundException {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientListWithNames("chicken", "onion", "garlic",
                 "cream", "lemon");
         Recipe lemonChicken = recipeService.createRecipe("Lemon chicken", ingredients, 10, "Cook.");
@@ -72,7 +72,7 @@ public class RecipeServiceTest {
 
     @Test
     public void deleteRecipeByIdDeletesExistingRecipeIfCreatedByCurrentUser()
-            throws UserNotFoundException, BadUsernameException {
+            throws UserNotFoundException, BadUsernameException, DataStoreException {
         userService.createUser("Tester");
         userService.login("Tester");
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
@@ -87,7 +87,7 @@ public class RecipeServiceTest {
 
     @Test
     public void deleteRecipeByIdWontDeleteExistingRecipeIfNotCreatedByCurrentUser()
-            throws UserNotFoundException, BadUsernameException {
+            throws UserNotFoundException, BadUsernameException, DataStoreException {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
         userService.createUser("Tester 1");
         userService.login("Tester 1");
@@ -104,7 +104,7 @@ public class RecipeServiceTest {
     }
 
     @Test
-    public void deleteRecipeByIdReturnsFalseIfRecipeNotFound() {
+    public void deleteRecipeByIdReturnsFalseIfRecipeNotFound() throws DataStoreException, UserNotFoundException {
         Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
         recipeService.createRecipe("Garlic chicken", ingredients, 10, "Cook");
         assertFalse(recipeService.deleteRecipeById(5));

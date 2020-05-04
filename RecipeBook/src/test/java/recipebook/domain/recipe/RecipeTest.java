@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import recipebook.TestHelper;
+import recipebook.dao.DataStoreException;
 import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.user.User;
 
@@ -21,7 +22,7 @@ public class RecipeTest {
     TestHelper helper;
 
     @Before
-    public void setUp() {
+    public void setUp() throws DataStoreException {
         helper = new TestHelper();
         Ingredient chicken = new Ingredient("chicken");
         Ingredient butter = new Ingredient("butter");
@@ -73,7 +74,7 @@ public class RecipeTest {
     }
 
     @Test
-    public void equalsReturnsFalseIfRecipeIngredientsDiffer() {
+    public void equalsReturnsFalseIfRecipeIngredientsDiffer() throws DataStoreException {
         Map<Ingredient, Integer> otherIngredients = helper.createTestIngredientListWithNames("chicken", "butter",
                 "cream");
         Recipe otherRecipe = new Recipe(1, "Butter Chicken", otherIngredients, 40, "Cook until ready");

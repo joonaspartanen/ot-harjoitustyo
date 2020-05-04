@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import recipebook.TestHelper;
+import recipebook.dao.DataStoreException;
 import recipebook.domain.recipe.Recipe;
 
 public class IngredientTest {
@@ -14,7 +15,7 @@ public class IngredientTest {
     TestHelper helper;
 
     @Before
-    public void setUp() {
+    public void setUp() throws DataStoreException {
         helper = new TestHelper();
     }
 
@@ -53,7 +54,7 @@ public class IngredientTest {
     }
 
     @Test
-    public void equalsReturnsFalseIfComparedWithOtherClass() {
+    public void equalsReturnsFalseIfComparedWithOtherClass() throws DataStoreException {
         Ingredient firstChicken = new Ingredient(1, "chicken", "g");
         Recipe otherChicken = helper.createTestRecipe("chicken");
         assertThat(firstChicken, is(not(equalTo(otherChicken))));
