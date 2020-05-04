@@ -1,15 +1,12 @@
 package recipebook.domain.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import recipebook.domain.recipe.Recipe;
-
+/**
+ * Class that represents a user of the application.
+ */
 public class User {
 
     private int id;
     private String username;
-    private List<Recipe> favoriteRecipes = new ArrayList<>();
 
     public User(String username) {
         this.username = username;
@@ -37,7 +34,4 @@ public class User {
         return id;
     }
 
-    public List<Recipe> getFavoriteRecipes() {
-        return favoriteRecipes;
-    }
 }
