@@ -1,10 +1,10 @@
-package recipebook.domain.user;
+package recipebook.dao.userdao;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import recipebook.dao.userdao.UserDao;
-import recipebook.dao.userdao.UserNotFoundException;
+import recipebook.domain.user.User;
 
 public class UserDaoMock implements UserDao {
 
@@ -30,6 +30,5 @@ public class UserDaoMock implements UserDao {
     public User getById(int id) {
         return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
     }
-
     
 }

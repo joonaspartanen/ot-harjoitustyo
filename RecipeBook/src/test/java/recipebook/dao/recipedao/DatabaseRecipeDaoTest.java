@@ -1,4 +1,4 @@
-package recipebook.dao.recipeDao;
+package recipebook.dao.recipedao;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import recipebook.TestHelper;
-import recipebook.dao.DataStoreConnector;
-import recipebook.dao.DatabaseConnector;
-import recipebook.dao.DatabaseException;
+import recipebook.dao.*;
 import recipebook.dao.ingredientdao.IngredientDao;
-import recipebook.dao.recipedao.RecipeDao;
+import recipebook.dao.userdao.UserDao;
+import recipebook.dao.userdao.UserDaoMock;
+import recipebook.dao.userdao.UserNotFoundException;
 import recipebook.domain.recipe.Recipe;
 
 public class DatabaseRecipeDaoTest {
@@ -24,48 +25,53 @@ public class DatabaseRecipeDaoTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
 
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
     RecipeDao recipeDao;
-    IngredientDao ingDaoMock;
+    IngredientDao ingredientDao;
+    UserDao userDaoMock;
     DataStoreConnector connector;
     Connection connection;
     TestHelper helper;
 
     @Before
-    public void setUp() throws DatabaseException {
+    public void setUp() throws DataStoreException, UserNotFoundException {
         connector = new DatabaseConnector(testFolder.getRoot().toString() + "/");
         connector.initializeDataStore();
-        ingDaoMock = connector.getIngredientDao();
+        ingredientDao = connector.getIngredientDao();
+        userDaoMock = new UserDaoMock();
         recipeDao = connector.getRecipeDao();
-        helper = new TestHelper(ingDaoMock);
+        helper = new TestHelper(ingredientDao, userDaoMock);
     }
 
     @After
-    public void finalize() throws DatabaseException {
+    public void finalize() throws DataStoreException {
         connector.closeDataStore();
     }
 
     @Test
-    public void createdRecipeHasRightName() {
+    public void createdRecipeHasRightName() throws DataStoreException {
         Recipe recipe = recipeDao.create(helper.createTestRecipe("Salmon soup"));
         assertThat(recipe.getName(), is(equalTo("Salmon soup")));
     }
 
     @Test
-    public void createdRecipeHasRightId() {
+    public void createdRecipeHasRightId() throws DataStoreException {
         helper.initializeRecipeBook(4, recipeDao);
         Recipe recipe = recipeDao.create(helper.createTestRecipe("Chicken tikka"));
         assertThat(recipe.getId(), is(5));
     }
 
     @Test
-    public void getAllReturnsRightNumberOfRecipes() {
+    public void getAllReturnsRightNumberOfRecipes() throws DataStoreException, UserNotFoundException {
         helper.initializeRecipeBook(3, recipeDao);
         List<Recipe> recipes = recipeDao.getAll();
         assertThat(recipes.size(), is(3));
     }
 
     @Test
-    public void getByIdReturnsRightRecipe() {
+    public void getByIdReturnsRightRecipe() throws DataStoreException, UserNotFoundException {
         Recipe fishSoup = helper.createTestRecipe("Fish soup");
         Recipe returnedRecipe = recipeDao.create(fishSoup);
         assertThat(returnedRecipe.getId(), is(1));
@@ -75,14 +81,16 @@ public class DatabaseRecipeDaoTest {
     }
 
     @Test
-    public void getByIdReturnsNullIfRecipeNotFound() {
+    public void getByIdThrowsExceptionIfRecipeNotFound() throws DataStoreException, UserNotFoundException {
+        exceptionRule.expect(DataStoreException.class);
+        exceptionRule.expectMessage("Recipe with id 4 was not found.");
+
         helper.initializeRecipeBook(3, recipeDao);
-        Recipe recipe = recipeDao.getById(4);
-        assertThat(recipe, is(nullValue()));
+        recipeDao.getById(4);
     }
 
     @Test
-    public void createdRecipeHasRightIngredients() {
+    public void createdRecipeHasRightIngredients() throws DataStoreException, UserNotFoundException {
         Recipe recipe = helper.createTestRecipeWithIngredients("Fish tacos", "cod", "tortillas", "salsa verde");
         recipeDao.create(recipe);
         Recipe foundRecipe = recipeDao.getById(1);
@@ -94,7 +102,7 @@ public class DatabaseRecipeDaoTest {
     }
 
     @Test
-    public void getByNameReturnsAllMatchingRecipes() {
+    public void getByNameReturnsAllMatchingRecipes() throws DataStoreException, UserNotFoundException {
         helper.initializeRecipeBook(3, recipeDao);
         recipeDao.create(helper.createTestRecipe("Chicken soup"));
         recipeDao.create(helper.createTestRecipe("Salmon soup"));
@@ -107,14 +115,14 @@ public class DatabaseRecipeDaoTest {
     }
 
     @Test
-    public void getByNameReturnsEmptyListIfRecipesNotFound() {
+    public void getByNameReturnsEmptyListIfRecipesNotFound() throws DataStoreException, UserNotFoundException {
         helper.initializeRecipeBook(3, recipeDao);
         List<Recipe> foundRecipes = recipeDao.getByName("Knish");
         assertTrue(foundRecipes.isEmpty());
     }
 
     @Test
-    public void rightRecipesAreLoadedWhenObjectInstantiated() {
+    public void rightRecipesAreLoadedWhenObjectInstantiated() throws DataStoreException, UserNotFoundException {
         recipeDao.create(helper.createTestRecipe("Meatballs"));
         recipeDao.create(helper.createTestRecipe("Salmon soup"));
         recipeDao.create(helper.createTestRecipe("Pasta carbonara"));
@@ -128,7 +136,7 @@ public class DatabaseRecipeDaoTest {
     }
 
     @Test
-    public void getByIngredientReturnsAllMatchingRecipes() {
+    public void getByIngredientReturnsAllMatchingRecipes() throws DataStoreException, UserNotFoundException {
         recipeDao.create(helper.createTestRecipeWithIngredients("Salmon soup", "salmon", "milk", "butter", "potato"));
         recipeDao.create(helper.createTestRecipeWithIngredients("Roasted fish", "salmon", "lemon", "oil", "salt"));
         recipeDao.create(
@@ -142,7 +150,7 @@ public class DatabaseRecipeDaoTest {
     }
 
     @Test
-    public void getByIngredientReturnsEmptyListIfNoMatchesFound() {
+    public void getByIngredientReturnsEmptyListIfNoMatchesFound() throws DataStoreException, UserNotFoundException {
         recipeDao.create(helper.createTestRecipeWithIngredients("Salmon soup", "salmon", "milk", "butter", "potato"));
         recipeDao.create(helper.createTestRecipeWithIngredients("Roasted fish", "salmon", "lemon", "oil", "salt"));
         recipeDao.create(
@@ -153,7 +161,7 @@ public class DatabaseRecipeDaoTest {
     }
 
     @Test
-    public void deleteRemovesRecipe() {
+    public void deleteRemovesRecipe() throws DataStoreException, UserNotFoundException {
         Recipe salmonSoup = recipeDao.create(helper.createTestRecipe("Salmon soup"));
         recipeDao.create(helper.createTestRecipe("Chicken soup"));
 

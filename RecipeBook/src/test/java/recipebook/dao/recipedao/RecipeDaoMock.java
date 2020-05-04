@@ -3,17 +3,19 @@ package recipebook.dao.recipedao;
 import recipebook.dao.ingredientdao.IngredientDao;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
+import recipebook.dao.recipedao.RecipeDao;
+import recipebook.dao.userdao.UserDao;
 import recipebook.domain.recipe.Recipe;
 
-// Preliminary implementation that stores recipes in ArrayList
-public class ArrayListRecipeDao implements RecipeDao {
+public class RecipeDaoMock implements RecipeDao {
 
     List<Recipe> recipes;
     IngredientDao ingDao;
+    Map<Integer, List<Recipe>> favoriteRecipes;
 
-    public ArrayListRecipeDao(IngredientDao ingDao) {
+    public RecipeDaoMock(IngredientDao ingDao, UserDao userDao) {
         recipes = new ArrayList<>();
         this.ingDao = ingDao;
     }
@@ -68,6 +70,17 @@ public class ArrayListRecipeDao implements RecipeDao {
 
     private int generateId() {
         return recipes.size() + 1;
+    }
+
+    @Override
+    public void saveRecipeToFavorites(int userId, Recipe recipe) {
+        favoriteRecipes.putIfAbsent(userId, new ArrayList<>());
+        favoriteRecipes.get(userId).add(recipe);
+    }
+
+    @Override
+    public List<Recipe> getFavoriteRecipes(int userId) {
+        return favoriteRecipes.get(userId);
     }
 
 }

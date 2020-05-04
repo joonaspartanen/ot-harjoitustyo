@@ -1,21 +1,14 @@
-package recipebook.dao.userDao;
+package recipebook.dao.userdao;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
-import recipebook.dao.DataStoreConnector;
-import recipebook.dao.DatabaseConnector;
-import recipebook.dao.DatabaseException;
-import recipebook.dao.userdao.UserDao;
-import recipebook.dao.userdao.UserNotFoundException;
+import recipebook.dao.*;
 import recipebook.domain.user.User;
 
 public class DatabaseUserDaoTest {
@@ -28,25 +21,25 @@ public class DatabaseUserDaoTest {
     Connection connection;
 
     @Before
-    public void setUp() throws DatabaseException {
+    public void setUp() throws DataStoreException, UserNotFoundException {
         connector = new DatabaseConnector(testFolder.getRoot().toString() + "/");
         connector.initializeDataStore();
         userDao = connector.getUserDao();
     }
 
     @After
-    public void finalize() throws DatabaseException {
+    public void finalize() throws DataStoreException {
         connector.closeDataStore();
     }
 
     @Test
-    public void createdUserHasRightUsername() {
+    public void createdUserHasRightUsername() throws DataStoreException {
         User user = userDao.create(new User("Tester"));
         assertThat(user.getUsername(), is(equalTo("Tester")));
     }
 
     @Test
-    public void createdUserHasRightId() {
+    public void createdUserHasRightId() throws DataStoreException {
         User firstUser = userDao.create(new User("Tester 1"));
         User secondUser = userDao.create(new User("Tester 2"));
 
@@ -55,7 +48,7 @@ public class DatabaseUserDaoTest {
     }
 
     @Test
-    public void getByUsernameReturnsRightUser() throws UserNotFoundException {
+    public void getByUsernameReturnsRightUser() throws UserNotFoundException, DataStoreException {
         createTestUsers(2);
 
         User user = userDao.getByUsername("Tester 1");
@@ -64,7 +57,7 @@ public class DatabaseUserDaoTest {
     }
 
     @Test
-    public void getByIdReturnsRightUser() {
+    public void getByIdReturnsRightUser() throws UserNotFoundException, DataStoreException {
         createTestUsers(2);
 
         User firstUser = userDao.getById(1);
@@ -75,7 +68,7 @@ public class DatabaseUserDaoTest {
     }
 
     @Test
-    public void getByIdReturnsNullIfUserNotFound() {
+    public void getByIdReturnsNullIfUserNotFound() throws UserNotFoundException, DataStoreException {
         createTestUsers(2);
 
         User user = userDao.getById(3);
@@ -83,7 +76,7 @@ public class DatabaseUserDaoTest {
         assertThat(user, is(nullValue()));
     }
 
-    private void createTestUsers(int amount) {
+    private void createTestUsers(int amount) throws DataStoreException {
         for (int i = 1; i <= amount; i++) {
             User user = new User("Tester " + i);
             userDao.create(user);
