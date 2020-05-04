@@ -19,4 +19,7 @@
 | 21.4. | 2    | Tehty User-luokka ja alustavat toteutukset UserServicestä, UserDaosta ja graafisen käyttöliittymän kirjautumissivusta.                            |
 | 23.4. | 2    | Täydennetty UserDao ja käyttöliittymää. Testit Useria käyttäville luokille.                                                                       |
 | 26.4. | 2    | Refaktorointia. Dokumentoinnin täydentämistä, mukaan lukien javadoc. Viikon 6 release.                                                            |
-|  yht  | 34   |                                                                                                                                                   |
+| 1.5.  | 4    | Refaktorointia. Javadocin täydentämistä. Lisätty tiedostoon tallentava UserDao-toteutus ja integraatiotestejä.                                    |
+| 3.5.  | 3    | Refaktorointia ja Javadocin täydentämistä. Virheenkäsittelyä lisätty. Lisätty mahdollisuus suosikkireseptien tallentamiseen.                      |
+| 4.5.  | 3    | Dokumentointia ja refaktorointia.                                                                                                                 |
+|  yht  | 44   |                                                                                                                                                   |
