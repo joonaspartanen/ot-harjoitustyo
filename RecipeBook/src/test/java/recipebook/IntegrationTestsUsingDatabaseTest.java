@@ -1,23 +1,19 @@
 package recipebook;
 
 import java.util.List;
-import java.util.Map;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Rule;
+import static org.junit.Assert.*;
 import org.junit.rules.TemporaryFolder;
-import recipebook.dao.DataStoreConnector;
-import recipebook.dao.DatabaseConnector;
-import recipebook.dao.DataStoreException;
+import recipebook.dao.*;
 import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.dao.recipedao.RecipeDao;
 import recipebook.dao.userdao.UserDao;
 import recipebook.dao.userdao.UserNotFoundException;
-import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 import recipebook.domain.recipe.RecipeService;
 import recipebook.domain.user.BadUsernameException;
