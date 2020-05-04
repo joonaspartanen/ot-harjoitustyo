@@ -1,4 +1,4 @@
-package recipebook.dao.ingredientDao;
+package recipebook.dao.ingredientdao;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -10,16 +10,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-import recipebook.dao.ingredientdao.FileIngredientDao;
-import recipebook.dao.ingredientdao.IngredientDao;
+import recipebook.dao.DataStoreException;
 import recipebook.domain.ingredient.Ingredient;
 
 public class FileIngredientDaoTest {
 
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
 
     private IngredientDao ingDao;
     private File testFile;
@@ -35,13 +38,13 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void createdIngredientHasRightName() {
+    public void createdIngredientHasRightName() throws DataStoreException {
         Ingredient ingredient = ingDao.create(new Ingredient("chicken"));
         assertThat(ingredient.getName(), is(equalTo("chicken")));
     }
 
     @Test
-    public void createdIngredientHasRightId() {
+    public void createdIngredientHasRightId() throws DataStoreException {
         Ingredient ingredient = ingDao.create(new Ingredient("tomato"));
         assertThat(ingredient.getId(), is(1));
         ingredient = ingDao.create(new Ingredient("potato"));
@@ -49,7 +52,7 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void getAllReturnsRightNumberOfIngredients() {
+    public void getAllReturnsRightNumberOfIngredients() throws DataStoreException {
         ingDao.create(new Ingredient("banana"));
         ingDao.create(new Ingredient("apple"));
         ingDao.create(new Ingredient("kiwi"));
@@ -58,7 +61,7 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void getByNameReturnsRightIngredientWhenFound() {
+    public void getByNameReturnsRightIngredientWhenFound() throws DataStoreException {
         ingDao.create(new Ingredient("salmon"));
         ingDao.create(new Ingredient("milk"));
         List<Ingredient> ingredients = ingDao.getByName("salmon");
@@ -66,14 +69,14 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void getByNameReturnsEmptyListIfNotFound() {
+    public void getByNameReturnsEmptyListIfNotFound() throws DataStoreException {
         ingDao.create(new Ingredient("salmon"));
         List<Ingredient> ingredients = ingDao.getByName("chicken");
         assertTrue(ingredients.isEmpty());
     }
 
     @Test
-    public void getByIdReturnsRightIngredient() {
+    public void getByIdReturnsRightIngredient() throws DataStoreException {
         ingDao.create(new Ingredient("meat"));
         ingDao.create(new Ingredient("fish"));
         Ingredient ingredient = ingDao.getById(1);
@@ -83,14 +86,16 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void getByIdReturnsNullIfNotFound() {
+    public void getByIdReturnsThrowsExceptionIfNotFound() throws DataStoreException {
+        exceptionRule.expect(DataStoreException.class);
+        exceptionRule.expectMessage("Ingredient with id 2 was not found.");
+
         ingDao.create(new Ingredient("salmon"));
-        Ingredient ingredient = ingDao.getById(2);
-        assertThat(ingredient, is(nullValue()));
+        ingDao.getById(2);
     }
 
     @Test
-    public void rightIngredientsAreLoadedWhenObjectInstantiated() {
+    public void rightIngredientsAreLoadedWhenObjectInstantiated() throws DataStoreException {
         ingDao.create(new Ingredient("salmon"));
         ingDao.create(new Ingredient("milk"));
         ingDao.create(new Ingredient("chicken"));
@@ -103,7 +108,7 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void getByNameAndUnitReturnsRightIngredientWhenFound() {
+    public void getByNameAndUnitReturnsRightIngredientWhenFound() throws DataStoreException {
         ingDao.create(new Ingredient("salmon"));
         ingDao.create(new Ingredient("milk"));
         Ingredient ingredient = ingDao.getByNameAndUnit("salmon", "g");
@@ -111,7 +116,7 @@ public class FileIngredientDaoTest {
     }
 
     @Test
-    public void getByNameAndUnitReturnsNullIfNotFound() {
+    public void getByNameAndUnitReturnsNullIfNotFound() throws DataStoreException {
         ingDao.create(new Ingredient("salmon"));
         Ingredient ingredient = ingDao.getByNameAndUnit("chicken", "g");
         assertThat(ingredient, is(nullValue()));

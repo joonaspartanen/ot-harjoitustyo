@@ -3,14 +3,15 @@ package recipebook.dao.ingredientdao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import recipebook.dao.ingredientdao.IngredientDao;
 
 import recipebook.domain.ingredient.Ingredient;
 
-public class ArrayListIngredientDao implements IngredientDao {
+public class IngredientDaoMock implements IngredientDao {
 
     List<Ingredient> ingredients;
 
-    public ArrayListIngredientDao() {
+    public IngredientDaoMock() {
         ingredients = new ArrayList<>();
     }
 
