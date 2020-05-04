@@ -14,6 +14,7 @@ import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.dao.recipedao.RecipeDao;
 import recipebook.dao.userdao.UserDao;
 import recipebook.dao.userdao.UserNotFoundException;
+import recipebook.domain.ingredient.IngredientService;
 import recipebook.domain.recipe.Recipe;
 import recipebook.domain.recipe.RecipeService;
 import recipebook.domain.user.BadUsernameException;
@@ -26,6 +27,7 @@ public class IntegrationTestsUsingDatabaseTest {
 
     private DataStoreConnector connector;
     private UserService userService;
+    private IngredientService ingredientService;
     private RecipeService recipeService;
     private TestHelper helper;
     private RecipeDao recipeDao;
@@ -38,7 +40,8 @@ public class IntegrationTestsUsingDatabaseTest {
         IngredientDao ingredientDao = connector.getIngredientDao();
         recipeDao = connector.getRecipeDao();
         userService = new UserService(userDao);
-        recipeService = new RecipeService(recipeDao, userService);
+        ingredientService = new IngredientService(ingredientDao);
+        recipeService = new RecipeService(recipeDao, userService, ingredientService);
         helper = new TestHelper(ingredientDao, userDao);
     }
 

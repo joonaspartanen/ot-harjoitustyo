@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import recipebook.dao.recipedao.RecipeDao;
 import recipebook.dao.userdao.UserDao;
+import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 
 public class RecipeDaoMock implements RecipeDao {
@@ -47,20 +48,18 @@ public class RecipeDaoMock implements RecipeDao {
     }
 
     @Override
-    public List<Recipe> getByIngredient(String ingredientName) {
+    public List<Recipe> getByIngredient(Ingredient ingredient) {
         List<Recipe> foundRecipes = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipeContainsIngredient(recipe, ingredientName)) {
+            if (recipeContainsIngredient(recipe, ingredient)) {
                 foundRecipes.add(recipe);
             }
         }
         return foundRecipes;
     }
 
-    private boolean recipeContainsIngredient(Recipe recipe, String ingredientName) {
-        List<String> ingredientNames = recipe.getIngredients().keySet().stream().map(i -> i.getName())
-                .collect(Collectors.toList());
-        return ingredientNames.contains(ingredientName.toLowerCase());
+    private boolean recipeContainsIngredient(Recipe recipe, Ingredient ingredient) {
+        return recipe.getIngredients().keySet().contains(ingredient);
     }
 
     @Override

@@ -16,9 +16,9 @@ import recipebook.dao.ingredientdao.IngredientDaoMock;
 import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.dao.recipedao.RecipeDaoMock;
 import recipebook.dao.recipedao.RecipeDao;
-import recipebook.dao.userdao.UserDaoMock;
 import recipebook.dao.userdao.*;
 import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.ingredient.IngredientService;
 import recipebook.domain.user.BadUsernameException;
 import recipebook.domain.user.UserService;
 
@@ -29,6 +29,7 @@ public class RecipeServiceTest {
     private RecipeDao recipeDaoMock;
     private UserDao userDaoMock;
     private UserService userService;
+    private IngredientService ingredientService;
     private TestHelper helper;
 
     @Before
@@ -37,8 +38,9 @@ public class RecipeServiceTest {
         userDaoMock = new UserDaoMock();
         recipeDaoMock = new RecipeDaoMock(ingredientDaoMock, userDaoMock);
         userService = new UserService(userDaoMock);
-        recipeService = new RecipeService(recipeDaoMock, userService);
-        helper = new TestHelper();
+        ingredientService = new IngredientService(ingredientDaoMock);
+        recipeService = new RecipeService(recipeDaoMock, userService, ingredientService);
+        helper = new TestHelper(ingredientDaoMock, userDaoMock);
     }
 
     @Test
@@ -51,6 +53,21 @@ public class RecipeServiceTest {
         assertThat(recipe.getIngredients(), is(equalTo(ingredients)));
         assertThat(recipe.getTime(), is(20));
         assertThat(recipe.getInstructions(), is(equalTo("Cook until done.")));
+    }
+
+    @Test
+    public void findByNameReturnRightRecipes() throws DataStoreException, UserNotFoundException {
+        Map<Ingredient, Integer> ingredients = helper.createTestIngredientList();
+        Recipe tofuBowl = recipeService.createRecipe("Tofu bowl", ingredients, 10, "Mix.");
+        Recipe salmonSoup = recipeService.createRecipe("Salmon soup", ingredients, 20, "Cook.");
+        Recipe tofuWok = recipeService.createRecipe("Tofu wok", ingredients, 10, "Cook well.");
+
+        List<Recipe> recipes = recipeService.findByName("Tofu");
+
+        assertThat(recipes.size(), is(2));
+        assertThat(recipes, hasItem(tofuBowl));
+        assertThat(recipes, hasItem(tofuWok));
+        assertThat(recipes, not(hasItem(salmonSoup)));
     }
 
     @Test
@@ -109,5 +126,4 @@ public class RecipeServiceTest {
         recipeService.createRecipe("Garlic chicken", ingredients, 10, "Cook");
         assertFalse(recipeService.deleteRecipeById(5));
     }
-
 }

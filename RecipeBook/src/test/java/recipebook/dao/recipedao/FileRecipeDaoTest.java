@@ -18,6 +18,7 @@ import recipebook.dao.DataStoreException;
 import recipebook.dao.ingredientdao.IngredientDaoMock;
 import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.dao.userdao.UserDao;
+import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 import recipebook.dao.userdao.UserDaoMock;
 import recipebook.dao.userdao.UserNotFoundException;
@@ -131,18 +132,24 @@ public class FileRecipeDaoTest {
 
     @Test
     public void getByIngredientReturnsAllMatchingRecipes() throws DataStoreException, UserNotFoundException {
-        recipeDao.create(helper.createTestRecipeWithIngredients("Salmon soup", "salmon", "milk", "butter", "potato"));
-        recipeDao.create(helper.createTestRecipeWithIngredients("Roasted fish", "salmon", "lemon", "oil", "salt"));
-        recipeDao.create(
+        Recipe salmonSoup = recipeDao
+                .create(helper.createTestRecipeWithIngredients("Salmon soup", "salmon", "milk", "butter", "potato"));
+        Recipe roastedFish = recipeDao
+                .create(helper.createTestRecipeWithIngredients("Roasted fish", "salmon", "lemon", "oil", "salt"));
+        Recipe butterChicken = recipeDao.create(
                 helper.createTestRecipeWithIngredients("Butter chicken", "chicken", "butter", "cream", "tomato"));
-        recipeDao.create(helper.createTestRecipeWithIngredients("Chicken soup", "chicken", "onion", "carrot"));
+        Recipe chickenSoup = recipeDao
+                .create(helper.createTestRecipeWithIngredients("Chicken soup", "chicken", "onion", "carrot"));
 
-        List<Recipe> foundRecipes = recipeDao.getByIngredient("butter");
-
-        List<String> recipeNames = foundRecipes.stream().map(r -> r.getName()).collect(Collectors.toList());
-        assertThat(recipeNames.size(), is(2));
-        assertThat(recipeNames, hasItem("Salmon soup"));
-        assertThat(recipeNames, hasItem("Butter chicken"));
+        Ingredient butter = salmonSoup.getIngredients().keySet().stream().filter(i -> i.getName().equals("butter"))
+                .findFirst().orElse(null);
+        System.out.println("Butter: " + butter);
+        List<Recipe> foundRecipes = recipeDao.getByIngredient(butter);
+        assertThat(foundRecipes.size(), is(2));
+        assertThat(foundRecipes, hasItem(salmonSoup));
+        assertThat(foundRecipes, hasItem(butterChicken));
+        assertThat(foundRecipes, not(hasItem(roastedFish)));
+        assertThat(foundRecipes, not(hasItem(chickenSoup)));
     }
 
     @Test
@@ -151,9 +158,8 @@ public class FileRecipeDaoTest {
         recipeDao.create(helper.createTestRecipe("Salmon soup"));
         recipeDao.create(helper.createTestRecipe("Pasta carbonara"));
 
-        RecipeDao newRecipeDao = new FileRecipeDao(ingredientDaoMock, userDaoMock,
-                testRecipeFile.getAbsolutePath(), testRecipesIngsFile.getAbsolutePath(),
-                testFavoriteRecipesFile.getAbsolutePath());
+        RecipeDao newRecipeDao = new FileRecipeDao(ingredientDaoMock, userDaoMock, testRecipeFile.getAbsolutePath(),
+                testRecipesIngsFile.getAbsolutePath(), testFavoriteRecipesFile.getAbsolutePath());
         List<Recipe> recipes = newRecipeDao.getAll();
 
         List<String> recipeNames = recipes.stream().map(r -> r.getName()).collect(Collectors.toList());

@@ -19,10 +19,10 @@ import recipebook.dao.userdao.UserNotFoundException;
 
 public class TestHelper {
 
-    private final IngredientDao ingDao;
-    private final User testUser;
+    private IngredientDao ingDao;
+    private User testUser;
 
-    public TestHelper(final IngredientDao ingDao, final UserDao userDao) throws DataStoreException {
+    public TestHelper(IngredientDao ingDao, UserDao userDao) throws DataStoreException {
         this.ingDao = ingDao;
         testUser = userDao.create(new User("Test user"));
     }
@@ -32,43 +32,51 @@ public class TestHelper {
     }
 
     public Map<Ingredient, Integer> createTestIngredientList() throws DataStoreException {
-        final Map<Ingredient, Integer> ingredients = new HashMap<>();
-        final Ingredient ingredient1 = ingDao.create(new Ingredient("ingredient1", "g"));
-        final Ingredient ingredient2 = ingDao.create(new Ingredient("ingredient2", "g"));
+        Map<Ingredient, Integer> ingredients = new HashMap<>();
+        Ingredient ingredient1 = ingDao.create(new Ingredient("ingredient1", "g"));
+        Ingredient ingredient2 = ingDao.create(new Ingredient("ingredient2", "g"));
 
         ingredients.put(ingredient1, 300);
         ingredients.put(ingredient2, 40);
         return ingredients;
     }
 
-    public Map<Ingredient, Integer> createTestIngredientListWithNames(final String... ingredientNames)
+    public Map<Ingredient, Integer> createTestIngredientListWithNames(String... ingredientNames)
             throws DataStoreException {
-        final Map<Ingredient, Integer> ingredients = new HashMap<>();
-        for (final String name : ingredientNames) {
-            final Ingredient ingredient = ingDao.create(new Ingredient(name, "g"));
+        Map<Ingredient, Integer> ingredients = new HashMap<>();
+        for (String name : ingredientNames) {
+            Ingredient ingredient = createIngredientIfNotExists(name);
             ingredients.put(ingredient, 300);
         }
         return ingredients;
     }
 
-    public Recipe createTestRecipe(final String name) throws DataStoreException {
-        final Map<Ingredient, Integer> ingredients = createTestIngredientList();
+    private Ingredient createIngredientIfNotExists(String name) throws DataStoreException {
+        Ingredient ingredient = ingDao.getByNameAndUnit(name, "g");
+        if (ingredient == null) {
+            ingredient = ingDao.create(new Ingredient(name, "g"));
+        }
+        return ingredient;
+    }
+
+    public Recipe createTestRecipe(String name) throws DataStoreException {
+        Map<Ingredient, Integer> ingredients = createTestIngredientList();
         return new Recipe(name, ingredients, 30, "Cook until done", testUser);
     }
 
-    public Recipe createTestRecipeWithIngredients(final String recipeName, final String... ingredientNames)
+    public Recipe createTestRecipeWithIngredients(String recipeName, String... ingredientNames)
             throws DataStoreException {
-        final Map<Ingredient, Integer> ingredients = new HashMap<>();
-        for (final String name : ingredientNames) {
-            final Ingredient ingredient = ingDao.create(new Ingredient(name, "g"));
+        Map<Ingredient, Integer> ingredients = new HashMap<>();
+        for (String name : ingredientNames) {
+            Ingredient ingredient = createIngredientIfNotExists(name);
             ingredients.put(ingredient, 300);
         }
-        final Recipe recipe = new Recipe(recipeName, ingredients, 20, "Cook well", testUser);
+        Recipe recipe = new Recipe(recipeName, ingredients, 20, "Cook well", testUser);
         return recipe;
     }
 
-    public void initializeRecipeBook(final int numberOfRecipes, final RecipeDao recipeDao) throws DataStoreException {
-        final Map<Ingredient, Integer> ingredients = createTestIngredientList();
+    public void initializeRecipeBook(int numberOfRecipes, RecipeDao recipeDao) throws DataStoreException {
+        Map<Ingredient, Integer> ingredients = createTestIngredientList();
         for (int i = 0; i < numberOfRecipes; i++) {
             recipeDao.create(new Recipe(i, "Recipe " + i, ingredients, 40, "Cook until done", testUser));
         }
@@ -84,10 +92,9 @@ public class TestHelper {
         userService.login(username);
     }
 
-	public Recipe addTestRecipeWithName(RecipeService recipeService, String recipeName) throws DataStoreException {
-	    Map<Ingredient, Integer> ingredients = createTestIngredientListWithNames("salmon", "milk", "butter",
-	            "potato");
-	    return recipeService.createRecipe(recipeName, ingredients, 40, "Boil until done.");
-	}
+    public Recipe addTestRecipeWithName(RecipeService recipeService, String recipeName) throws DataStoreException {
+        Map<Ingredient, Integer> ingredients = createTestIngredientListWithNames("salmon", "milk", "butter", "potato");
+        return recipeService.createRecipe(recipeName, ingredients, 40, "Boil until done.");
+    }
 
 }
