@@ -1,6 +1,5 @@
 package recipebook.dao.recipedao;
 
-import recipebook.dao.ingredientdao.IngredientDao;
 import recipebook.dao.userdao.UserDao;
 
 import java.sql.*;
@@ -21,7 +20,6 @@ import recipebook.domain.recipe.Recipe;
 public class DatabaseRecipeDao implements RecipeDao {
 
     private Connection connection;
-    private IngredientDao ingredientDao;
     private IdExtractor idExtractor;
     private ResultSetMapper mapper;
 
@@ -34,9 +32,8 @@ public class DatabaseRecipeDao implements RecipeDao {
      * @param userDao       An UserDao implementation needed to handle the recipe
      *                      author property.
      */
-    public DatabaseRecipeDao(Connection connection, IngredientDao ingredientDao, UserDao userDao) {
+    public DatabaseRecipeDao(Connection connection, UserDao userDao) {
         this.connection = connection;
-        this.ingredientDao = ingredientDao;
         idExtractor = new IdExtractor();
         mapper = new ResultSetMapper(userDao);
     }
@@ -184,33 +181,32 @@ public class DatabaseRecipeDao implements RecipeDao {
      * Fetches the recipes that contain the ingredient whose name is passed in as a
      * parameter.
      *
-     * @param ingredientName The name of the ingredient used as a search term.
+     * @param ingredient The ingredient used as a search term.
      * @return List of matching recipes or an empty list if no results found.
      * @throws DataStoreException
      * @throws UserNotFoundException
      */
     @Override
-    public List<Recipe> getByIngredient(String ingredientName) throws DataStoreException, UserNotFoundException {
+    public List<Recipe> getByIngredient(Ingredient ingredient) throws DataStoreException, UserNotFoundException {
         List<Integer> recipeIds = new ArrayList<>();
-        List<Ingredient> matchingIngredients = ingredientDao.getByName(ingredientName);
 
-        if (matchingIngredients.isEmpty()) {
-            return Collections.emptyList();
-        }
+        String selectByIngredientIdQuery = QueryBuilder.generateSelectAllRecipesByIngredientIdQuery();
 
-        String selectByIngredientIdsQuery = QueryBuilder
-                .generateSelectAllRecipesByIngredientIdsQuery(matchingIngredients);
+        try (PreparedStatement pstmt = connection.prepareStatement(selectByIngredientIdQuery)) {
+            pstmt.setInt(1, ingredient.getId());
 
-        try (PreparedStatement pstmt = connection.prepareStatement(selectByIngredientIdsQuery);
-                ResultSet resultSet = pstmt.executeQuery()) {
+            mapper.extractRecipeList(pstmt);
+
+            ResultSet resultSet = pstmt.executeQuery();
 
             while (resultSet.next()) {
                 recipeIds.add(resultSet.getInt("recipe_id"));
             }
-
         } catch (SQLException e) {
+            e.printStackTrace();
+
             throw new DataStoreException(
-                    "Fetching recipes with ingredient " + ingredientName + " from database failed.", e);
+                    "Fetching recipes with ingredient " + ingredient.getName() + " from database failed.", e);
         }
 
         return getRecipesByIdList(recipeIds);
@@ -239,6 +235,7 @@ public class DatabaseRecipeDao implements RecipeDao {
         try {
             deleteRecipeRow(recipeId);
             deleteRecipesIngredients(recipeId);
+            deleteRecipeFromFavorites(recipeId);
         } catch (SQLException e) {
             throw new DataStoreException("Deleting recipe with id " + recipeId + " failed.", e);
         }
@@ -270,16 +267,26 @@ public class DatabaseRecipeDao implements RecipeDao {
 
     private void deleteRecipeRow(int recipeId) throws SQLException {
         String deleteRecipeQuery = QueryBuilder.generateDeleteRecipeQuery();
-        PreparedStatement pstmtRecipe = connection.prepareStatement(deleteRecipeQuery);
-        pstmtRecipe.setInt(1, recipeId);
-        pstmtRecipe.executeUpdate();
+        try (PreparedStatement pstmt = connection.prepareStatement(deleteRecipeQuery)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.executeUpdate();
+        }
     }
 
     private void deleteRecipesIngredients(int recipeId) throws SQLException {
         String deleteRecipesIngredientsQuery = QueryBuilder.generateDeleteRecipeIngredientsQuery();
-        PreparedStatement pstmtRecipeIngs = connection.prepareStatement(deleteRecipesIngredientsQuery);
-        pstmtRecipeIngs.setInt(1, recipeId);
-        pstmtRecipeIngs.executeUpdate();
+        try (PreparedStatement pstmt = connection.prepareStatement(deleteRecipesIngredientsQuery)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.executeUpdate();
+        }
+    }
+
+    private void deleteRecipeFromFavorites(int recipeId) throws SQLException {
+        String deleteRecipeFromFavoritesQuery = QueryBuilder.generateDeleteRecipeFromFavoritesQuery();
+        try (PreparedStatement pstmt = connection.prepareStatement(deleteRecipeFromFavoritesQuery)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.executeUpdate();
+        }
     }
 
 }

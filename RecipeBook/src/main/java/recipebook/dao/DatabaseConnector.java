@@ -111,7 +111,7 @@ public class DatabaseConnector extends DataStoreConnector {
     private void createDaoImplementations() {
         userDao = new DatabaseUserDao(connection);
         ingredientDao = new DatabaseIngredientDao(connection);
-        recipeDao = new DatabaseRecipeDao(connection, ingredientDao, userDao);
+        recipeDao = new DatabaseRecipeDao(connection, userDao);
     }
 
     /**

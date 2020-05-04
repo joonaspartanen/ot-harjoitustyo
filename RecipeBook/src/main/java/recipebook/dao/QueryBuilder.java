@@ -1,10 +1,5 @@
 package recipebook.dao;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import recipebook.domain.ingredient.Ingredient;
-
 /**
  * Provides SQL queries by static methods with self-explanatory names.
  */
@@ -29,12 +24,8 @@ public class QueryBuilder {
         return SELECT_RECIPE_WITH_INGREDIENTS_QUERY + " WHERE recipe_id = ?;";
     }
 
-    public static String generateSelectAllRecipesByIngredientIdsQuery(List<Ingredient> ingredients) {
-        List<String> ingredientIds = ingredients.stream().map(i -> "ingredient_id = " + Integer.toString(i.getId()))
-                .collect(Collectors.toList());
-        String ingredientIdsCondition = ingredientIds.stream().collect(Collectors.joining(" OR "));
-        String selectByIngredientQuery = SELECT_RECIPE_WITH_INGREDIENTS_QUERY + " WHERE " + ingredientIdsCondition;
-        return selectByIngredientQuery;
+    public static String generateSelectAllRecipesByIngredientIdQuery() {
+        return SELECT_RECIPE_WITH_INGREDIENTS_QUERY + " WHERE ingredient_id = ?;";
     }
 
     public static String generateInsertRecipeQuery() {
@@ -121,6 +112,10 @@ public class QueryBuilder {
 
     public static String generateDeleteRecipeIngredientsQuery() {
         return "DELETE FROM RecipesIngredients WHERE recipe_id = ?;";
+    }
+
+    public static String generateDeleteRecipeFromFavoritesQuery() {
+        return "DELETE FROM FavoriteRecipes WHERE recipe_id = ?;";
     }
 
 }

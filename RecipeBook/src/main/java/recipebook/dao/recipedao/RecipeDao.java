@@ -4,6 +4,7 @@ import java.util.List;
 
 import recipebook.dao.DataStoreException;
 import recipebook.dao.userdao.UserNotFoundException;
+import recipebook.domain.ingredient.Ingredient;
 import recipebook.domain.recipe.Recipe;
 
 /**
@@ -53,12 +54,12 @@ public interface RecipeDao {
     /**
      * Fetches recipes that contain certain ingredient.
      *
-     * @param name Name of the ingredient used as a search term.
+     * @param ingredient The ingredient used as a search term.
      * @return List of recipes or an empty list if no results found.
      * @throws DataStoreException
      * @throws UserNotFoundException
      */
-    List<Recipe> getByIngredient(String name) throws DataStoreException, UserNotFoundException;
+    List<Recipe> getByIngredient(Ingredient ingredient) throws DataStoreException, UserNotFoundException;
 
     /**
      * Deletes a recipe from the data store.

@@ -114,35 +114,44 @@ public class FileRecipeDao implements RecipeDao {
     }
 
     /**
-     *
-     * @param ingredientName
-     * @return
+     * Fetches recipes that contain the ingredient passed in as a search term.
+     * 
+     * @param ingredient The ingredient used as a search term.
+     * @return List of recipes or an empty list if no results are found.
      */
     @Override
-    public List<Recipe> getByIngredient(String ingredientName) {
+    public List<Recipe> getByIngredient(Ingredient ingredient) {
         List<Recipe> foundRecipes = new ArrayList<>();
         for (Recipe recipe : recipes) {
-            if (recipeContainsIngredient(recipe, ingredientName)) {
+            if (recipeContainsIngredient(recipe, ingredient)) {
                 foundRecipes.add(recipe);
             }
         }
         return foundRecipes;
     }
 
-    private boolean recipeContainsIngredient(Recipe recipe, String ingredientName) {
-        List<String> ingredientNames = recipe.getIngredients().keySet().stream().map(i -> i.getName())
-                .collect(Collectors.toList());
-        return ingredientNames.contains(ingredientName.toLowerCase());
+    private boolean recipeContainsIngredient(Recipe recipe, Ingredient ingredient) {
+        return recipe.getIngredients().keySet().contains(ingredient);
     }
 
     /**
-     *
-     * @param recipe
+     * Deletes a recipe from the data store.
+     * 
+     * @param recipe Recipe to delete.
      */
     @Override
     public void delete(Recipe recipe) throws DataStoreException {
         recipes.remove(recipe);
+        removeFromFavorites(recipe);
         writeRecipesToFile();
+    }
+
+    private void removeFromFavorites(Recipe recipe) {
+        for (List<Recipe> recipeList : favoriteRecipes.values()) {
+            if (recipeList.contains(recipe)) {
+                recipeList.remove(recipe);
+            }
+        }
     }
 
     /**
