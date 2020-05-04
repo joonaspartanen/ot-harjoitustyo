@@ -4,10 +4,6 @@
 
 Sovelluksen avulla käyttäjät voivat tallentaa ruokareseptejä. Sovelluksella voi olla useampi rekisteröitynyt käyttäjä. Käyttäjät voivat tarkastella myös muiden käyttäjien sovellukseen lisäämiä reseptejä.
 
-## Käyttäjät
-
-Aluksi sovelluksen ainoa käyttäjärooli on _peruskäyttäjä_. Myöhemmin sovellukseen saatetaan lisätään _pääkäyttäjän_ rooli. Pääkäyttäjällä olisi mahdollisuus muokata myös muiden (perus)käyttäjien reseptejä ja käyttäjätietoja.
-
 ## Perusversion tarjoama toiminnallisuus
 
 ### Ennen kirjautumista
@@ -28,6 +24,7 @@ Aluksi sovelluksen ainoa käyttäjärooli on _peruskäyttäjä_. Myöhemmin sove
 - käyttäjä voi luoda uuden reseptin (tehty)
   - reseptillä on oltava nimi, raaka-aineet, valmistusaika ja valmistusohjeet (tehty)
 - käyttäjä voi poistaa lisäämänsä reseptin (tehty)
+- käyttäjä voi lisätä muiden luomia reseptejä omaan suosikkireseptilistaansa (tehty)
 - käyttäjä voi kirjautua ulos järjestelmästä (tehty)
 
 ## Jatkokehitysideoita
@@ -36,7 +33,6 @@ Sovelluksen kehittäminen aloitetaan yllä kuvaillusta, toiminnoiltaan suppeamma
 
 - reseptien luokittelu esimerkiksi keittiön (italialainen, meksikolainen, thaimaalainen...) perusteella
 - reseptien hakeminen useilla eri kriteereillä
-- käyttäjä voi lisätä reseptin omaan reseptikirjaansa eli eräänlaiseen suosikkilistaan
 - sovellus suosittelee käyttäjälle uusia reseptejä omaan reseptikirjaan tallennettujen reseptien perusteella
 - reseptien arviointi tähtiluokituksella ja arvioiden keskiarvon laskeminen/näyttäminen
 - raaka-aineiden kilo-/litrahinnan lisääminen järjestelmään ja annoskohtaisen hinnan laskeminen näiden perusteella
