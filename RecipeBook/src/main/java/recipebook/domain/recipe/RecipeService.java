@@ -1,9 +1,11 @@
 package recipebook.domain.recipe;
 
 import recipebook.domain.ingredient.Ingredient;
+import recipebook.domain.ingredient.IngredientService;
 import recipebook.domain.user.User;
 import recipebook.domain.user.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +21,12 @@ public class RecipeService {
 
     private RecipeDao recipeDao;
     private UserService userService;
+    private IngredientService ingredientService;
 
-    public RecipeService(RecipeDao recipeDao, UserService userService) {
+    public RecipeService(RecipeDao recipeDao, UserService userService, IngredientService ingredientService) {
         this.recipeDao = recipeDao;
         this.userService = userService;
+        this.ingredientService = ingredientService;
     }
 
     /**
@@ -53,6 +57,18 @@ public class RecipeService {
     }
 
     /**
+     * Fetches the recipes whose name match the search term.
+     * 
+     * @param recipeName Used as search term.
+     * @return List of recipes or an empty list if no results found.
+     * @throws DataStoreException
+     * @throws UserNotFoundException
+     */
+    public List<Recipe> findByName(String recipeName) throws DataStoreException, UserNotFoundException {
+        return recipeDao.getByName(recipeName);
+    }
+
+    /**
      * Method to fetch all recipes that contain certain ingredient.
      *
      * @param name Name of the ingredient that matching recipes should contain.
@@ -60,8 +76,15 @@ public class RecipeService {
      * @throws DataStoreException
      */
     public List<Recipe> findByIngredient(String name) throws DataStoreException, UserNotFoundException {
-        
-        return recipeDao.getByIngredient(name);
+        List<Recipe> matchingRecipes = new ArrayList<>();
+
+        List<Ingredient> matchingIngredients = ingredientService.findByName(name);
+
+        for (Ingredient ingredient : matchingIngredients) {
+            List<Recipe> foundRecipes = recipeDao.getByIngredient(ingredient);
+            matchingRecipes.addAll(foundRecipes);
+        }
+        return matchingRecipes;
     }
 
     /**
