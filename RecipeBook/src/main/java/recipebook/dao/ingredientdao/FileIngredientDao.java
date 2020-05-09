@@ -33,8 +33,7 @@ public class FileIngredientDao implements IngredientDao {
     }
 
     private void readIngredientsFromFile() {
-        try {
-            Scanner reader = new Scanner(new File(ingredientsFile));
+        try (Scanner reader = new Scanner(new File(ingredientsFile))) {
             while (reader.hasNextLine()) {
                 readSingleIngredient(reader);
             }
